@@ -11,8 +11,8 @@
   1. Routing
   2. Pages
 - Loubna
-  1. Login + SignUp
-  2. Home Page
+  1. Login + SignUp: #8, #5
+  2. Home Page: #17
 - Thereza
   1. Lobby: #18, #19, #20
   2. Round View: #22, #23, #24, #28, #55
