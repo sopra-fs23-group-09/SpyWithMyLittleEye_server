@@ -1,5 +1,6 @@
 # Contributions
-## Week 1: 31.03. - 07.04. 
+## Sprint 1 
+### Week 1: 31.03. - 07.04. 
 - Nina
   1. LogIn + SignUp + LogOut
   2. Entities 
@@ -15,3 +16,52 @@
 - Thereza
   1. Lobby
   2. Round View
+### Week 2: 07.04. - 14.04. 
+- Nina
+  1. 
+  2. 
+- Claudia
+  1. 
+  2. 
+- Xena
+  1. 
+  2. 
+- Loubna
+  1. 
+  2. 
+- Thereza
+  1.
+
+### Week 3: 14.04. - 21.04. 
+- Nina
+  1. 
+  2. 
+- Claudia
+  1. 
+  2. 
+- Xena
+  1. 
+  2. 
+- Loubna
+  1. 
+  2. 
+- Thereza
+  1. 
+
+
+### Week 4: 21.04. - 27.04. 
+- Nina
+  1. 
+  2. 
+- Claudia
+  1. 
+  2. 
+- Xena
+  1. 
+  2. 
+- Loubna
+  1. 
+  2. 
+- Thereza
+  1. 
+  2. 
