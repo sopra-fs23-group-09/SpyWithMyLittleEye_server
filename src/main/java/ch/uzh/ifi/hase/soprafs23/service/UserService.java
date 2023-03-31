@@ -36,6 +36,8 @@ public class UserService {
     public UserService(@Qualifier("userRepository") UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
+    //called setToken in the class diagram
     public User updateToken(Long id, String token){
         User user = userRepository.getOne(id);
         user.setToken(token);
@@ -48,12 +50,16 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No permission to enter.");
         }
     }
+
+    //could be renamed to deleteToken as written in class diagram
     public void clearToken(String token){
         User u = userRepository.findByToken(token);
         u.setToken(null);
         userRepository.save(u);
         userRepository.flush();
     }
+    //probably rename to logoutUser because of class diagram, but setOffline has a meaning in combination
+    //with status so i would prefer setOffline
     public void setOffline(String token, boolean status){
         User u = userRepository.findByToken(token);
         u.setStatus(status?UserStatus.OFFLINE:UserStatus.ONLINE);
@@ -68,6 +74,8 @@ public class UserService {
         Long id = u.getId();
         return id;
     }
+    //TODO: update the password and the profile picture
+    //this method combines all the update [attribute] methods in the class diagram
     public void updateUser(User u, String token, Long userId){
         Optional<User> uToUpdateO = userRepository.findById(userId);
         if(uToUpdateO.isEmpty()){
@@ -117,4 +125,20 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "The username provided is not unique. Choose another one!");
         }
     }
+    public List<User> getTop100User(){
+        //TODO
+        return null;
+    }
+
+    //class diagram says we should overload this method with parameter string, don't get the reason
+    //annotated so we don't forget to check
+    public User getUser(Long id){
+        //TODO
+        return null;
+    }
+
+    //login of user is at the moment in usercontroller, probably implement this in userservice, would be
+    //more beautiful. Also, there is a loginUser method in the class diagram for the userservice
+    //maybe lower priority as it should work the way it is implemented at the moment
+
 }

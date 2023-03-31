@@ -21,6 +21,9 @@ public class Game implements Serializable{
     @Column
     private int remainingRounds;
 
+    @Column
+    private Round round;
+
 
 
     public void setUsers(List<User> users){ this.users = users; }
@@ -31,4 +34,7 @@ public class Game implements Serializable{
 
     public void setRemainingRounds(int remainingRounds){ this.remainingRounds = remainingRounds;}
     public int getRemainingRounds(){return remainingRounds;}
+
+    public void setRound(Round round){this.round = round;}
+    public Round getRound(){return round;}
 }
