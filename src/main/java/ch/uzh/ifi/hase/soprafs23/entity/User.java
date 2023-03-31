@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
+import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 
 import javax.persistence.*;
@@ -43,6 +44,60 @@ public class User implements Serializable {
 
     @Column(nullable = false)
     private Date creationDate;
+
+    @Column
+    private String profilePicture;
+
+    @Column
+    private int pointsCurrentRound;
+
+    @Column
+    private int pointsCurrentGame;
+
+    @Column
+    private int highScore;
+
+    @Column
+    private int gamesWon;
+
+    @Column
+    private int gamesPlayed;
+
+    @Column
+    private Role role;
+
+    @Column
+    private Long lobbyID;
+
+    private Long gameID;
+
+
+    public void setProfilePicture(String profilePicture){this.profilePicture = profilePicture;}
+    public String getProfilePicture(){return profilePicture;}
+
+    public void setPointsCurrentRound(int pointsCurrentRound){this.pointsCurrentRound = pointsCurrentRound;}
+    public int getPointsCurrentRound(){return pointsCurrentRound;}
+
+    public void setPointsCurrentGame(int pointsCurrentGame){this.pointsCurrentGame = pointsCurrentGame;}
+    public int getPointsCurrentGame(){return pointsCurrentGame;}
+
+    public void setHighScore(int highScore){this.highScore = highScore;}
+    public int getHighScore(){return highScore;}
+
+    public void setGamesWon(int gamesWon) {this.gamesWon = gamesWon;}
+    public int getGamesWon(){return gamesWon;}
+
+    public void setGamesPlayed(int gamesPlayed){this.gamesPlayed = gamesPlayed;}
+    public int getGamesPlayed(){return gamesPlayed;}
+
+    public void setRole(Role role){this.role = role;}
+    public Role getRole(){return role;}
+
+    public void setLobbyID(Long lobbyID){this.lobbyID = lobbyID;}
+    public Long getLobbyID(){return lobbyID;}
+
+    public void setGameID(Long gameID){this.gameID = gameID;}
+    public Long getGameID(){return gameID;}
 
     public void setBirthday(Date birthday){
         this.birthday = birthday;
