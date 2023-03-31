@@ -2,8 +2,8 @@
 ## Sprint 1 
 ### Week 1: 31.03. - 07.04. 
 - Nina
-  1. LogIn + SignUp + LogOut
-  2. Entities 
+  1. LogIn + SignUp + LogOut #89, #20, #91, #26
+  2. Entities #87
 - Claudia
   1. Lobby #48, #51, #88
   2. Keyword #41, #81, #72
