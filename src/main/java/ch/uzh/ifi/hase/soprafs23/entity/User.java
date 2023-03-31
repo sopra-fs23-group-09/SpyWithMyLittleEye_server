@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Internal User Representation
@@ -19,61 +20,52 @@ import java.io.Serializable;
 @Table(name = "USER")
 public class User implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  @Id
-  @GeneratedValue
-  private Long id;
+    @Id
+    @GeneratedValue
+    private Long id;
 
-  @Column(nullable = false)
-  private String name;
+    @Column(nullable = false)
+    private String password;
 
-  @Column(nullable = false, unique = true)
-  private String username;
+    @Column
+    private Date birthday;
 
-  @Column(nullable = false, unique = true)
-  private String token;
+    @Column(nullable = false, unique = true)
+    private String username;
 
-  @Column(nullable = false)
-  private UserStatus status;
+    @Column(unique = true)
+    private String token;
 
-  public Long getId() {
-    return id;
-  }
+    @Column(nullable = false)
+    private UserStatus status;
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    @Column(nullable = false)
+    private Date creationDate;
 
-  public String getName() {
-    return name;
-  }
+    public void setBirthday(Date birthday){
+        this.birthday = birthday;
+    }
+    public Date getBirthday(){
+        return birthday;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public void setCreationDate(Date creationDate){ this.creationDate = creationDate;}
+    public Date getCreationDate(){ return creationDate;}
 
-  public String getUsername() {
-    return username;
-  }
+    public Long getId() {return id;}
+    public void setId(Long id) {this.id = id;}
 
-  public void setUsername(String username) {
-    this.username = username;
-  }
+    public String getPassword() {return password;}
+    public void setPassword(String name) {this.password = name;}
 
-  public String getToken() {
-    return token;
-  }
+    public String getUsername() {return username;}
+    public void setUsername(String username) {this.username = username;}
 
-  public void setToken(String token) {
-    this.token = token;
-  }
+    public String getToken() {return token;}
+    public void setToken(String token) {this.token = token;}
 
-  public UserStatus getStatus() {
-    return status;
-  }
-
-  public void setStatus(UserStatus status) {
-    this.status = status;
-  }
+    public UserStatus getStatus() {return status;}
+    public void setStatus(UserStatus status) {this.status = status;}
 }
