@@ -14,7 +14,7 @@
   1. Login + SignUp #8, #5
   2. Home Page #17
 - Thereza
-  1. Lobby: #18, #19, #20
+  1. Lobby: #18, #19
   2. Round View: #22, #23, #24, #27, #28
 ### Week 2: 07.04. - 14.04. 
 - Nina
