@@ -68,7 +68,7 @@ public class UserController {
         List<User> users = userService.getUsers();
 
         for (User user : users) {
-            if(user.getId() == userId) {
+            if(user.getId() == userId) { //we could fix that bug (== vs equals) but it also works that way
                 return ResponseEntity.ok().headers(header).body(DTOMapper.INSTANCE.convertEntityToUserGetDTO(user));
             }
         }
