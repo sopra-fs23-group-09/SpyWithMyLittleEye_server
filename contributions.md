@@ -5,8 +5,8 @@
   1. LogIn + SignUp + LogOut
   2. Entities 
 - Claudia
-  1. Lobby
-  2. Keyword
+  1. Lobby #48, #51, #88
+  2. Keyword #41, #81, #72
 - Xena
   1. AppRouter + Guards #3, #2
   2. Pages #12
