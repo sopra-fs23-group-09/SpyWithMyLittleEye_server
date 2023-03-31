@@ -8,8 +8,8 @@
   1. Lobby
   2. Keyword
 - Xena
-  1. Routing
-  2. Pages
+  1. AppRouter + Guards #3, #2
+  2. Pages #12
 - Loubna
   1. Login + SignUp #8, #5
   2. Home Page #17
