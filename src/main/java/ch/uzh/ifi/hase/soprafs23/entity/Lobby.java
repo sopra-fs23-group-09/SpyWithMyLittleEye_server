@@ -16,7 +16,7 @@ public class Lobby implements Serializable{
     @Column(nullable = false, unique = true)
     private int accessCode;
 
-    @Column
+    @ElementCollection
     private List<User> users;
 
     @Column (nullable = false)
