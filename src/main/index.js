@@ -1,25 +1,20 @@
-const { WebSocket, WebSocketServer } = require('ws');
+const WebSocket = require('ws');
 const http = require('http');
 
-// Spinning the http server and the WebSocket server.
 const server = http.createServer();
-const wsServer = new WebSocketServer({ server });
-const host = 'localhost';
-const port = 8100;
-server.listen(port, () => {
-    console.log(`Server is running on http://${host}:${port}`);
+
+const ws = new WebSocket.Server({
+    server,
+    rejectUnauthorized: false,
+    verifyClient: (info, cb) => {
+        cb(true);
+    },
 });
 
-// A new client connection request received
-wsServer.on('connection', function(connection) {
-    // Generate a unique code for every user
-    const userId = uuidv4();
-    console.log('Recieved a new connection');
+ws.on('connection', (ws) => {
+    console.log('Client connected');
+});
 
-    // Store the new connection and handle messages
-    clients[userId] = connection;
-    console.log(`${userId} connected.`);
-    connection.on('message', (message) => handleMessage(message, userId));
-    // User disconnected
-    connection.on('close', () => handleDisconnect(userId));
+server.listen(8080, '127.0.0.1', () => {
+    console.log('Server listening on http://127.0.0.1:8080');
 });
