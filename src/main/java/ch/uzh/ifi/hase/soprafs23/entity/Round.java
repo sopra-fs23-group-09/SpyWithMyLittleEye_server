@@ -13,7 +13,7 @@ public class Round implements Serializable{
     @GeneratedValue
     private Long id;
 
-    @Column (nullable = false)
+    @ElementCollection
     private List<User> users;
 
     @Column (nullable = false)
@@ -37,7 +37,7 @@ public class Round implements Serializable{
     // @Column
     // private ... guesses
 
-    @Column
+    @ElementCollection
     private List<String> hints;
 
     @Column

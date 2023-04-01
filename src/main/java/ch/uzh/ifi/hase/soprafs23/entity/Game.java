@@ -12,7 +12,7 @@ public class Game implements Serializable{
     @GeneratedValue
     private Long id;
 
-    @Column (nullable = false)
+    @ElementCollection
     private List<User> users;
 
     @Column (nullable = false)
