@@ -28,10 +28,17 @@ public class Lobby implements Serializable{
     @Column
     private int amountRounds;
 
+    public Long getId() {
+        return id;
+    }
+
     public void setAccessCode(int accessCode){ this.accessCode = accessCode; }
     public int getAccessCode(){ return accessCode;}
 
     public void setUsers(List<User> users){ this.users = users; }
+    public void addUser(User user){
+        this.users.add(user);
+    }
     public List<User> getUsers(){ return users; }
 
     public void setHost(User host){ this.host = host; }
