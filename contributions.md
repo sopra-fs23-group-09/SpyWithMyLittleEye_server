@@ -2,7 +2,7 @@
 ## Sprint 1 
 ### Week 1: 31.03. - 07.04. 
 - Nina
-  1. LogIn + SignUp + LogOut #89, #20, #91, #26
+  1. LogIn + SignUp + LogOut #89, #91 (summarized the content of tasks #91, #20 and #26 in task #91 as it is all adapting methods for user processes)
   2. Entities #87
 - Claudia
   1. Lobby #48, #51, #88
