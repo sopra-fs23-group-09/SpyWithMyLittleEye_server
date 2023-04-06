@@ -38,6 +38,14 @@ public class Round implements Serializable{
     // private ... guesses
 
     @ElementCollection
+    private List<String> guesses;
+
+    // note c: to check if everyone has guessed correctly => could also be "nrRemainingGuessers" and set equal to the number of players,
+    // and reduced everytime someone guessed correctly, after each guess, it would be checked if this is 0 ?!
+    @Column(nullable = false)
+    private int nrCorrectGuesses;
+
+    @ElementCollection
     private List<String> hints;
 
     @Column
@@ -67,4 +75,11 @@ public class Round implements Serializable{
     public void setColor(String color){this.color = color;}
     public String getColor(){return color;}
 
+    public void setNrCorrectGuesses(int nrCorrectGuesses) { //note c: rather "increaseNrCorrectGuesses"?!
+        this.nrCorrectGuesses = nrCorrectGuesses;
+    }
+
+    public int getNrCorrectGuesses() {
+        return nrCorrectGuesses;
+    }
 }
