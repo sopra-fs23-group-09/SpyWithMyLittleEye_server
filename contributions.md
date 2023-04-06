@@ -17,7 +17,7 @@
   1. Lobby (Logic): #18, #19
   2. Websocket Client side (Lobby + Game Round) :#46, #47
 
-### Week 2: 07.04. - 14.04. 
+### Week 2: 07.04. - 14.04. (Due to easter break we might continue working on these task in Week 3)
 - Nina
   1. 
   2. 
@@ -25,8 +25,8 @@
   1. WebSocket connection between server and client in Game #98
   2. distribute points #80
 - Xena
-  1. 
-  2. 
+  1. WebSocket connection between server and client in Game #98
+  2. Wrong & Correct Guesses are displayed correctly #42 #43
 - Loubna
   1. Functionalities of the setting page #32, #31
   2. Display the google street view and chose a location #24
