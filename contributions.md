@@ -27,8 +27,8 @@
   1. 
   2. 
 - Loubna
-  1. 
-  2. 
+  1. Functionalities of the setting page #32, #31
+  2. Display the google street view and chose a location #24
 - Thereza
   1. Websocket connection between server and client in Lobby: #44
   2. Lobby (UI): #66
