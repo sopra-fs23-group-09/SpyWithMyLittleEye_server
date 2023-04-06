@@ -15,6 +15,18 @@ public class UserGetDTO {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date birthday;
 
+    private int gamesPlayed;
+    private int gamesWon;
+
+    private int highScore;
+
+    public int getHighScore(){return highScore;}
+    public void setHighScore(int highScore){this.highScore = highScore;}
+
+    public int getGamesPlayed(){return gamesPlayed;}
+    public void setGamesPlayed(int gamesPlayed){this.gamesPlayed = gamesPlayed;}
+    public int getGamesWon(){return gamesWon;}
+    public void setGamesWon(int gamesWon){this.gamesWon = gamesWon;}
     public Date getBirthday() {
         return birthday;
     }
