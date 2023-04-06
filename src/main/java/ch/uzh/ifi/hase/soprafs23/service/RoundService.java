@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
 
+import ch.uzh.ifi.hase.soprafs23.entity.Round;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.RoundRepository;
 import org.slf4j.Logger;
@@ -31,6 +32,12 @@ public class RoundService {
         //TODO
         return false;
     }
+
+    public void setKeywordAndColor(Round round, String keyword, String color){
+        round.setKeyword(keyword);
+        round.setColor(color);
+    }
+
     //What should this method do? award point? because in this case, why do we pass a boolean
     public void awardPoints(User user, String guess, boolean correct){
         //TODO
