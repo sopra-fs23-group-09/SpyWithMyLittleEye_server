@@ -74,4 +74,8 @@ public class RoundService {
     public void deleteRound(){
         //TODO
     }
+
+    public boolean hasEveryoneGuessedCorrectly(Round round){
+        return round.getUsers().size() == round.getNrCorrectGuesses();
+    }
 }
