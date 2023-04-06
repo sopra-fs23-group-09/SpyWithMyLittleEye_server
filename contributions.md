@@ -16,6 +16,7 @@
 - Thereza
   1. Lobby (Logic): #18, #19
   2. Websocket Client side (Lobby + Game Round) :#46, #47
+
 ### Week 2: 07.04. - 14.04. 
 - Nina
   1. 
@@ -31,7 +32,8 @@
   2. Display the google street view and chose a location #24
 - Thereza
   1. Websocket connection between server and client in Lobby: #44
-  2. Lobby (UI): #66
+  2. Lobby: #66, #67
+  3. Enter/ Generating code to join lobby. #20
 
 ### Week 3: 14.04. - 21.04. 
 - Nina
