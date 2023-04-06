@@ -22,8 +22,8 @@
   1. 
   2. 
 - Claudia
-  1. 
-  2. 
+  1. WebSocket connection between server and client in Game #98
+  2. distribute points #80
 - Xena
   1. 
   2. 
