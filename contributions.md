@@ -14,7 +14,7 @@
   1. Login + SignUp #8, #5
   2. Home Page #17
 - Thereza
-  1. Lobby (UI, Logic): #18, #19
+  1. Lobby (Logic): #18, #19
   2. Websocket Client side (Lobby + Game Round) :#46, #47
 ### Week 2: 07.04. - 14.04. 
 - Nina
@@ -30,7 +30,8 @@
   1. 
   2. 
 - Thereza
-  1.
+  1. Websocket connection between server and client in Lobby: #44
+  2. Lobby (UI): #66
 
 ### Week 3: 14.04. - 21.04. 
 - Nina
