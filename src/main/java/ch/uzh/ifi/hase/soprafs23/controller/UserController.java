@@ -74,7 +74,7 @@ public class UserController {
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The user doesn't exist!");
     }
-    @GetMapping("/v1/loginChecker")
+    @GetMapping("/users/login")
     public ResponseEntity<Void> loginCheck(@RequestParam("username") String username, @RequestParam("pass") String password) {
         List<User> users = userService.getUsers();
         for (User user : users) {
@@ -91,7 +91,7 @@ public class UserController {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The credentials don't allow you to log in!");
     }
 
-    @PutMapping("/v1/logoutService")
+    @PutMapping("/users/logout")
     public ResponseEntity<Void> logout(@RequestHeader(value = "Token", defaultValue = "null") String token){
         userService.checkToken(token);
         userService.setOffline(token,true);
