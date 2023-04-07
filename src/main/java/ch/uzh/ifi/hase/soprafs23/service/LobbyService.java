@@ -20,36 +20,38 @@ import java.util.Random;
 @Transactional
 public class LobbyService {
     private final Logger log = LoggerFactory.getLogger(UserService.class);
-
-    private final LobbyRepository lobbyRepository;
     // note c: added UserRepository, to check whether user is already in lobby and then add the lobbyID to the user
     private final UserRepository userRepository;
+    private int newLobbyId;
 
     @Autowired
-    public LobbyService(@Qualifier("lobbyRepository") LobbyRepository lobbyRepository, UserRepository userRepository) {
-        this.lobbyRepository = lobbyRepository;
+    public LobbyService(@Qualifier("userRepository") UserRepository userRepository) {
         this.userRepository = userRepository;
+        this.newLobbyId = 1;
     }
 
-    public void createLobby(User host){
-        Lobby newLobby = new Lobby();
-        int accessCode = generateAccessCode();
-        newLobby.setAccessCode(accessCode);
-        addUser(host, accessCode);
 
-        //save new lobby to database
-        newLobby = lobbyRepository.save(newLobby);
-        lobbyRepository.flush();
+
+    public int createLobby(User host, int amountRounds){
+        int accessCode = generateAccessCode();
+        Lobby newLobby = new Lobby(host, newLobbyId, accessCode, amountRounds);
+        LobbyRepository.addLobby(newLobby);
 
         log.debug("Created information for Lobby: {}", newLobby);
+        newLobbyId++;
         // return newLobby; //to-do: should a Lobby object be returned?
+        return accessCode;
+    }
+
+    public void startGame(int lobbyId){
+        Lobby lobby = LobbyRepository.getLobbyById(lobbyId);
+        lobby.play();
     }
 
     //generate a random (and unique) lobby access number between 10000 and 99999
     private int generateAccessCode(){
         Random random = new Random();
         int accessCode = 0;
-
         //generate random access code until it is unique
         do {
             //generate random number between 10000 and 99999
@@ -59,49 +61,41 @@ public class LobbyService {
         return accessCode;
     }
 
-    //class diagram says that this method takes an integer, thought user fits better
-    //note c: added accessCode as parameter: checkAccessCode is private method and find correct lobby to add user
-    public void addUser(User user, int accessCode){
+    //checks if there is a lobby with given accessCode
+    private boolean checkAccessCode(int accessCode){
+        return LobbyRepository.getLobbyByAccessCode(accessCode) != null;
+    }
 
+    //note c: added accessCode as parameter: checkAccessCode is private method and find correct lobby to add user
+    public void addUser(User player, int accessCode){
         // check if accessCode exists
         if (!checkAccessCode(accessCode)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "provided access code does not exist");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The provided access code does not exist.");
         }
+        //probably add a check here for rejoin as additional feature for M4
 
         // check if user is already in a lobby or in a game, if so throw error
-        if (user.getLobbyID() != null || user.getGameID() != null){ // note c: after game ends, lobbyID and gameID have to be set to null again
+        if (player.getLobbyID() != 0){ // note c: after game ends, lobbyID and gameID have to be set to null again
             //to-do: ResponseStatusException for websocket (?!)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "you can only play one game at a time");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can only play one game at a time.");
         }
 
-        Lobby lobby = lobbyRepository.findByAccessCode(accessCode);
-
+        Lobby lobby = LobbyRepository.getLobbyByAccessCode(accessCode);
         // check if lobby is  already full
-        if (lobby.getFull()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "lobby is full");
+        if (lobby.isFull()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The lobby is full.");
         }
-
-        // change User.LobbyID and add user to the lobby
-        user.setLobbyID(lobby.getId());
-        lobby.addUser(user);
+        lobby.addPlayer(player);
+        player.setLobbyID(lobby.getId());
     }
 
-    //Access code in lobby is int, therefore i take int instead of String (which is written in class diagram
-    //for this method
-    private boolean checkAccessCode(int accessCode){
-        Lobby lobbyByAccessCode = lobbyRepository.findByAccessCode(accessCode);
-        if (lobbyByAccessCode != null){
-            return true;
-        }
-        return false;
-    }
-
-    public List<User> getUsersInLobby(){
-        //TODO
-        return null;
+    public List<User> getUsersInLobby(int lobbyId){
+        Lobby lobby = LobbyRepository.getLobbyById(lobbyId);
+        return lobby.getPlayers();
     }
 
     public void deleteLobby(int lobbyId){
-        //TODO
+        //also need to delete the lobbyId of all players in this method, so they can join a new lobby
+        LobbyRepository.deleteLobby(lobbyId);
     }
 }

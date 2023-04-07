@@ -64,13 +64,7 @@ public class User implements Serializable {
     private int gamesPlayed;
 
     @Column
-    private Role role;
-
-    @Column
-    private Long lobbyID;
-
-    private Long gameID;
-
+    private int lobbyID;
 
     public void setProfilePicture(String profilePicture){this.profilePicture = profilePicture;}
     public String getProfilePicture(){return profilePicture;}
@@ -90,14 +84,8 @@ public class User implements Serializable {
     public void setGamesPlayed(int gamesPlayed){this.gamesPlayed = gamesPlayed;}
     public int getGamesPlayed(){return gamesPlayed;}
 
-    public void setRole(Role role){this.role = role;}
-    public Role getRole(){return role;}
-
-    public void setLobbyID(Long lobbyID){this.lobbyID = lobbyID;}
-    public Long getLobbyID(){return lobbyID;}
-
-    public void setGameID(Long gameID){this.gameID = gameID;}
-    public Long getGameID(){return gameID;}
+    public void setLobbyID(int lobbyID){this.lobbyID = lobbyID;}
+    public int getLobbyID(){return lobbyID;}
 
     public void setBirthday(Date birthday){
         this.birthday = birthday;
