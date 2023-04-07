@@ -1,52 +1,53 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
-import javax.persistence.*;
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "LOBBY")
-public class Lobby implements Serializable{
-    private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    @Column(nullable = false, unique = true)
+public class Lobby {
+    private static int MAX_AMOUNT_PLAYERS;
+    private int id;
     private int accessCode;
-
-    @ElementCollection
-    private List<User> users;
-
-    @Column (nullable = false)
+    private List<User> players;
     private User host;
-
-    @Column
     private boolean full;
-
-    @Column
+    private Game game;
     private int amountRounds;
 
-    public Long getId() {
+    public Lobby(User host, int id, int accessCode, int amountRounds){
+        this.id = id;
+        this.host = host;
+        this.accessCode = accessCode;
+        this.players = new ArrayList<User>();
+        this.full = false;
+        this.amountRounds = amountRounds;
+    }
+    public int getId() {
         return id;
     }
 
-    public void setAccessCode(int accessCode){ this.accessCode = accessCode; }
-    public int getAccessCode(){ return accessCode;}
-
-    public void setUsers(List<User> users){ this.users = users; }
-    public void addUser(User user){
-        this.users.add(user);
+    public void play(){
+        this.game = new Game(players, host, amountRounds);
+        this.game.playRound();
     }
-    public List<User> getUsers(){ return users; }
+    public void playRound(){
+        this.game.playRound();
+    }
 
-    public void setHost(User host){ this.host = host; }
-    public User getHost(){ return host;}
+    public List<User> getPlayers(){
+        return players;
+    }
 
-    public void setFull(boolean full){this.full = full;}
-    public boolean getFull(){return full;}
+    public void addPlayer(User player){
+        players.add(player);
+        if(players.size() == MAX_AMOUNT_PLAYERS){
+            this.full = true;
+        }
+    }
+    public int getAccessCode(){
+        return this.accessCode;
+    }
 
-    public void setAmountRounds(int amountRounds){this.amountRounds = amountRounds;}
-    public int getAmountRounds(){return amountRounds;}
+    public boolean isFull(){
+        return this.full;
+    }
 }

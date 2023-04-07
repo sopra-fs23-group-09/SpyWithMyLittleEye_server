@@ -1,40 +1,30 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
-import javax.persistence.*;
-import java.io.Serializable;
 import java.util.List;
 
-@Entity
-@Table(name = "GAME")
-public class Game implements Serializable{
-    private static final long serialVersionUID = 1L;
+public class Game {
 
-    @Id
-    @GeneratedValue
-    private Long id;
+    private List<User> players;
 
-    @ElementCollection
-    private List<User> users;
-
-    @Column (nullable = false)
     private User host;
 
-    @Column
-    private int remainingRounds;
+    private Round[] rounds;
+    private int amountRounds;
+    private String googleMapsCoordinates;
+    private int currentRound;
 
-    @Column
-    private Round round;
+    public Game(List<User> players, User host, int amountRounds){
+        this.players = players;
+        this.host = host;
+        this.amountRounds = amountRounds;
+        this.rounds = new Round[amountRounds];
+        this.currentRound = 0;
+    }
 
+    public void playRound(){
+        //still need to think about that
+    }
 
-
-    public void setUsers(List<User> users){ this.users = users; }
-    public List<User> getUsers(){ return users; }
-
-    public void setHost(User host){ this.host = host; }
-    public User getHost(){ return host;}
-
-    public void setRemainingRounds(int remainingRounds){ this.remainingRounds = remainingRounds;}
-    public int getRemainingRounds(){return remainingRounds;}
-
-    public void setRound(Round round){this.round = round;}
-    public Round getRound(){return round;}
+    public void storeCoordinates(String googleMapsCoordinates){
+        this.googleMapsCoordinates = googleMapsCoordinates;
+    }
 }
