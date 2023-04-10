@@ -30,7 +30,7 @@ public class LobbyController {
         userService.checkToken(token);
         User host = userService.getUser(userService.getUserID(token));
 
-        int amountRounds = Integer.parseInt(lobbyPostDTO.getAmountRounds());
+        int amountRounds = lobbyPostDTO.getAmountRounds();
 
         Lobby createdLobby = lobbyService.createLobby(host, amountRounds);
 
