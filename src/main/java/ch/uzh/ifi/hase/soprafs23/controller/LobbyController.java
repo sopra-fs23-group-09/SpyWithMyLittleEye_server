@@ -1,8 +1,13 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
+import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.LobbyGetDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.LobbyPostDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,12 +26,15 @@ public class LobbyController {
     }
 
     @PostMapping("/lobbies")
-    public ResponseEntity<Integer> createLobby(@RequestHeader(value = "token", defaultValue = "null") String token, @RequestBody int amountRounds){
+    public ResponseEntity<LobbyGetDTO> createLobby(@RequestHeader(value = "token", defaultValue = "null") String token, @RequestBody LobbyPostDTO lobbyPostDTO){
         userService.checkToken(token);
         User host = userService.getUser(userService.getUserID(token));
 
-        int accessCode = lobbyService.createLobby(host, amountRounds);
-        return ResponseEntity.created(null).body(accessCode);
+        int amountRounds = Integer.parseInt(lobbyPostDTO.getAmountRounds());
+
+        Lobby createdLobby = lobbyService.createLobby(host, amountRounds);
+
+        return ResponseEntity.created(null).body(DTOMapper.INSTANCE.convertLobbyToLobbyGetDTO(createdLobby));
     }
 
 }

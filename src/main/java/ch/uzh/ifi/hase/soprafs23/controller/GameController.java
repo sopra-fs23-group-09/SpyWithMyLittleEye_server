@@ -21,7 +21,6 @@ public class GameController {
     @MessageMapping("/guess")
     @SendTo("/game/guesses")
     public GuessOut handleGuess(GuessIn guessIn) throws Exception{
-        //String username = "hallo";
         User user = userService.getUser(guessIn.getId());
         String username = user.getUsername();
         String guess = HtmlUtils.htmlEscape(guessIn.getGuess());

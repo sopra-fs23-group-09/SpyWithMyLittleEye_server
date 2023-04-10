@@ -32,15 +32,15 @@ public class LobbyService {
 
 
 
-    public int createLobby(User host, int amountRounds){
+    public Lobby createLobby(User host, int amountRounds){
         int accessCode = generateAccessCode();
         Lobby newLobby = new Lobby(host, newLobbyId, accessCode, amountRounds);
         LobbyRepository.addLobby(newLobby);
 
         log.debug("Created information for Lobby: {}", newLobby);
         newLobbyId++;
-        // return newLobby; //to-do: should a Lobby object be returned?
-        return accessCode;
+        return newLobby; //to-do: should a Lobby object be returned?
+        //return accessCode;
     }
 
     public void startGame(int lobbyId){
