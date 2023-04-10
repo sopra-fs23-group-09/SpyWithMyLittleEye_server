@@ -27,6 +27,7 @@ public class LobbyController {
 
         int accessCode = lobbyService.createLobby(host, Integer.parseInt(amountRounds));
         return ResponseEntity.created(null).body(accessCode);
+        // TODO does it make sense to return the accessCode to the host? or does it make more sense to return the lobbyId?
     }
 
 }
