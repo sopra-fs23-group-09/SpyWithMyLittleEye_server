@@ -39,7 +39,7 @@ public class LobbyService {
 
         log.debug("Created information for Lobby: {}", newLobby);
         newLobbyId++;
-        // return newLobby; //to-do: should a Lobby object be returned?
+        // return newLobby; //TODO should a Lobby object be returned?
         return accessCode;
     }
 
