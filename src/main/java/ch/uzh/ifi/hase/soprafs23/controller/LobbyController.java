@@ -21,11 +21,11 @@ public class LobbyController {
     }
 
     @PostMapping("/lobbies")
-    public ResponseEntity<Integer> createLobby(@RequestHeader(value = "token", defaultValue = "null") String token, @RequestBody int amountRounds){
+    public ResponseEntity<Integer> createLobby(@RequestHeader(value = "Token", defaultValue = "null") String token, @RequestBody String amountRounds){
         userService.checkToken(token);
         User host = userService.getUser(userService.getUserID(token));
 
-        int accessCode = lobbyService.createLobby(host, amountRounds);
+        int accessCode = lobbyService.createLobby(host, Integer.parseInt(amountRounds));
         return ResponseEntity.created(null).body(accessCode);
     }
 
