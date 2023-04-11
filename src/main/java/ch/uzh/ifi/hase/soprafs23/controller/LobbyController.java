@@ -24,6 +24,7 @@ public class LobbyController {
     }
 
     @PostMapping("/lobbies")
+
     public ResponseEntity<LobbyGetDTO> createLobby(@RequestHeader(value = "token", defaultValue = "null") String token, @RequestBody LobbyPostDTO lobbyPostDTO) {
         userService.checkToken(token);
         User host = userService.getUser(userService.getUserID(token));

@@ -39,6 +39,7 @@ public class LobbyService {
 
         log.debug("Created information for Lobby: {}", newLobby);
         newLobbyId++;
+
         return newLobby;
     }
 
