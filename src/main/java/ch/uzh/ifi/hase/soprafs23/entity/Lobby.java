@@ -55,4 +55,8 @@ public class Lobby {
     public Game getGame() {
         return game;
     }
+
+    public Long getHostId() {
+        return host.getId();
+    }
 }
