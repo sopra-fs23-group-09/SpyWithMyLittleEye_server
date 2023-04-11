@@ -30,6 +30,4 @@ public interface DTOMapper {
     @Mapping(source = "accessCode", target = "accessCode")
     LobbyGetDTO convertLobbyToLobbyGetDTO(Lobby lobby);
 
-    //@Mapping(source = "amountRounds", target = "amountRounds")
-    //Lobby convertLobbyPostDTOtoEntity(LobbyPostDTO lobbyPostDTO);
 }

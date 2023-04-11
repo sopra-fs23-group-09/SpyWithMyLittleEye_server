@@ -1,5 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.stomp;
 
+import ch.uzh.ifi.hase.soprafs23.service.GameService;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -21,5 +23,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
        registry.addEndpoint("/ws")
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
+    }
+
+    @Bean
+    public GameService gameService() {
+        return new GameService();
     }
 }

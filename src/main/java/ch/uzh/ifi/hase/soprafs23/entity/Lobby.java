@@ -20,6 +20,7 @@ public class Lobby {
         this.players = new ArrayList<User>();
         this.full = false;
         this.amountRounds = amountRounds;
+        this.game = new Game(players, host, amountRounds); //note c: already initiate game here?!
     }
     public int getId() {
         return id;
@@ -49,5 +50,9 @@ public class Lobby {
 
     public boolean isFull(){
         return this.full;
+    }
+
+    public Game getGame() {
+        return game;
     }
 }

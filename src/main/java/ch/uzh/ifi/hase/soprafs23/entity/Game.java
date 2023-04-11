@@ -27,4 +27,12 @@ public class Game {
     public void storeCoordinates(String googleMapsCoordinates){
         this.googleMapsCoordinates = googleMapsCoordinates;
     }
+
+    public void startNewRound(){
+        rounds[currentRound] = new Round();
+    }
+
+    public Round getCurrentRound() {
+        return rounds[currentRound];
+    }
 }
