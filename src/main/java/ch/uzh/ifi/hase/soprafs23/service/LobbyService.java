@@ -22,6 +22,7 @@ public class LobbyService {
     private final Logger log = LoggerFactory.getLogger(UserService.class);
     // note c: added UserRepository, to check whether user is already in lobby and then add the lobbyID to the user
     private final UserRepository userRepository;
+
     private int newLobbyId;
 
     @Autowired
@@ -30,17 +31,16 @@ public class LobbyService {
         this.newLobbyId = 1;
     }
 
-
-
-    public int createLobby(User host, int amountRounds){
+    public Lobby createLobby(User host, int amountRounds){
+        // to-do: make sure that host is not in another lobby, else throw error
         int accessCode = generateAccessCode();
         Lobby newLobby = new Lobby(host, newLobbyId, accessCode, amountRounds);
         LobbyRepository.addLobby(newLobby);
 
         log.debug("Created information for Lobby: {}", newLobby);
         newLobbyId++;
-        // return newLobby; //TODO should a Lobby object be returned?
-        return accessCode;
+
+        return newLobby;
     }
 
     public void startGame(int lobbyId){
@@ -81,6 +81,7 @@ public class LobbyService {
         }
 
         Lobby lobby = LobbyRepository.getLobbyByAccessCode(accessCode);
+
         // check if lobby is  already full
         if (lobby.isFull()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The lobby is full.");

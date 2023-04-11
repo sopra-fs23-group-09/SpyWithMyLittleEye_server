@@ -1,13 +1,16 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
+import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.LobbyGetDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.LobbyPostDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.UserPutDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class LobbyController {
@@ -21,13 +24,21 @@ public class LobbyController {
     }
 
     @PostMapping("/lobbies")
-    public ResponseEntity<Integer> createLobby(@RequestHeader(value = "Token", defaultValue = "null") String token, @RequestBody String amountRounds){
+
+    public ResponseEntity<LobbyGetDTO> createLobby(@RequestHeader(value = "token", defaultValue = "null") String token, @RequestBody LobbyPostDTO lobbyPostDTO) {
         userService.checkToken(token);
         User host = userService.getUser(userService.getUserID(token));
 
-        int accessCode = lobbyService.createLobby(host, Integer.parseInt(amountRounds));
-        return ResponseEntity.created(null).body(accessCode);
-        // TODO does it make sense to return the accessCode to the host? or does it make more sense to return the lobbyId?
+        int amountRounds = lobbyPostDTO.getAmountRounds();
+
+        Lobby createdLobby = lobbyService.createLobby(host, amountRounds);
+
+        return ResponseEntity.created(null).body(DTOMapper.INSTANCE.convertLobbyToLobbyGetDTO(createdLobby));
     }
 
+    @PutMapping("/lobbies/join/{userId}")
+    public ResponseEntity<Void> joinLobby(@PathVariable(value = "userId") Long userId, @RequestBody String accessCode, @RequestHeader(value = "token", defaultValue = "null") String token) {
+        //TODO
+        return ResponseEntity.created(null).body(null);
+    }
 }
