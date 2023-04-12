@@ -67,8 +67,8 @@ public class LobbyService {
     }
 
     // checks if access code is valid, returns Lobby Object
-    public Lobby checkAccessCode(String token){
-        if("null".equals(token) || userRepository.findByToken(token) == null){
+    public Lobby checkAccessCode(String accessCode){
+        if("null".equals(accessCode) || LobbyRepository.getLobbyByAccessCode(Integer.parseInt(accessCode)) == null){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No permission to enter.");
         }
         return null;
