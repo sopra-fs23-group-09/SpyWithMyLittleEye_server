@@ -21,6 +21,7 @@
 - Nina
   1. Websocket connection between server and client in Lobby: 44#
   2. refactor whole model (game, lobby, round no longer in JPA repository, new structure, new placement of methods) #78
+  3. fetch top 100 users #43
 - Claudia
   1. WebSocket connection between server and client in Game #98
   2. distribute points #80
