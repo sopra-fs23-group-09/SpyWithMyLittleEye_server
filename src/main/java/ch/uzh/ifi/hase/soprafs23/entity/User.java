@@ -75,6 +75,10 @@ public class User implements Serializable {
     public void setPointsCurrentGame(int pointsCurrentGame){this.pointsCurrentGame = pointsCurrentGame;}
     public int getPointsCurrentGame(){return pointsCurrentGame;}
 
+    public void addPointsCurrentGame(int pointsToAdd){
+        this.pointsCurrentGame += pointsToAdd;
+    }
+
     public void setHighScore(int highScore){this.highScore = highScore;}
     public int getHighScore(){return highScore;}
 
