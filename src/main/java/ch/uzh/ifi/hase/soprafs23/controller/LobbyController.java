@@ -8,6 +8,8 @@ import ch.uzh.ifi.hase.soprafs23.rest.dto.UserPutDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +39,32 @@ public class LobbyController {
 
     @PutMapping("/lobbies/join/{userId}")
     public ResponseEntity<LobbyGetDTO> joinLobby(@PathVariable(value = "userId") Long userId, @RequestBody String accessCode, @RequestHeader(value = "token", defaultValue = "null") String token) {
-        //TODO : need to return Lobby object
-        return ResponseEntity.created(null).body(null);
+        userService.checkToken(token);
+        User user = userService.getUser(userId);
+        Gson gson = new Gson();
+        JsonObject jsonObject = gson.fromJson(accessCode, JsonObject.class);
+        String value = jsonObject.get("accessCode").getAsString();
+        int accessCodeInt = Integer.parseInt(value);
+        Lobby lobby = lobbyService.addUser(user, accessCodeInt);
+        return ResponseEntity.created(null).body(DTOMapper.INSTANCE.convertLobbyToLobbyGetDTO(lobby));
+
     }
 
 }
+
+/*
+    public static int getIntFromJson(String json, String property) {
+    String json = "{\"accessCode\" : \"86522\"}";
+    String property = "accessCode";
+        Gson gson = new Gson();
+        JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
+        String value = jsonObject.get(property).getAsString();
+        return Integer.parseInt(value);
+    }
+
+    public static void main(String[] args) {
+
+        int accessCodeNumber = getIntFromJson(json, );
+        System.out.println(accessCodeNumber); // output: 86522
+    }
+ */

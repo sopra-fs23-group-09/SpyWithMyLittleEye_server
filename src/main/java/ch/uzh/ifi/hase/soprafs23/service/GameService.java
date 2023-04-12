@@ -3,7 +3,10 @@ package ch.uzh.ifi.hase.soprafs23.service;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.Round;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.LobbyRepository;
+
+import java.util.Date;
 
 public class GameService {
 
@@ -12,6 +15,7 @@ public class GameService {
         Game game = lobby.getGame();
         game.startNewRound();
         Round round = game.getCurrentRound();
+        round.startRound(); //note c: start game here?
         round.setKeyword(keyword);
         round.setColor(color);
     }
@@ -22,6 +26,16 @@ public class GameService {
 
         //return calculateLevenshteinDistance(guess.toLowerCase(), keyword.toLowerCase()) < 2;
         return guess.equalsIgnoreCase(keyword);
+    }
+
+    public void allocatePoints(int lobbyId, User user){
+        Date guessTime = new Date();
+        Date startDateRound = LobbyRepository.getLobbyById(lobbyId).getGame().getCurrentRound().getStartTime();
+
+        //note c: adjust formula to calculate points, now: 500 - seconds needed to guess
+        int points =  (int) (500 - (guessTime.getTime()-startDateRound.getTime())/1000);
+
+        user.setPointsCurrentRound(points);
     }
 
     private int calculateLevenshteinDistance(String string1, String string2){

@@ -43,8 +43,9 @@ public class GameController {
         String guess = HtmlUtils.htmlEscape(guessIn.getGuess());
         int lobbyID = lobbyId;
 
-        if (gameService.checkGuess(lobbyID,guess)){
+        if (gameService.checkGuess(lobbyID, guess)){
             guess = "CORRECT";
+            gameService.allocatePoints(lobbyID, user);
         }
 
         return new GuessOut(username, guess);
