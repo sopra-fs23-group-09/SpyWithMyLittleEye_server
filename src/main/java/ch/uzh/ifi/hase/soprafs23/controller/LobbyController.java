@@ -47,6 +47,7 @@ public class LobbyController {
         int accessCodeInt = Integer.parseInt(value);
         Lobby lobby = lobbyService.addUser(user, accessCodeInt);
         return ResponseEntity.created(null).body(DTOMapper.INSTANCE.convertLobbyToLobbyGetDTO(lobby));
+
     }
 
 }

@@ -22,7 +22,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
        //registry.addEndpoint("/ws").withSockJS();
        registry.addEndpoint("/ws")
                 .setAllowedOriginPatterns("*")
-                .withSockJS();
+                .withSockJS()
+               .setHeartbeatTime(10000);;
     }
 
     @Bean
