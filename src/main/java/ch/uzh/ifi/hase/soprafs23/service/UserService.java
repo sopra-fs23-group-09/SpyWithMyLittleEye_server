@@ -138,8 +138,15 @@ public class UserService {
     //class diagram says we should overload this method with parameter string, don't get the reason
     //annotated so we don't forget to check
     public User getUser(Long id){
-        //TODO
-        return null;
+
+        // return userRepository.findById(id).get(); note c: merge-conflict resolved in github, CHECK!
+
+        //TODO this is just a placeholder
+        User u = userRepository.findById(id).orElse(null);
+        if (u == null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The username provided is not unique. Choose another one!");
+        }
+        return u;
     }
 
     //login of user is at the moment in usercontroller, probably implement this in userservice, would be

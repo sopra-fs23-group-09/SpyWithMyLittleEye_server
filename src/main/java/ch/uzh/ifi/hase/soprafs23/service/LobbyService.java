@@ -22,6 +22,7 @@ public class LobbyService {
     private final Logger log = LoggerFactory.getLogger(UserService.class);
     // note c: added UserRepository, to check whether user is already in lobby and then add the lobbyID to the user
     private final UserRepository userRepository;
+
     private int newLobbyId;
 
     @Autowired
@@ -30,17 +31,16 @@ public class LobbyService {
         this.newLobbyId = 1;
     }
 
-
-
-    public int createLobby(User host, int amountRounds){
+    public Lobby createLobby(User host, int amountRounds){
+        // to-do: make sure that host is not in another lobby, else throw error
         int accessCode = generateAccessCode();
         Lobby newLobby = new Lobby(host, newLobbyId, accessCode, amountRounds);
         LobbyRepository.addLobby(newLobby);
 
         log.debug("Created information for Lobby: {}", newLobby);
         newLobbyId++;
-        // return newLobby; //to-do: should a Lobby object be returned?
-        return accessCode;
+
+        return newLobby;
     }
 
     public void startGame(int lobbyId){
@@ -66,8 +66,15 @@ public class LobbyService {
         return LobbyRepository.getLobbyByAccessCode(accessCode) != null;
     }
 
+    // checks if access code is valid, returns Lobby Object
+    public Lobby checkAccessCode(String accessCode){
+        if("null".equals(accessCode) || LobbyRepository.getLobbyByAccessCode(Integer.parseInt(accessCode)) == null){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No permission to enter.");
+        }
+        return null;
+    }
     //note c: added accessCode as parameter: checkAccessCode is private method and find correct lobby to add user
-    public void addUser(User player, int accessCode){
+    public Lobby addUser(User player, int accessCode){
         // check if accessCode exists
         if (!checkAccessCode(accessCode)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The provided access code does not exist.");
@@ -81,12 +88,15 @@ public class LobbyService {
         }
 
         Lobby lobby = LobbyRepository.getLobbyByAccessCode(accessCode);
+
         // check if lobby is  already full
         if (lobby.isFull()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The lobby is full.");
         }
         lobby.addPlayer(player);
         player.setLobbyID(lobby.getId());
+
+        return lobby;
     }
 
     public List<User> getUsersInLobby(int lobbyId){
@@ -97,5 +107,9 @@ public class LobbyService {
     public void deleteLobby(int lobbyId){
         //also need to delete the lobbyId of all players in this method, so they can join a new lobby
         LobbyRepository.deleteLobby(lobbyId);
+    }
+
+    public Lobby getLobby(int lobbyId) {
+        return LobbyRepository.getLobbyById(lobbyId);
     }
 }
