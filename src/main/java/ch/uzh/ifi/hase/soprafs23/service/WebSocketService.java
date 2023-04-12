@@ -29,15 +29,6 @@ public class WebSocketService {
     }
 
     public void sendMessageToSubscribers(String mapping, Object o) {
-        System.out.println("Inside sendMessage");
-        Set<SimpUser> users = getUsers();
-        System.out.println(users.size());
         this.simpMessagingTemplate.convertAndSend(mapping, o);
-    }
-
-    @Autowired private SimpUserRegistry simpUserRegistry;
-
-    public Set<SimpUser> getUsers() {
-        return simpUserRegistry.getUsers();
     }
 }

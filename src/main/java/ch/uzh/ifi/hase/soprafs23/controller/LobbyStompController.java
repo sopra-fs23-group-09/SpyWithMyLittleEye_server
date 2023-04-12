@@ -31,7 +31,6 @@ public class LobbyStompController {
     @SendTo("/game/lobbies/{lobbyId}") // we send here to our subscribers
     @SubscribeMapping("/game/lobbies/{lobbyId}")
     public void getLobbyInformation(@DestinationVariable("lobbyId") String lobbyId){
-        System.out.println("Inside getLobby! "+lobbyId);
         Lobby lobby = lobbyService.getLobby(Integer.parseInt(lobbyId));
         LobbyGetDTO lobbyGetDTO = DTOMapper.INSTANCE.convertLobbyToLobbyGetDTO(lobby);
         // TODO if lobby null throw error
