@@ -20,7 +20,7 @@
 ### Week 2: 07.04. - 14.04. (Due to easter break we might continue working on these task in Week 3)
 - Nina
   1. Websocket connection between server and client in Lobby: 44#
-  2. refactor whole model (game, lobby, round no longer in JPA repository, new structure, new placement of methods)
+  2. refactor whole model (game, lobby, round no longer in JPA repository, new structure, new placement of methods) #78
 - Claudia
   1. WebSocket connection between server and client in Game #98
   2. distribute points #80
