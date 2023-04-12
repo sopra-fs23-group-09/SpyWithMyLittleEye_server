@@ -24,7 +24,6 @@ public class LobbyController {
     }
 
     @PostMapping("/lobbies")
-
     public ResponseEntity<LobbyGetDTO> createLobby(@RequestHeader(value = "token", defaultValue = "null") String token, @RequestBody LobbyPostDTO lobbyPostDTO) {
         userService.checkToken(token);
         User host = userService.getUser(userService.getUserID(token));
@@ -37,8 +36,10 @@ public class LobbyController {
     }
 
     @PutMapping("/lobbies/join/{userId}")
-    public ResponseEntity<Void> joinLobby(@PathVariable(value = "userId") Long userId, @RequestBody String accessCode, @RequestHeader(value = "token", defaultValue = "null") String token) {
-        //TODO
-        return ResponseEntity.created(null).body(null);
+    public ResponseEntity<LobbyGetDTO> joinLobby(@PathVariable(value = "userId") Long userId, @RequestBody String accessCode, @RequestHeader(value = "token", defaultValue = "null") String token) {
+        userService.checkToken(token);
+        User user = userService.getUser(userId);
+        Lobby lobby = lobbyService.addUser(user, Integer.parseInt(accessCode));
+        return ResponseEntity.created(null).body(DTOMapper.INSTANCE.convertLobbyToLobbyGetDTO(lobby));
     }
 }

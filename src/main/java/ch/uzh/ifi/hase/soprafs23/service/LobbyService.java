@@ -67,7 +67,7 @@ public class LobbyService {
     }
 
     //note c: added accessCode as parameter: checkAccessCode is private method and find correct lobby to add user
-    public void addUser(User player, int accessCode){
+    public Lobby addUser(User player, int accessCode){
         // check if accessCode exists
         if (!checkAccessCode(accessCode)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The provided access code does not exist.");
@@ -88,6 +88,8 @@ public class LobbyService {
         }
         lobby.addPlayer(player);
         player.setLobbyID(lobby.getId());
+
+        return lobby;
     }
 
     public List<User> getUsersInLobby(int lobbyId){
