@@ -51,6 +51,11 @@ public class UserService {
         }
     }
 
+    public List<User> getTop100Users(){
+        //userRepository.findAll(Sort.by("highScore"));
+        return userRepository.findTop100ByOrderByHighScoreDesc();
+    }
+
     //could be renamed to deleteToken as written in class diagram
     public void clearToken(String token){
         User u = userRepository.findByToken(token);

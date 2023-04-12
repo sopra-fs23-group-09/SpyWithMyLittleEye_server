@@ -12,6 +12,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,6 +26,7 @@ public class UserServiceTest {
 
     private User testUser;
 
+
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
@@ -34,6 +36,8 @@ public class UserServiceTest {
         testUser.setId(1L);
         testUser.setPassword("testPassword");
         testUser.setUsername("testUsername");
+        testUser.setHighScore(10);
+
 
         // when -> any object is being save in the userRepository -> return the dummy
         // testUser
