@@ -66,6 +66,13 @@ public class LobbyService {
         return LobbyRepository.getLobbyByAccessCode(accessCode) != null;
     }
 
+    // checks if access code is valid, returns Lobby Object
+    public Lobby checkAccessCode(String token){
+        if("null".equals(token) || userRepository.findByToken(token) == null){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No permission to enter.");
+        }
+        return null;
+    }
     //note c: added accessCode as parameter: checkAccessCode is private method and find correct lobby to add user
     public void addUser(User player, int accessCode){
         // check if accessCode exists
@@ -98,5 +105,9 @@ public class LobbyService {
     public void deleteLobby(int lobbyId){
         //also need to delete the lobbyId of all players in this method, so they can join a new lobby
         LobbyRepository.deleteLobby(lobbyId);
+    }
+
+    public Lobby getLobby(int lobbyId) {
+        return LobbyRepository.getLobbyById(lobbyId);
     }
 }

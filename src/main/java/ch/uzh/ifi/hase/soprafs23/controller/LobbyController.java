@@ -24,7 +24,6 @@ public class LobbyController {
     }
 
     @PostMapping("/lobbies")
-
     public ResponseEntity<LobbyGetDTO> createLobby(@RequestHeader(value = "token", defaultValue = "null") String token, @RequestBody LobbyPostDTO lobbyPostDTO) {
         userService.checkToken(token);
         User host = userService.getUser(userService.getUserID(token));
@@ -37,8 +36,9 @@ public class LobbyController {
     }
 
     @PutMapping("/lobbies/join/{userId}")
-    public ResponseEntity<Void> joinLobby(@PathVariable(value = "userId") Long userId, @RequestBody String accessCode, @RequestHeader(value = "token", defaultValue = "null") String token) {
-        //TODO
+    public ResponseEntity<LobbyGetDTO> joinLobby(@PathVariable(value = "userId") Long userId, @RequestBody String accessCode, @RequestHeader(value = "token", defaultValue = "null") String token) {
+        //TODO : need to return Lobby object
         return ResponseEntity.created(null).body(null);
     }
+
 }
