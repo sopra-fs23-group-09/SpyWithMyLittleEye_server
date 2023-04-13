@@ -14,4 +14,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     //User findByID(Long id);
     List<User> findTop100ByOrderByHighScoreDesc();
 
+    List<User> findByLobbyIDOrderByPointsCurrentRoundDesc(int lobbyID);
+
+    List<User> findByLobbyIDOrderByPointsCurrentGameDesc(int lobbyID);
+
 }
