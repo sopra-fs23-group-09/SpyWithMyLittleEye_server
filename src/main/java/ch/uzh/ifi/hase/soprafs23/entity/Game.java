@@ -4,9 +4,8 @@ import java.util.List;
 public class Game {
 
     private List<User> players;
-
     private User host;
-
+    private User spier;
     private Round[] rounds;
     private int amountRounds;
     private String googleMapsCoordinates;
