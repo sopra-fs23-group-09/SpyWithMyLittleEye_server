@@ -3,15 +3,15 @@ package ch.uzh.ifi.hase.soprafs23.controller;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
-import ch.uzh.ifi.hase.soprafs23.stomp.dto.GuessIn;
-import ch.uzh.ifi.hase.soprafs23.stomp.dto.GuessOut;
-import ch.uzh.ifi.hase.soprafs23.stomp.dto.SpiedObjectIn;
-import ch.uzh.ifi.hase.soprafs23.stomp.dto.SpiedObjectOut;
+import ch.uzh.ifi.hase.soprafs23.stomp.dto.*;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.util.HtmlUtils;
+
+import java.util.Random;
 
 @Controller
 public class GameController {
@@ -49,5 +49,21 @@ public class GameController {
         }
 
         return new GuessOut(username, guess);
+    }
+
+    //to-do: adapt method to return correctly
+    @MessageMapping("game/{lobbyId}/round/{roundId}/spierId")
+    @SendTo("/game/{lobbyId}/round/{roundId}/spierId")
+    //@SubscribeMapping("/game/{lobbyId}/roles")
+    public Role determineRoles(@DestinationVariable("lobbyId") int lobbyId, @DestinationVariable("roundId") int roundId) throws Exception{
+        Random random = new Random();
+        int randomNumber = random.nextInt(5)+1; // random number between 1 and 5
+        return new Role(randomNumber, "spier");
+    }
+
+    @MessageMapping("game/{lobbyId}/hints")
+    @SendTo("/game/{lobbyId}/hints")
+    public Hint distributeHints(Hint hint, @DestinationVariable("lobbyId") int lobbyId) throws Exception{
+        return new Hint(hint.getHint());
     }
 }

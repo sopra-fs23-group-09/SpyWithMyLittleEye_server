@@ -1,7 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.stomp.dto;
 
 public class GuessOut {
-
     private String username;
     private String guess;
 

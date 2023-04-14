@@ -18,6 +18,7 @@ public class Lobby {
         this.host = host;
         this.accessCode = accessCode;
         this.players = new ArrayList<User>();
+        this.players.add(host);
         this.full = false;
         this.amountRounds = amountRounds;
         this.game = new Game(players, host, amountRounds); //note c: already initiate game here?!
