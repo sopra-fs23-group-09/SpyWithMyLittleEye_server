@@ -7,8 +7,11 @@ import ch.uzh.ifi.hase.soprafs23.stomp.dto.*;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.util.HtmlUtils;
+
+import java.util.Random;
 
 @Controller
 public class GameController {
@@ -32,7 +35,7 @@ public class GameController {
         return new SpiedObjectOut(color);
     }
 
-    @MessageMapping("game/{lobbyId}/guesses") //round/{roundId}
+    @MessageMapping("game/{lobbyId}/guesses")
     @SendTo("/game/{lobbyId}/guesses")
     public GuessOut handleGuess(GuessIn guessIn, @DestinationVariable("lobbyId") int lobbyId) throws Exception{
         User user = userService.getUser(guessIn.getId());
@@ -51,24 +54,16 @@ public class GameController {
     //to-do: adapt method to return correctly
     @MessageMapping("game/{lobbyId}/roles")
     @SendTo("/game/{lobbyId}/roles")
-    public GuessOut determineRoles(GuessIn guessIn, @DestinationVariable("lobbyId") int lobbyId) throws Exception{
-        User user = userService.getUser(guessIn.getId());
-        String username = user.getUsername();
-        String guess = HtmlUtils.htmlEscape(guessIn.getGuess());
-        int lobbyID = lobbyId;
-
-        if (gameService.checkGuess(lobbyID, guess)){
-            guess = "CORRECT";
-            gameService.allocatePoints(lobbyID, user);
-        }
-
-        return new GuessOut(username, guess);
+    //@SubscribeMapping("/game/{lobbyId}/roles")
+    public Role determineRoles(@DestinationVariable("lobbyId") int lobbyId) throws Exception{
+        Random random = new Random();
+        int randomNumber = random.nextInt(5)+1; // random number between 1 and 5
+        return new Role(randomNumber, "spier");
     }
 
     @MessageMapping("game/{lobbyId}/hints")
     @SendTo("/game/{lobbyId}/hints")
     public Hint distributeHints(Hint hint, @DestinationVariable("lobbyId") int lobbyId) throws Exception{
-        String hintinput = hint.getHint();
         return new Hint(hint.getHint());
     }
 }
