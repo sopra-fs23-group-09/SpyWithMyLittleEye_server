@@ -52,10 +52,10 @@ public class GameController {
     }
 
     //to-do: adapt method to return correctly
-    @MessageMapping("game/{lobbyId}/roles")
-    @SendTo("/game/{lobbyId}/roles")
+    @MessageMapping("game/{lobbyId}/round/{roundId}/spierId")
+    @SendTo("/game/{lobbyId}/round/{roundId}/spierId")
     //@SubscribeMapping("/game/{lobbyId}/roles")
-    public Role determineRoles(@DestinationVariable("lobbyId") int lobbyId) throws Exception{
+    public Role determineRoles(@DestinationVariable("lobbyId") int lobbyId, @DestinationVariable("roundId") int roundId) throws Exception{
         Random random = new Random();
         int randomNumber = random.nextInt(5)+1; // random number between 1 and 5
         return new Role(randomNumber, "spier");
