@@ -12,12 +12,7 @@ public class GameService {
 
     public void setKeywordAndColor(int lobbyId, String keyword, String color){
         Lobby lobby = LobbyRepository.getLobbyById(lobbyId);
-        Game game = lobby.getGame();
-        game.startNewRound();
-        Round round = game.getCurrentRound();
-        round.startRound(); //note c: start game here?
-        round.setKeyword(keyword);
-        round.setColor(color);
+        lobby.setColorAndKeyword(keyword, color);
     }
 
     //to-do: use Levenshtein distance!

@@ -1,11 +1,12 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
+import ch.uzh.ifi.hase.soprafs23.constant.Role;
+
 import java.util.List;
 
 public class Game {
 
     private List<User> players;
     private User host;
-    private User spier;
     private Round[] rounds;
     private int amountRounds;
     private String googleMapsCoordinates;
@@ -19,19 +20,24 @@ public class Game {
         this.currentRound = 0;
     }
 
-    public void playRound(){
-        //still need to think about that
+    public void nextRound(){
+        rounds[currentRound] = new Round(players, currentRound);
+        currentRound++;
     }
 
     public void storeCoordinates(String googleMapsCoordinates){
         this.googleMapsCoordinates = googleMapsCoordinates;
     }
 
-    public void startNewRound(){
-        rounds[currentRound] = new Round();
-    }
-
     public Round getCurrentRound() {
         return rounds[currentRound];
+    }
+
+    public Role getRole(int playerId){
+        return rounds[currentRound].getRole(playerId);
+    }
+    public void setColorAndKeyword(String keyword, String color){
+        rounds[currentRound].setKeyword(keyword);
+        rounds[currentRound].setColor(color);
     }
 }

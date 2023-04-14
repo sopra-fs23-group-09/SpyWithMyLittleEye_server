@@ -66,13 +66,6 @@ public class LobbyService {
         return LobbyRepository.getLobbyByAccessCode(accessCode) != null;
     }
 
-    // checks if access code is valid, returns Lobby Object
-    public Lobby checkAccessCode(String accessCode){
-        if("null".equals(accessCode) || LobbyRepository.getLobbyByAccessCode(Integer.parseInt(accessCode)) == null){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No permission to enter.");
-        }
-        return null;
-    }
     //note c: added accessCode as parameter: checkAccessCode is private method and find correct lobby to add user
     public Lobby addUser(User player, int accessCode){
         // check if accessCode exists
@@ -90,10 +83,9 @@ public class LobbyService {
         Lobby lobby = LobbyRepository.getLobbyByAccessCode(accessCode);
 
         // check if lobby is  already full
-        if (lobby.isFull()){
+        if (!lobby.addPlayer(player)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The lobby is full.");
         }
-        lobby.addPlayer(player);
         player.setLobbyID(lobby.getId());
 
         return lobby;
