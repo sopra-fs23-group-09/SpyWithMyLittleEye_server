@@ -1,5 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
+import ch.uzh.ifi.hase.soprafs23.constant.Role;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +23,6 @@ public class Lobby {
         this.players.add(host);
         this.full = false;
         this.amountRounds = amountRounds;
-        this.game = new Game(players, host, amountRounds); //note c: already initiate game here?!
     }
     public int getId() {
         return id;
@@ -29,21 +30,26 @@ public class Lobby {
 
     public void play(){
         this.game = new Game(players, host, amountRounds);
-        this.game.playRound();
+        nextRound();
     }
-    public void playRound(){
-        this.game.playRound();
+    public void nextRound(){
+        this.game.nextRound();
     }
 
     public List<User> getPlayers(){
         return players;
     }
 
-    public void addPlayer(User player){
+    public boolean addPlayer(User player){
+        if (isFull()) return false;
         players.add(player);
         if(players.size() == MAX_AMOUNT_PLAYERS){
             this.full = true;
         }
+        return true;
+    }
+    public Role getRole(int playerId){
+        return this.game.getRole(playerId);
     }
     public int getAccessCode(){
         return this.accessCode;
@@ -59,5 +65,9 @@ public class Lobby {
 
     public Long getHostId() {
         return host.getId();
+    }
+
+    public void setColorAndKeyword(String keyword, String color){
+        this.game.setColorAndKeyword(keyword, color);
     }
 }

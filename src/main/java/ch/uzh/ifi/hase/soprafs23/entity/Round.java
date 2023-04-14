@@ -1,8 +1,12 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
+import ch.uzh.ifi.hase.soprafs23.constant.Role;
+
 import java.sql.Time;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Round{
     private List<User> players;
@@ -17,14 +21,35 @@ public class Round{
 
     private String color; //note c: needed?
 
-    private List<String> guesses; //note c: needed?
+    private List<String> guesses; //note c: needed? n: stimmt, glaub das brauchen wir nicht
+
+    private Map<Long, Role> playerRoles;
     private Date startTime;
 
     public Round(){}
 
-    public Round(List<User> players, String googleMapsCoordinates){
+    public Round(List<User> players, int currentRound){
         this.players = players;
-        this.googleMapsCoordinates = googleMapsCoordinates;
+        this.playerRoles = new HashMap<>();
+        distributeRoles(currentRound);
+    }
+
+    /**
+     * chooses the spier with respect to the number of the current round
+     * @param currentRound
+     */
+    private void distributeRoles(int currentRound){
+        for(int i = 0; i < players.size(); i++){
+            if(i == currentRound % players.size()){
+                playerRoles.put(players.get(i).getId(), Role.SPIER);
+            }else{
+                playerRoles.put(players.get(i).getId(), Role.GUESSER);
+            }
+        }
+    }
+
+    public Role getRole(int playerId){
+        return playerRoles.get(playerId);
     }
 
     public String getKeyword() {

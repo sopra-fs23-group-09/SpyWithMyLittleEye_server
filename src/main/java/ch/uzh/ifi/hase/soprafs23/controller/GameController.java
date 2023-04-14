@@ -1,7 +1,10 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
+import ch.uzh.ifi.hase.soprafs23.constant.Role;
+import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
+import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
 import ch.uzh.ifi.hase.soprafs23.stomp.dto.*;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -17,11 +20,13 @@ import java.util.Random;
 public class GameController {
 
     private final UserService userService;
+    private final LobbyService lobbyService;
     private final GameService gameService;
 
-    GameController(UserService userService, GameService gameService){
+    GameController(UserService userService, GameService gameService, LobbyService lobbyService){
         this.userService = userService;
         this.gameService = gameService;
+        this.lobbyService = lobbyService;
     }
 
     @MessageMapping("game/{lobbyId}/spiedObject")
@@ -51,14 +56,12 @@ public class GameController {
         return new GuessOut(username, guess);
     }
 
-    //to-do: adapt method to return correctly
-    @MessageMapping("game/{lobbyId}/round/{roundId}/spierId")
-    @SendTo("/game/{lobbyId}/round/{roundId}/spierId")
+    @MessageMapping("game/{lobbyId}/round/{playerId}")
+    @SendTo("/game/{lobbyId}/round/{playerId}")
     //@SubscribeMapping("/game/{lobbyId}/roles")
-    public Role determineRoles(@DestinationVariable("lobbyId") int lobbyId, @DestinationVariable("roundId") int roundId) throws Exception{
-        Random random = new Random();
-        int randomNumber = random.nextInt(5)+1; // random number between 1 and 5
-        return new Role(randomNumber, "spier");
+    public Role determineRoles(@DestinationVariable("lobbyId") int lobbyId, @DestinationVariable("playerId") int playerId) throws Exception{
+        Lobby lobby = lobbyService.getLobby(lobbyId);
+        return lobby.getRole(playerId);
     }
 
     @MessageMapping("game/{lobbyId}/hints")
