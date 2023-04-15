@@ -33,8 +33,6 @@ public class LobbyStompController {
     public void getLobbyInformation(@DestinationVariable("lobbyId") String lobbyId){ //TODO: n: why is lobbyId a string?
         Lobby lobby = lobbyService.getLobby(Integer.parseInt(lobbyId));
         LobbyGetDTO lobbyGetDTO = DTOMapper.INSTANCE.convertLobbyToLobbyGetDTO(lobby);
-        // TODO : Need to return Amount rounds, access code -> will be sent to everyone who subscribes to /lobbies/lobbyID
-        //return new Gson().toJson(lobbyGetDTO);
         webSocketService.sendMessageToSubscribers("/game/lobbies/" + lobbyId, lobbyGetDTO);
     }
 
