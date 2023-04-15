@@ -103,7 +103,11 @@ public class LobbyService {
     }
 
     public Lobby getLobby(int lobbyId) {
-        return LobbyRepository.getLobbyById(lobbyId);
+        Lobby lobby = LobbyRepository.getLobbyById(lobbyId);
+        if (lobby == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This lobby doesn't exist.");
+        }
+        return lobby;
     }
 
     public Role getRole(int lobbyId, Long playerId){
