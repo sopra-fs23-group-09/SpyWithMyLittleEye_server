@@ -48,7 +48,7 @@ public class Lobby {
         }
         return true;
     }
-    public Role getRole(int playerId){
+    public Role getRole(Long playerId){
         return this.game.getRole(playerId);
     }
     public int getAccessCode(){
