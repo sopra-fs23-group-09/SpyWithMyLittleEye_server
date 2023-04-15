@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
+import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.LobbyRepository;
@@ -104,4 +105,10 @@ public class LobbyService {
     public Lobby getLobby(int lobbyId) {
         return LobbyRepository.getLobbyById(lobbyId);
     }
+
+    public Role getRole(int lobbyId, Long playerId){
+        Lobby lobby = getLobby(lobbyId);
+        return lobby.getRole(playerId);
+    }
+
 }
