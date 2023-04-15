@@ -33,7 +33,7 @@ public class Game {
         return rounds[currentRound];
     }
 
-    public Role getRole(int playerId){
+    public Role getRole(Long playerId){
         return rounds[currentRound].getRole(playerId);
     }
     public void setColorAndKeyword(String keyword, String color){

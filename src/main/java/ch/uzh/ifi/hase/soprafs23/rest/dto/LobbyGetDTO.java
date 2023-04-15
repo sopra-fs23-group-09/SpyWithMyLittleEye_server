@@ -1,9 +1,16 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
+import ch.uzh.ifi.hase.soprafs23.entity.User;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class LobbyGetDTO {
     private int id;
     private int accessCode;
     private int hostId;
+
+    private List<String> playerNames;
 
     public int getId() {
         return id;
@@ -24,5 +31,14 @@ public class LobbyGetDTO {
     public void setHostId(int hostId) { this.hostId = hostId;}
 
     public int getHostId() { return hostId;}
+
+    public void setPlayerNames(List<User> playerNames) {
+        this.playerNames = new ArrayList<>(playerNames.size());
+        for(User u : playerNames) {
+            this.playerNames.add(u.getUsername());
+        }
+    }
+
+    public List<String> getPlayerNames() { return this.playerNames; }
 }
 

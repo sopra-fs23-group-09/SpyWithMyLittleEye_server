@@ -1,7 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
-import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
@@ -10,11 +9,8 @@ import ch.uzh.ifi.hase.soprafs23.stomp.dto.*;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.util.HtmlUtils;
-
-import java.util.Random;
 
 @Controller
 public class GameController {
@@ -35,8 +31,7 @@ public class GameController {
         String keyword = HtmlUtils.htmlEscape(spiedObjectIn.getKeyword());
         String color = HtmlUtils.htmlEscape(spiedObjectIn.getColor());
 
-        int lobbyID = lobbyId;
-        gameService.setKeywordAndColor(lobbyID, keyword, color);
+        gameService.setKeywordAndColor(lobbyId, keyword, color);
         return new SpiedObjectOut(color);
     }
 
@@ -59,9 +54,8 @@ public class GameController {
     @MessageMapping("game/{lobbyId}/round/{playerId}")
     @SendTo("/game/{lobbyId}/round/{playerId}")
     //@SubscribeMapping("/game/{lobbyId}/roles")
-    public Role determineRoles(@DestinationVariable("lobbyId") int lobbyId, @DestinationVariable("playerId") int playerId) throws Exception{
-        Lobby lobby = lobbyService.getLobby(lobbyId);
-        return lobby.getRole(playerId);
+    public Role determineRoles(@DestinationVariable("lobbyId") int lobbyId, @DestinationVariable("playerId") Long playerId) throws Exception{
+        return lobbyService.getRole(lobbyId, playerId);
     }
 
     @MessageMapping("game/{lobbyId}/hints")

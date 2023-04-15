@@ -54,7 +54,7 @@ public class LobbyController {
         int accessCodeInt = Integer.parseInt(jsonObject.get("accessCode").getAsString());
         Lobby lobby = lobbyService.addUser(user, accessCodeInt);
         return ResponseEntity.created(null).body(DTOMapper.INSTANCE.convertLobbyToLobbyGetDTO(lobby));
-    }
+    } //vielleicht nicht status created sondern ok 200 als response
 
     @GetMapping("/lobbies/{lobbyId}/users")
     @ResponseStatus(HttpStatus.OK)
