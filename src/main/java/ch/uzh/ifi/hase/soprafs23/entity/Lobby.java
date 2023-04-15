@@ -55,6 +55,8 @@ public class Lobby {
         return this.accessCode;
     }
 
+    public int getAmountRounds() { return this.amountRounds; }
+
     public boolean isFull(){
         return this.full;
     }
