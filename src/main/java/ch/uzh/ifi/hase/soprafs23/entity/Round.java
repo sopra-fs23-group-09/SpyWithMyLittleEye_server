@@ -48,7 +48,7 @@ public class Round{
         }
     }
 
-    public Role getRole(int playerId){
+    public Role getRole(Long playerId){
         return playerRoles.get(playerId);
     }
 
