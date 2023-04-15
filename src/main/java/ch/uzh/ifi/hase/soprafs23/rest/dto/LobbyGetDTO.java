@@ -10,6 +10,8 @@ public class LobbyGetDTO {
     private int accessCode;
     private int hostId;
 
+    private int amountRounds;
+
     private List<String> playerNames;
 
     public int getId() {
@@ -39,6 +41,8 @@ public class LobbyGetDTO {
         }
     }
 
-    public List<String> getPlayerNames() { return this.playerNames; }
+    public void setAmountRounds(int amountRounds) {
+        this.amountRounds = amountRounds;
+    }
 }
 
