@@ -9,8 +9,11 @@ import ch.uzh.ifi.hase.soprafs23.stomp.dto.*;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.util.HtmlUtils;
+
+import java.util.Random;
 
 @Controller
 public class GameController {
@@ -53,9 +56,16 @@ public class GameController {
 
     @MessageMapping("game/{lobbyId}/round/{playerId}")
     @SendTo("/game/{lobbyId}/round/{playerId}")
-    //@SubscribeMapping("/game/{lobbyId}/roles")
     public Role determineRoles(@DestinationVariable("lobbyId") int lobbyId, @DestinationVariable("playerId") Long playerId) throws Exception{
-        return lobbyService.getRole(lobbyId, playerId);
+        return lobbyService.getRole(lobbyId, playerId); //note c: or get it from round?
+    }
+
+    @MessageMapping("game/{lobbyId}/roundnr")
+    @SendTo("/game/{lobbyId}/roundnr")
+    public RoundNr determineRound(@DestinationVariable("lobbyId") int lobbyId) throws Exception{
+        //int currentRound = lobbyService.getCurrentRoundNr(lobbyId);
+        //int totalRounds = lobbyService.getTotalNrRounds(lobbyId);
+        return new RoundNr(2,5);
     }
 
     @MessageMapping("game/{lobbyId}/hints")
