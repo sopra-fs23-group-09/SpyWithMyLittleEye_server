@@ -115,4 +115,14 @@ public class LobbyService {
         return lobby.getRole(playerId);
     }
 
+    public int getCurrentRoundNr(int lobbId){
+        Lobby lobby = getLobby(lobbId);
+        return lobby.getGame().getCurrentRoundNr();
+    }
+
+    public int getTotalNrRounds(int lobbyId){
+        Lobby lobby = getLobby(lobbyId);
+        return lobby.getGame().getAmountRounds();
+    }
+
 }
