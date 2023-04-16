@@ -17,12 +17,12 @@ public class Game {
         this.host = host;
         this.amountRounds = amountRounds;
         this.rounds = new Round[amountRounds];
-        this.currentRoundNr = 0;
+        this.currentRoundNr = -1;
     }
 
     public void nextRound(){
-        rounds[currentRoundNr] = new Round(players, currentRoundNr);
         currentRoundNr++;
+        rounds[currentRoundNr] = new Round(players, currentRoundNr);
     }
 
     public void storeCoordinates(String googleMapsCoordinates){
