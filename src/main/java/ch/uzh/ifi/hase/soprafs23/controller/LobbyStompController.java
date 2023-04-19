@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.LobbyGetDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.LobbyStartedGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
@@ -40,7 +41,9 @@ public class LobbyStompController {
     @SendTo("topic/lobbies/{lobbyId}")
     public void startGame(@DestinationVariable("lobbyId") String lobbyId){  //TODO: n: why is lobbyId a string?
         lobbyService.startGame(Integer.parseInt(lobbyId));
-        webSocketService.sendMessageToSubscribers("/topic/lobbies/" + lobbyId, true);
+        Lobby lobby = lobbyService.getLobby(Integer.parseInt(lobbyId));
+        LobbyStartedGetDTO lobbyStartedGetDTO = DTOMapper.INSTANCE.convertLobbyToLobbyStartedGetDTO(lobby);
+        webSocketService.sendMessageToSubscribers("/topic/lobbies/" + lobbyId, lobbyStartedGetDTO);
         //note n: true einfach so returnen ist natürlich nicht korrekt, schaue es mir noch an
     }
 
