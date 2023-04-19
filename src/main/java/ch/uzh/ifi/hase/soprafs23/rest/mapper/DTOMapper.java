@@ -33,4 +33,6 @@ public interface DTOMapper {
     @Mapping(source = "amountRounds", target = "amountRounds")
     LobbyGetDTO convertLobbyToLobbyGetDTO(Lobby lobby);
 
+    @Mapping(source = "id", target = "id")
+    LobbyStartedGetDTO convertLobbyToLobbyStartedGetDTO(Lobby lobby);
 }

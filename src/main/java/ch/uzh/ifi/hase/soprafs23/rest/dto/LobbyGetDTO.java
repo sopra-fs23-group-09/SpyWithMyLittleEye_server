@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LobbyGetDTO {
+    private String event = "joined";
     private int id;
     private int accessCode;
     private int hostId;
@@ -50,5 +51,6 @@ public class LobbyGetDTO {
     public List<String> getPlayerNames() {
         return playerNames;
     }
+    public String getEvent() {return this.event;}
 }
 
