@@ -44,5 +44,11 @@ public class LobbyGetDTO {
     public void setAmountRounds(int amountRounds) {
         this.amountRounds = amountRounds;
     }
+
+    public int getAmountRounds() { return this.amountRounds; }
+
+    public List<String> getPlayerNames() {
+        return playerNames;
+    }
 }
 
