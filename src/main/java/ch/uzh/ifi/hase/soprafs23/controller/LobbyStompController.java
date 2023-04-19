@@ -29,18 +29,18 @@ public class LobbyStompController {
 
     @MessageMapping("/lobbies/{lobbyId}/joined") // when someone sends to here
     @SendTo("/topic/lobbies/{lobbyId}") // we send here to our subscribers
-    @SubscribeMapping("/game/lobbies/{lobbyId}")
+    @SubscribeMapping("/topic/lobbies/{lobbyId}")
     public void getLobbyInformation(@DestinationVariable("lobbyId") String lobbyId){ //TODO: n: why is lobbyId a string?
         Lobby lobby = lobbyService.getLobby(Integer.parseInt(lobbyId));
         LobbyGetDTO lobbyGetDTO = DTOMapper.INSTANCE.convertLobbyToLobbyGetDTO(lobby);
-        webSocketService.sendMessageToSubscribers("/game/lobbies/" + lobbyId, lobbyGetDTO);
+        webSocketService.sendMessageToSubscribers("/topic/lobbies/" + lobbyId, lobbyGetDTO);
     }
 
     @MessageMapping("games/{lobbyId}")
     @SendTo("topic/lobbies/{lobbyId}")
     public void startGame(@DestinationVariable("lobbyId") String lobbyId){  //TODO: n: why is lobbyId a string?
         lobbyService.startGame(Integer.parseInt(lobbyId));
-        webSocketService.sendMessageToSubscribers("/game/lobbies/" + lobbyId, true);
+        webSocketService.sendMessageToSubscribers("/topic/lobbies/" + lobbyId, true);
         //note n: true einfach so returnen ist natürlich nicht korrekt, schaue es mir noch an
     }
 
