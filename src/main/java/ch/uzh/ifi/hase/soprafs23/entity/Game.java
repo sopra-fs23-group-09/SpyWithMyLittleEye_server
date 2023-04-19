@@ -1,28 +1,31 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
 
+import java.util.Date;
 import java.util.List;
 
 public class Game {
 
     private List<User> players;
-    private User host;
-    private Round[] rounds;
+    private Round currentRound;
     private int amountRounds;
     private String googleMapsCoordinates;
     private int currentRoundNr;
+    private int id;
 
-    public Game(List<User> players, User host, int amountRounds){
+    public Game(int id, List<User> players, int amountRounds){
+        this.id = id;
         this.players = players;
-        this.host = host;
         this.amountRounds = amountRounds;
-        this.rounds = new Round[amountRounds];
         this.currentRoundNr = -1;
     }
 
     public void nextRound(){
         currentRoundNr++;
-        rounds[currentRoundNr] = new Round(players, currentRoundNr);
+        currentRound = new Round(players, currentRoundNr);
+    }
+    public int getId(){
+        return this.id;
     }
 
     public void storeCoordinates(String googleMapsCoordinates){
@@ -30,15 +33,18 @@ public class Game {
     }
 
     public Round getCurrentRound() {
-        return rounds[currentRoundNr];
+        return currentRound;
     }
+    public String getKeyword(){return currentRound.getKeyword();}
+
+    public Date getStartTime(){ return currentRound.getStartTime();}
 
     public Role getRole(Long playerId){
-        return rounds[currentRoundNr].getRole(playerId);
+        return currentRound.getRole(playerId);
     }
     public void setColorAndKeyword(String keyword, String color){
-        rounds[currentRoundNr].setKeyword(keyword);
-        rounds[currentRoundNr].setColor(color);
+        currentRound.setKeyword(keyword);
+        currentRound.setColor(color);
     }
 
     public int getCurrentRoundNr() {

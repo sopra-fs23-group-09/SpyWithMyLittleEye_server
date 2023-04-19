@@ -25,19 +25,19 @@ public class GameController {
         this.lobbyService = lobbyService;
     }
 
-    @GetMapping("/game/{lobbyId}/roleForUser/{playerId}")
-    public ResponseEntity<Role> getRole(@PathVariable("lobbyId") Integer lobbyId, @PathVariable("playerId") Long playerId) throws Exception{
+    @GetMapping("/game/{lobbyId}/roleForUser/{playerId}") //probably should rename lobbyId to gameId, probably change Integer to int
+    public ResponseEntity<Role> getRole(@PathVariable("lobbyId") Integer lobbyId, @PathVariable("playerId") Long playerId){
         //TODO: check that game has been started
         //TODO: check token
         return ResponseEntity.ok(lobbyService.getRole(lobbyId, playerId));
     }
 
-    @GetMapping("/game/{lobbyId}/roundnr")
+    @GetMapping("/game/{lobbyId}/roundnr") //probably should rename lobbyId to gameId
     public ResponseEntity<RoundNr> getRound(@PathVariable("lobbyId") Integer lobbyId) {
         //TODO: check that game has been started
         //TODO: check token
-        int currentRound = lobbyService.getCurrentRoundNr(lobbyId);
-        int totalRounds = lobbyService.getTotalNrRounds(lobbyId);
+        int currentRound = gameService.getCurrentRoundNr(lobbyId);
+        int totalRounds = gameService.getTotalNrRounds(lobbyId);
         return ResponseEntity.ok(new RoundNr(currentRound, totalRounds));
     }
 }

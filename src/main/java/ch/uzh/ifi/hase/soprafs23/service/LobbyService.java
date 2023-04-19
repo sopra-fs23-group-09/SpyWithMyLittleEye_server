@@ -1,8 +1,10 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
+import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.LobbyRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import org.slf4j.Logger;
@@ -38,15 +40,17 @@ public class LobbyService {
         Lobby newLobby = new Lobby(host, newLobbyId, accessCode, amountRounds);
         LobbyRepository.addLobby(newLobby);
 
-        log.debug("Created information for Lobby: {}", newLobby);
+        log.info("Created information for Lobby: {}", newLobby);
         newLobbyId++;
 
         return newLobby;
     }
 
-    public void startGame(int lobbyId){
+    public Game startGame(int lobbyId){
         Lobby lobby = LobbyRepository.getLobbyById(lobbyId);
-        lobby.play();
+        Game game = lobby.play();
+        GameRepository.addGame(game);
+        return game;
     }
 
     //generate a random (and unique) lobby access number between 10000 and 99999
@@ -87,14 +91,8 @@ public class LobbyService {
         if (!lobby.addPlayer(player)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The lobby is full.");
         }
-        player.setLobbyID(lobby.getId());
 
         return lobby;
-    }
-
-    public List<User> getUsersInLobby(int lobbyId){
-        Lobby lobby = LobbyRepository.getLobbyById(lobbyId);
-        return lobby.getPlayers();
     }
 
     public void deleteLobby(int lobbyId){
@@ -110,19 +108,12 @@ public class LobbyService {
         return lobby;
     }
 
-    public Role getRole(int lobbyId, Long playerId){
-        Lobby lobby = getLobby(lobbyId);
-        return lobby.getRole(playerId);
-    }
-
-    public int getCurrentRoundNr(int lobbId){
-        Lobby lobby = getLobby(lobbId);
-        return lobby.getGame().getCurrentRoundNr();
-    }
-
-    public int getTotalNrRounds(int lobbyId){
-        Lobby lobby = getLobby(lobbyId);
-        return lobby.getGame().getAmountRounds();
+    public Role getRole(int gameId, Long playerId){
+        Game game = GameRepository.getGameById(gameId);
+        if (game == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This game doesn't exist.");
+        }
+        return game.getRole(playerId);
     }
 
 }
