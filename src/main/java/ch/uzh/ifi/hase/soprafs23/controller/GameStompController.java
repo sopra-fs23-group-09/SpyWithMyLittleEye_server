@@ -48,11 +48,10 @@ public class GameStompController {
         User user = userService.getUser(guessIn.getId());
         String username = user.getUsername();
         String guess = HtmlUtils.htmlEscape(guessIn.getGuess());
-        int lobbyID = lobbyId;
 
-        if (gameService.checkGuess(lobbyID, guess)){
+        if (gameService.checkGuess(lobbyId, guess)){
             guess = "CORRECT";
-            gameService.allocatePoints(lobbyID, user);
+            gameService.allocatePoints(lobbyId, user);
         }
 
         return new GuessOut(username, guess);

@@ -1,25 +1,28 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
+import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
+import org.hibernate.hql.internal.ast.tree.CollectionPathNode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Lobby {
-    private static int MAX_AMOUNT_PLAYERS;
+    private static final int MAX_AMOUNT_PLAYERS = 10;
     private int id;
     private int accessCode;
     private List<User> players;
     private User host;
     private boolean full;
-    private Game game;
     private int amountRounds;
+    private boolean gameStarted;
 
     public Lobby(User host, int id, int accessCode, int amountRounds){
         this.id = id;
         this.host = host;
         this.accessCode = accessCode;
-        this.players = new ArrayList<User>();
+        this.players = new ArrayList<User>(MAX_AMOUNT_PLAYERS);
         this.players.add(host);
         this.full = false;
         this.amountRounds = amountRounds;
@@ -28,16 +31,16 @@ public class Lobby {
         return id;
     }
 
-    public void play(){
-        this.game = new Game(players, host, amountRounds);
-        nextRound();
-    }
-    public void nextRound(){
-        this.game.nextRound();
+    public Game play(){
+        if (this.gameStarted) return null;
+        Game game = new Game(id, players, amountRounds);
+        game.nextRound();
+        this.gameStarted = true;
+        return game;
     }
 
     public List<User> getPlayers(){
-        return players;
+        return Collections.unmodifiableList(players);
     }
 
     public boolean addPlayer(User player){
@@ -46,11 +49,10 @@ public class Lobby {
         if(players.size() == MAX_AMOUNT_PLAYERS){
             this.full = true;
         }
+        player.setLobbyID(id);
         return true;
     }
-    public Role getRole(Long playerId){
-        return this.game.getRole(playerId);
-    }
+
     public int getAccessCode(){
         return this.accessCode;
     }
@@ -61,15 +63,8 @@ public class Lobby {
         return this.full;
     }
 
-    public Game getGame() {
-        return game;
-    }
-
     public Long getHostId() {
         return host.getId();
     }
 
-    public void setColorAndKeyword(String keyword, String color){
-        this.game.setColorAndKeyword(keyword, color);
-    }
 }

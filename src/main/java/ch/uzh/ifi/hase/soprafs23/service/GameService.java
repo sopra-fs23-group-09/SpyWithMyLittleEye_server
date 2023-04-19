@@ -1,31 +1,40 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
-import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
-import ch.uzh.ifi.hase.soprafs23.entity.Round;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
-import ch.uzh.ifi.hase.soprafs23.repository.LobbyRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 
 public class GameService {
 
-    public void setKeywordAndColor(int lobbyId, String keyword, String color){
-        Lobby lobby = LobbyRepository.getLobbyById(lobbyId);
-        lobby.setColorAndKeyword(keyword, color);
+    public void setKeywordAndColor(int gameId, String keyword, String color){
+        Game game = getGame(gameId);
+        game.setColorAndKeyword(keyword, color);
+    }
+    private Game getGame(int gameId) {
+        Game game = GameRepository.getGameById(gameId);
+        if (game == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This game doesn't exist.");
+        }
+        return game;
     }
 
     //to-do: use Levenshtein distance!
-    public boolean checkGuess(int lobbyId, String guess){
-        String keyword = LobbyRepository.getLobbyById(lobbyId).getGame().getCurrentRound().getKeyword();
+    public boolean checkGuess(int gameId, String guess){
+        Game game = getGame(gameId);
+        String keyword = game.getKeyword();
 
         //return calculateLevenshteinDistance(guess.toLowerCase(), keyword.toLowerCase()) < 2;
         return guess.equalsIgnoreCase(keyword);
     }
 
-    public void allocatePoints(int lobbyId, User user){
+    public void allocatePoints(int gameId, User user){
         Date guessTime = new Date();
-        Date startDateRound = LobbyRepository.getLobbyById(lobbyId).getGame().getCurrentRound().getStartTime();
+        Game game = getGame(gameId);
+        Date startDateRound = game.getStartTime();
 
         //note c: adjust formula to calculate points, now: 500 - seconds needed to guess
         int points =  (int) (500 - (guessTime.getTime()-startDateRound.getTime())/1000);
@@ -56,5 +65,8 @@ public class GameService {
             return 1 + Math.min(Math.min(distance_insertion, distance_deletion), distance_substitution); //add 1 to the Levenshtein distance of the substrings because deletion, insertion or substitution was needed
         }
     }
+
+    public int getCurrentRoundNr(int gameId){ return getGame(gameId).getCurrentRoundNr(); }
+    public int getTotalNrRounds(int gameId){ return getGame(gameId).getAmountRounds(); }
 
 }
