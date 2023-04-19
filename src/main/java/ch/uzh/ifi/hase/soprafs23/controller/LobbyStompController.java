@@ -28,7 +28,7 @@ public class LobbyStompController {
     }
 
     @MessageMapping("/lobbies/{lobbyId}/joined") // when someone sends to here
-    @SendTo("/game/lobbies/{lobbyId}") // we send here to our subscribers
+    @SendTo("/topic/lobbies/{lobbyId}") // we send here to our subscribers
     @SubscribeMapping("/game/lobbies/{lobbyId}")
     public void getLobbyInformation(@DestinationVariable("lobbyId") String lobbyId){ //TODO: n: why is lobbyId a string?
         Lobby lobby = lobbyService.getLobby(Integer.parseInt(lobbyId));
@@ -37,7 +37,7 @@ public class LobbyStompController {
     }
 
     @MessageMapping("games/{lobbyId}")
-    @SendTo("game/lobbies/{lobbyId}")
+    @SendTo("topic/lobbies/{lobbyId}")
     public void startGame(@DestinationVariable("lobbyId") String lobbyId){  //TODO: n: why is lobbyId a string?
         lobbyService.startGame(Integer.parseInt(lobbyId));
         webSocketService.sendMessageToSubscribers("/game/lobbies/" + lobbyId, true);
