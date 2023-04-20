@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.util.HtmlUtils;
 
@@ -32,8 +33,9 @@ public class GameStompController {
         this.webSocketService = ws;
     }
 
-    @MessageMapping("game/{lobbyId}/spiedObject")
-    @SendTo("/game/{lobbyId}/spiedObject")
+    @MessageMapping("/games/{lobbyId}/spiedObject")
+    @SendTo("/topic/games/{lobbyId}/spiedObject")
+    @SubscribeMapping("/topic/games/{lobbyId}/spiedObject")
     public SpiedObjectOut handleSpiedObject(SpiedObjectIn spiedObjectIn, @DestinationVariable("lobbyId") int lobbyId) throws Exception{
         String keyword = HtmlUtils.htmlEscape(spiedObjectIn.getKeyword());
         String color = HtmlUtils.htmlEscape(spiedObjectIn.getColor());
@@ -42,8 +44,9 @@ public class GameStompController {
         return new SpiedObjectOut(color);
     }
 
-    @MessageMapping("game/{lobbyId}/guesses")
-    @SendTo("/game/{lobbyId}/guesses")
+    @MessageMapping("/games/{lobbyId}/guesses")
+    @SendTo("/topic/games/{lobbyId}/guesses")
+    @SubscribeMapping("/topic/games/{lobbyId}/guesses")
     public GuessOut handleGuess(GuessIn guessIn, @DestinationVariable("lobbyId") int lobbyId) throws Exception{
         User user = userService.getUser(guessIn.getId());
         String username = user.getUsername();
@@ -57,8 +60,9 @@ public class GameStompController {
         return new GuessOut(username, guess);
     }
 
-    @MessageMapping("game/{lobbyId}/hints")
-    @SendTo("/game/{lobbyId}/hints")
+    @MessageMapping("/games/{lobbyId}/hints")
+    @SendTo("/topic/games/{lobbyId}/hints")
+    @SubscribeMapping("/topic/games/{lobbyId}/hints")
     public Hint distributeHints(Hint hint, @DestinationVariable("lobbyId") int lobbyId) throws Exception{
         return new Hint(hint.getHint());
     }
