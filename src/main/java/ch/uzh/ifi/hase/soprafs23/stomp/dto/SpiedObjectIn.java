@@ -1,20 +1,30 @@
 package ch.uzh.ifi.hase.soprafs23.stomp.dto;
 
+import ch.uzh.ifi.hase.soprafs23.entity.Location;
+
 public class SpiedObjectIn {
 
-    private String keyword;
+    private String object;
     private String color;
+    private Location location;
 
-    public SpiedObjectIn(String keyword,String color){
-        this.keyword = keyword;
+    public SpiedObjectIn(String object,String color, Location location){
+        this.object = object;
         this.color = color;
+        this.location = location;
     }
 
-    public String getKeyword() {
-        return keyword;
+    public String getObject() {
+        return object;
     }
 
     public String getColor() {
         return color;
     }
+
+    public Location getLocation() {
+        return location;
+    }
 }
+
+

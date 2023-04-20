@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
+import ch.uzh.ifi.hase.soprafs23.entity.Location;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
@@ -33,38 +34,43 @@ public class GameStompController {
         this.webSocketService = ws;
     }
 
-    @MessageMapping("/games/{lobbyId}/spiedObject")
-    @SendTo("/topic/games/{lobbyId}/spiedObject")
-    @SubscribeMapping("/topic/games/{lobbyId}/spiedObject")
-    public SpiedObjectOut handleSpiedObject(SpiedObjectIn spiedObjectIn, @DestinationVariable("lobbyId") int lobbyId) throws Exception{
-        String keyword = HtmlUtils.htmlEscape(spiedObjectIn.getKeyword());
-        String color = HtmlUtils.htmlEscape(spiedObjectIn.getColor());
+    @MessageMapping("/games/{gameId}/spiedObject")
+    //@SendTo("/topic/games/{gameId}/spiedObject")
+    //@SubscribeMapping("/topic/games/{gameId}/spiedObject")
+    public void handleSpiedObject(SpiedObjectIn spiedObjectIn, @DestinationVariable("gameId") int gameId) throws Exception{
+        //extract information from JSON
+        String keyword = spiedObjectIn.getObject();
+        String color = spiedObjectIn.getColor();
+        Location location = spiedObjectIn.getLocation();
 
-        gameService.setKeywordAndColor(lobbyId, keyword, color);
-        return new SpiedObjectOut(color);
+        //save information of spied object
+        gameService.saveSpiedObjectInfo(gameId, keyword, color, location);
+
+        //return SpiedObjectOut to subscribers
+        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/spiedObject", new SpiedObjectOut(location, color));
     }
 
-    @MessageMapping("/games/{lobbyId}/guesses")
-    @SendTo("/topic/games/{lobbyId}/guesses")
-    @SubscribeMapping("/topic/games/{lobbyId}/guesses")
-    public GuessOut handleGuess(GuessIn guessIn, @DestinationVariable("lobbyId") int lobbyId) throws Exception{
+    @MessageMapping("/games/{gameId}/guesses")
+    //@SendTo("/topic/games/{gameId}/guesses")
+    //@SubscribeMapping("/topic/games/{gameId}/guesses")
+    public void handleGuess(GuessIn guessIn, @DestinationVariable("gameId") int gameId) throws Exception{
+        //extract information from JSON
+        String guess = guessIn.getGuess();
         User user = userService.getUser(guessIn.getId());
+
+        //evaluate guess and save String to be returned to subscribers
+        String guessBack = gameService.checkGuessAndAllocatePoints(gameId, user, guess);
         String username = user.getUsername();
-        String guess = HtmlUtils.htmlEscape(guessIn.getGuess());
 
-        if (gameService.checkGuess(lobbyId, guess)){
-            guess = "CORRECT";
-            gameService.allocatePoints(lobbyId, user);
-        }
-
-        return new GuessOut(username, guess);
+        //return GuessOut to subscribers
+        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/guesses", new GuessOut(username, guessBack));
     }
 
-    @MessageMapping("/games/{lobbyId}/hints")
-    @SendTo("/topic/games/{lobbyId}/hints")
-    @SubscribeMapping("/topic/games/{lobbyId}/hints")
-    public Hint distributeHints(Hint hint, @DestinationVariable("lobbyId") int lobbyId) throws Exception{
-        return new Hint(hint.getHint());
-        //webSocketService.sendMessageToSubscribers("/topic/lobbies"+lobbyId, hint);
+    @MessageMapping("/games/{gameId}/hints")
+    //@SendTo("/topic/games/{gameId}/hints")
+    //@SubscribeMapping("/topic/games/{gameId}/hints")
+    public void distributeHints(Hint hint, @DestinationVariable("gameId") int gameId) throws Exception{
+        //send hint directly to all subscribers
+        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/hints", hint);
     }
 }
