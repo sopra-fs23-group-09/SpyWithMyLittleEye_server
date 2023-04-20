@@ -139,14 +139,11 @@ public class UserService {
     //annotated so we don't forget to check
     public User getUser(Long id){
 
-        // return userRepository.findById(id).get(); note c: merge-conflict resolved in github, CHECK!
-
-        //TODO this is just a placeholder
-        User u = userRepository.findById(id).orElse(null);
-        if (u == null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "The username provided is not unique. Choose another one!");
+        Optional<User> user = userRepository.findById(id); //note c: merge-conflict resolved in github, CHECK!
+        if (user.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This user is doing no existing!");
         }
-        return u;
+        return user.get();
     }
 
     //login of user is at the moment in usercontroller, probably implement this in userservice, would be
