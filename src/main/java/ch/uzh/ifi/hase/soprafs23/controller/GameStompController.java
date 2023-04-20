@@ -65,5 +65,6 @@ public class GameStompController {
     @SubscribeMapping("/topic/games/{lobbyId}/hints")
     public Hint distributeHints(Hint hint, @DestinationVariable("lobbyId") int lobbyId) throws Exception{
         return new Hint(hint.getHint());
+        //webSocketService.sendMessageToSubscribers("/topic/lobbies"+lobbyId, hint);
     }
 }
