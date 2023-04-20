@@ -32,6 +32,8 @@ public class Round{
         this.players = players;
         this.playerRoles = new HashMap<>();
         distributeRoles(currentRound);
+        this.keyword = "unicorn"; // TO-DO: DELETE, FOR TESTING PURPOSES ONLY
+        this.startTime = new Date(); //TO-DO: DELETE, FOR TESTING PURPOSES ONLY
     }
 
     /**
