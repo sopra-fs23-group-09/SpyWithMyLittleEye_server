@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
+import ch.uzh.ifi.hase.soprafs23.entity.Location;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import org.springframework.http.HttpStatus;
@@ -10,9 +11,10 @@ import java.util.Date;
 
 public class GameService {
 
-    public void setKeywordAndColor(int gameId, String keyword, String color){
+    public void saveSpiedObjectInfo(int gameId, String keyword, String color, Location googleMapsCoordinates){
         Game game = getGame(gameId);
         game.setColorAndKeyword(keyword, color);
+        game.getCurrentRound().setGoogleMapsCoordnates(googleMapsCoordinates);
     }
     private Game getGame(int gameId) {
         Game game = GameRepository.getGameById(gameId);
@@ -20,6 +22,14 @@ public class GameService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This game doesn't exist.");
         }
         return game;
+    }
+
+    public String checkGuessAndAllocatePoints(int gameId, User user, String guess){
+        if (checkGuess(gameId, guess)){
+            guess = "CORRECT";
+            allocatePoints(gameId, user);
+        }
+        return guess;
     }
 
     //to-do: use Levenshtein distance!

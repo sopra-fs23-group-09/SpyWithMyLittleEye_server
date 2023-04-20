@@ -13,7 +13,7 @@ public class Round{
 
     private User currentSpy;
 
-    private String googleMapsCoordinates;
+    private Location googleMapsCoordinates;
 
     private int duration;
 
@@ -72,5 +72,13 @@ public class Round{
 
     public Date getStartTime() {
         return startTime;
+    }
+
+    public Location getGoogleMapsCoordnates() {
+        return googleMapsCoordinates;
+    }
+
+    public void setGoogleMapsCoordnates(Location googleMapsCoordnates) {
+        this.googleMapsCoordinates = googleMapsCoordnates;
     }
 }
