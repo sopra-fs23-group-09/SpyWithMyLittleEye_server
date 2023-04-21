@@ -14,7 +14,7 @@ public class GameService {
     public void saveSpiedObjectInfo(int gameId, String keyword, String color, Location googleMapsCoordinates){
         Game game = getGame(gameId);
         game.setColorAndKeyword(keyword, color);
-        game.getCurrentRound().setGoogleMapsCoordnates(googleMapsCoordinates);
+        //game.getCurrentRound().setGoogleMapsCoordnates(googleMapsCoordinates); not needed?
     }
     private Game getGame(int gameId) {
         Game game = GameRepository.getGameById(gameId);
@@ -44,7 +44,7 @@ public class GameService {
     public void allocatePoints(int gameId, User user){
         Date guessTime = new Date();
         Game game = getGame(gameId);
-        Date startDateRound = game.getStartTime();
+        Date startDateRound = game.getStartTime(); // why is this here needed?
 
         //note c: adjust formula to calculate points, now: 500 - seconds needed to guess
         int points =  (int) (500 - (guessTime.getTime()-startDateRound.getTime())/1000);
