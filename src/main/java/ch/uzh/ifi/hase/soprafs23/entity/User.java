@@ -49,12 +49,6 @@ public class User implements Serializable {
     private String profilePicture;
 
     @Column
-    private int pointsCurrentRound;
-
-    @Column
-    private int pointsCurrentGame;
-
-    @Column
     private int highScore;
 
     @Column
@@ -66,26 +60,16 @@ public class User implements Serializable {
     @Column
     private int lobbyID;
 
-    public void setProfilePicture(String profilePicture){this.profilePicture = profilePicture;}
-    public String getProfilePicture(){return profilePicture;}
-
-    public void setPointsCurrentRound(int pointsCurrentRound){this.pointsCurrentRound = pointsCurrentRound;}
-    public int getPointsCurrentRound(){return pointsCurrentRound;}
-
-    public void setPointsCurrentGame(int pointsCurrentGame){this.pointsCurrentGame = pointsCurrentGame;}
-    public int getPointsCurrentGame(){return pointsCurrentGame;}
-
-    public void addPointsCurrentGame(int pointsToAdd){
-        this.pointsCurrentGame += pointsToAdd;
-    }
+    public void setProfilePicture(String profilePicture){this.profilePicture = profilePicture;} //M4
+    public String getProfilePicture(){return profilePicture;} //M4
 
     public void setHighScore(int highScore){this.highScore = highScore;}
     public int getHighScore(){return highScore;}
 
-    public void setGamesWon(int gamesWon) {this.gamesWon = gamesWon;}
+    public void setGamesWon(int gamesWon) {this.gamesWon = gamesWon;} //M4 ?
     public int getGamesWon(){return gamesWon;}
 
-    public void setGamesPlayed(int gamesPlayed){this.gamesPlayed = gamesPlayed;}
+    public void setGamesPlayed(int gamesPlayed){this.gamesPlayed = gamesPlayed;} //M4?
     public int getGamesPlayed(){return gamesPlayed;}
 
     public void setLobbyID(int lobbyID){this.lobbyID = lobbyID;}

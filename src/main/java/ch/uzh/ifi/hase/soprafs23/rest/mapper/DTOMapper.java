@@ -36,4 +36,9 @@ public interface DTOMapper {
 
     @Mapping(source = "id", target = "id")
     GameStartedGetDTO convertGameToGameStartedGetDTO(Game game);
+
+    @Mapping(source = "keyword", target = "keyword")
+    @Mapping(source = "roundOverStatus", target = "roundOverStatus")
+    @Mapping(source = "playerPoints", target = "points")
+    RoundGetDTO convertGameToRoundGetDTO(Game game);
 }
