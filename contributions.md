@@ -56,17 +56,17 @@
 ### Week 4: 21.04. - 27.04. 
 - Nina
   1. Endpoints for ranking (#130) https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/130
-  2. Game over / Round Over Information (#126)
+  2. Game over / Round Over Information (#126) https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/126
 - Claudia
-  1. Testing (#127)
-  2. Start Time (#128)
+  1. StartTime over WebSocket (#128) https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/128
+  2. Implement time n server (#131) https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/131
 - Xena
-  1. Chat, Timer (#109, #26)
-  2. Bug fixes (#110)
+  1. Chat, Timer (#109, #26) https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/109 https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/26
+  2. Bug fixes (#110) https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/110
 - Loubna
-  1. Google maps in Game, bug fixes #27, #111
-  2. Display #112
+  1. Google maps in Game, bug fixes #27, #111 https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/27 https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/111
+  2. Display #112 https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/112
 - Thereza
-  1. Round Over Page (#29)
-  2. Game Over Page (#36)
-  3. WaitingRoom (#108)
+  1. Round Over Page (#29) https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/29
+  2. Game Over Page (#36) https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/36
+  3. WaitingRoom (#108) https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/108
