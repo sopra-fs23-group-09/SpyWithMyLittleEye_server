@@ -1,6 +1,9 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
+import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.RoundGetDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
@@ -29,15 +32,22 @@ public class GameController {
     public ResponseEntity<Role> getRole(@PathVariable("lobbyId") Integer lobbyId, @PathVariable("playerId") Long playerId){
         //TODO: check that game has been started
         //TODO: check token
-        return ResponseEntity.ok(lobbyService.getRole(lobbyId, playerId));
+        return ResponseEntity.ok(gameService.getRole(lobbyId, playerId));
     }
 
     @GetMapping("/game/{lobbyId}/roundnr") //probably should rename lobbyId to gameId
-    public ResponseEntity<RoundNr> getRound(@PathVariable("lobbyId") Integer lobbyId) {
+    public ResponseEntity<RoundNr> getRound(@PathVariable("lobbyId") Integer lobbyId) { //probably change Integer to int
         //TODO: check that game has been started
         //TODO: check token
         int currentRound = gameService.getCurrentRoundNr(lobbyId);
         int totalRounds = gameService.getTotalNrRounds(lobbyId);
         return ResponseEntity.ok(new RoundNr(currentRound, totalRounds));
+    }
+
+    @GetMapping("/games/{gameId}/round/results")
+    public ResponseEntity<RoundGetDTO> getRoundInformation(@PathVariable("gameId") int gameId){
+        //TODO: check that game has been started and round over
+        //TODO: check token
+        return ResponseEntity.ok().body(DTOMapper.INSTANCE.convertGameToRoundGetDTO(GameRepository.getGameById(gameId)));
     }
 }

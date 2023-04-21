@@ -1,21 +1,44 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
+import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
-import ch.uzh.ifi.hase.soprafs23.entity.Location;
+import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
+import java.util.List;
 
 public class GameService {
 
-    public void saveSpiedObjectInfo(int gameId, String keyword, String color, Location googleMapsCoordinates){
+    public void saveSpiedObjectInfo(int gameId, String keyword){
         Game game = getGame(gameId);
-        game.setColorAndKeyword(keyword, color);
-        //game.getCurrentRound().setGoogleMapsCoordnates(googleMapsCoordinates); not needed?
+        game.setKeyword(keyword);
+        game.initializeStartTime();
     }
+
+    public String checkGuessAndAllocatePoints(int gameId, User user, String guess, Date guessTime){
+        Game game = getGame(gameId);
+        if (game.checkGuess(guess)){
+            guess = "CORRECT";
+            game.allocatePoints(user, guessTime);
+        }
+        game.storeGuess(user.getUsername(), guess);
+        return guess;
+    }
+    public List<Guess> getGuesses(int gameId){
+        Game game = getGame(gameId);
+        return game.getGuesses();
+    }
+    public Role getRole(int gameId, Long playerId){
+        Game game = getGame(gameId);
+        return game.getRole(playerId);
+    }
+    public int getCurrentRoundNr(int gameId){ return getGame(gameId).getCurrentRoundNr(); }
+    public int getTotalNrRounds(int gameId){ return getGame(gameId).getAmountRounds(); }
+
     private Game getGame(int gameId) {
         Game game = GameRepository.getGameById(gameId);
         if (game == null) {
@@ -23,33 +46,8 @@ public class GameService {
         }
         return game;
     }
-
-    public String checkGuessAndAllocatePoints(int gameId, User user, String guess){
-        if (checkGuess(gameId, guess)){
-            guess = "CORRECT";
-            allocatePoints(gameId, user);
-        }
-        return guess;
-    }
-
-    //to-do: use Levenshtein distance!
-    public boolean checkGuess(int gameId, String guess){
-        Game game = getGame(gameId);
-        String keyword = game.getKeyword();
-
-        //return calculateLevenshteinDistance(guess.toLowerCase(), keyword.toLowerCase()) < 2;
-        return guess.equalsIgnoreCase(keyword);
-    }
-
-    public void allocatePoints(int gameId, User user){
-        Date guessTime = new Date();
-        Game game = getGame(gameId);
-        Date startDateRound = game.getStartTime(); // why is this here needed?
-
-        //note c: adjust formula to calculate points, now: 500 - seconds needed to guess
-        int points =  (int) (500 - (guessTime.getTime()-startDateRound.getTime())/1000);
-
-        user.setPointsCurrentRound(points);
+    public void deleteGame(int gameId){
+        GameRepository.deleteGame(gameId);
     }
 
     private int calculateLevenshteinDistance(String string1, String string2){
@@ -75,8 +73,4 @@ public class GameService {
             return 1 + Math.min(Math.min(distance_insertion, distance_deletion), distance_substitution); //add 1 to the Levenshtein distance of the substrings because deletion, insertion or substitution was needed
         }
     }
-
-    public int getCurrentRoundNr(int gameId){ return getGame(gameId).getCurrentRoundNr(); }
-    public int getTotalNrRounds(int gameId){ return getGame(gameId).getAmountRounds(); }
-
 }

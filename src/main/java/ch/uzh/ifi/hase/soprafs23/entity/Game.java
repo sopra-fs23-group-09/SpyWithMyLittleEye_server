@@ -1,41 +1,47 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
+import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
 
 import java.util.*;
 
 public class Game {
 
-    private List<User> players;
-    private int amountRounds;
+    private final Map<User, Integer> playerPoints;
+    private List<Guess> playerGuesses;
+    private final List<User> players;
+    private final int amountRounds;
     private int currentRoundNr;
-    private int id;
+    private final int id;
     private Map<Long, Role> playerRoles;
     private String keyword;
-    private String color; //note c: needed? n : hmmm prob not because gets returned directly?
-    private List<String> guesses; // clear guesses if new round starts... would have been better with round class...
-    private Date startTime; // need to assign this value correctly, probably own method to assign and return
-                            // instead of the method getStartTime (or let this method set the starTime?
+
+    private String roundOverStatus = "time out"; //TODO adapt that when timer etc works
+    private Date startTime; // TODO: need to assign this value correctly, probably own method to assign and return
+                            // TODO: instead of the method getStartTime (or let this method set the starTime?
 
     public Game(int id, List<User> players, int amountRounds){
         this.playerRoles = new HashMap<>();
-        this.guesses = new ArrayList<>();
+        this.playerGuesses = new ArrayList<>();
+        this.playerPoints = new HashMap<>();
         this.id = id;
         this.players = players;
+        initializePoints();
         this.amountRounds = amountRounds;
         this.currentRoundNr = 0;
     }
-
-    public String getKeyword() {
+    public String getKeyword(){
         return keyword;
     }
-
-    public boolean nextRound(){ //return if it was possible to have a next round? no check in gameservice atm
-        if(currentRoundNr + 1  > amountRounds){ return false;}
-        guesses = new ArrayList<>();
-        playerRoles = new HashMap<>();
-        currentRoundNr++;
-        distributeRoles();
-        return true;
+    public String getRoundOverStatus(){
+        return roundOverStatus;
+    }
+    public Map<User, Integer> getPlayerPoints(){
+        return new HashMap<>(playerPoints);
+    }
+    private void initializePoints(){
+        for(User u : players){
+            playerPoints.put(u, 0);
+        }
     }
     private void distributeRoles(){
         for(int i = 0; i < players.size(); i++){
@@ -46,20 +52,40 @@ public class Game {
             }
         }
     }
+    public void allocatePoints(User player, Date guessTime){
+        //note c: adjust formula to calculate points, now: 500 - seconds needed to guess
+        int points = (int) (500 - (guessTime.getTime()- startTime.getTime())/1000);
+        playerPoints.put(player, playerPoints.get(player) + points);
+    }
+
+    public boolean checkGuess(String guess){ //TODO use levenshteindistance (static class in game for example) M4
+        return guess.equalsIgnoreCase(this.keyword);
+    }
+
+    public boolean nextRound(){ //TODO: return if it was possible to have a next round? no check in gameservice atm
+        if(currentRoundNr + 1  > amountRounds){ return false;}
+        playerRoles = new HashMap<>();
+        playerGuesses = new ArrayList<>();
+        currentRoundNr++;
+        distributeRoles();
+        return true;
+    }
     public int getId(){
         return this.id;
     }
-
-    public Date getStartTime(){ // either let this method set a new startTime or check for uninitialized variable startTime
-        return startTime;
+    public void storeGuess(String name, String guess){
+        Guess g = new Guess(name, guess);
+        playerGuesses.add(g);
+    }
+    public List<Guess> getGuesses(){
+        return Collections.unmodifiableList(playerGuesses);
     }
 
     public Role getRole(Long playerId){
         return playerRoles.get(playerId);
     }
-    public void setColorAndKeyword(String keyword, String color){
+    public void setKeyword(String keyword){
         this.keyword = keyword;
-        this.color = color;
     }
 
     public int getCurrentRoundNr() {
@@ -68,5 +94,9 @@ public class Game {
 
     public int getAmountRounds() {
         return amountRounds;
+    }
+
+    public void initializeStartTime() { //TODO: check if correct that way
+        startTime = new Date();
     }
 }

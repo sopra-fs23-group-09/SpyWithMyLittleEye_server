@@ -91,11 +91,10 @@ public class LobbyService {
         if (!lobby.addPlayer(player)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The lobby is full.");
         }
-
         return lobby;
     }
 
-    public void deleteLobby(int lobbyId){
+    public void deleteLobby(int lobbyId){ //TODO: after the host ends the game
         //also need to delete the lobbyId of all players in this method, so they can join a new lobby
         LobbyRepository.deleteLobby(lobbyId);
     }
@@ -106,14 +105,6 @@ public class LobbyService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This lobby doesn't exist.");
         }
         return lobby;
-    }
-
-    public Role getRole(int gameId, Long playerId){
-        Game game = GameRepository.getGameById(gameId);
-        if (game == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This game doesn't exist.");
-        }
-        return game.getRole(playerId);
     }
 
 }
