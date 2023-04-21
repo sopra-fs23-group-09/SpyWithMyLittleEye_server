@@ -55,17 +55,17 @@
 
 ### Week 4: 21.04. - 27.04. 
 - Nina
-  1. 
-  2. 
+  1. Testing (#127)
+  2. Round Over Information (#126)
 - Claudia
-  1. 
-  2. 
+  1. Testing (#127)
+  2. Start Time (#128)
 - Xena
-  1. 
-  2. 
+  1. Chat, Timer (#109, #26)
+  2. Bug fixes (#110)
 - Loubna
-  1. 
-  2. 
+  1. Google maps in Game, bug fixes #27, #111
+  2. Display #112
 - Thereza
   1. Round Over Page (#29)
   2. Game Over Page (#36)
