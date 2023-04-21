@@ -36,7 +36,7 @@
   2. Lobby: #66, #67
   3. Enter/ Generating code to join lobby. #20
 
-### Week 3: 14.04. - 21.04. 
+### Week 3: 14.04. - 21.04. (Easter Break)
 - Nina
   1. 
   2. 
@@ -67,5 +67,6 @@
   1. 
   2. 
 - Thereza
-  1. 
-  2. 
+  1. Round Over Page (#29)
+  2. Game Over Page (#36)
+  3. WaitingRoom (#108)
