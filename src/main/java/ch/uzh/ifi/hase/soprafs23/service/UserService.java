@@ -12,10 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * User Service
@@ -131,8 +128,8 @@ public class UserService {
         }
     }
     public List<User> getTop100User(){
-        //TODO
-        return null;
+        List<User> topUsers = userRepository.findTop100ByOrderByHighScoreDesc();
+        return Collections.unmodifiableList(topUsers);
     }
 
     //class diagram says we should overload this method with parameter string, don't get the reason
