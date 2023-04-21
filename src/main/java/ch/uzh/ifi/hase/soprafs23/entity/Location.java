@@ -1,6 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
-public class Location {
+public class Location { //if we don't want to store location in game clas probably not needed
     private double lat;
     private double lng;
 
