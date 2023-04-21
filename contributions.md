@@ -55,8 +55,8 @@
 
 ### Week 4: 21.04. - 27.04. 
 - Nina
-  1. Testing (#127)
-  2. Round Over Information (#126)
+  1. Endpoints for ranking (#130) https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/130
+  2. Game over / Round Over Information (#126)
 - Claudia
   1. Testing (#127)
   2. Start Time (#128)
