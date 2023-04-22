@@ -12,19 +12,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.util.HtmlUtils;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ScheduledExecutorService;
 
 @Controller
 public class GameStompController {
 
     private final Logger logger = LoggerFactory.getLogger(GameStompController.class);
 
+    private Timer roundTimer;
     private final UserService userService;
     private final LobbyService lobbyService;
     private final GameService gameService;
@@ -36,11 +39,10 @@ public class GameStompController {
         this.gameService = gameService;
         this.lobbyService = lobbyService;
         this.webSocketService = ws;
+        this.roundTimer = new Timer();
     }
 
     @MessageMapping("/games/{gameId}/spiedObject")
-    //@SendTo("/topic/games/{gameId}/spiedObject")
-    //@SubscribeMapping("/topic/games/{gameId}/spiedObject")
     public void handleSpiedObject(SpiedObjectIn spiedObjectIn, @DestinationVariable("gameId") int gameId) throws Exception{
         //extract information from JSON
         String keyword = spiedObjectIn.getObject();
@@ -48,32 +50,73 @@ public class GameStompController {
         Location location = spiedObjectIn.getLocation();
 
         //save information of spied object
-        gameService.saveSpiedObjectInfo(gameId, keyword); //n: removed color and Location because not needed to store in game
+        gameService.saveSpiedObjectInfo(gameId, keyword);
 
         //return SpiedObjectOut to subscribers
         webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/spiedObject", new SpiedObjectOut(location, color));
     }
 
+    @MessageMapping("/games/{gameId}/startRound")
+    public void handleStartRound(@DestinationVariable("gameId") int gameId) throws Exception{
+
+        // Set duration to 3 minutes (180 seconds) => TODO don't hardcode the minutes
+        int duration = 1; //minutes TESTING
+
+        // Save time as start time of the round
+        Date startTime = gameService.initializeStartTime(gameId);
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String startTimeString = dateFormat.format(startTime);
+
+
+        // Send start round message to subscribers
+        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/startRound", new StartRound(startTimeString, duration));
+
+
+        roundTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    roundTimer.cancel();
+                    handleEndRound(gameId, "time is up");
+                }
+                catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }, duration * 60 * 1000);
+
+    }
+
+    public void handleEndRound(int gameId, String message) throws Exception{
+        // send end round message to subscribers
+        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/endRound", new EndRoundMessage(message));
+    }
+
+    private void endRoundIfAllUsersGuessedCorrectly(int gameId) throws Exception {
+        if (gameService.allPlayersGuessedCorrectly(gameId)){
+            roundTimer.cancel();
+            handleEndRound(gameId,"everyone guessed correctly");
+        }
+        gameService.resetRoundFields(gameId);
+    }
+
     @MessageMapping("/games/{gameId}/guesses")
-    //@SendTo("/topic/games/{gameId}/guesses")
-    //@SubscribeMapping("/topic/games/{gameId}/guesses")
     public void handleGuess(GuessIn guessIn, @DestinationVariable("gameId") int gameId) throws Exception{
-        Date guessTime = new Date(); // to make sure that guess time is registered at request
+        Date guessTime = new Date(); // guess time is registered at request to evaluate how many points the player gets
+
         //extract information from JSON
         String guess = guessIn.getGuess();
         User user = userService.getUser(guessIn.getId());
-        //evaluate guess and save String to be returned to subscribers
+
         List<Guess> playerGuesses = gameService.checkGuessAndAllocatePoints(gameId, user, guess, guessTime);
 
-        //TODO: guess is automatically stored in list of guesses, there also is a method in gameservice to get them (getGuesses(gameId))
-        //TODO: need to return the list/an DTO or something such that the Guess objects correctly reach the client
-        //return GuessOut to subscribers
         webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/guesses", playerGuesses);
+
+        endRoundIfAllUsersGuessedCorrectly(gameId);
     }
 
     @MessageMapping("/games/{gameId}/hints")
-    //@SendTo("/topic/games/{gameId}/hints")
-    //@SubscribeMapping("/topic/games/{gameId}/hints")
     public void distributeHints(Hint hint, @DestinationVariable("gameId") int gameId) throws Exception{
         //send hint directly to all subscribers
         webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/hints", hint);
