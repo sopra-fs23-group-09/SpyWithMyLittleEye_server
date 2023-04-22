@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 public class RoundGetDTO {
-    private List<UserPointsWrapper> points;
+    private List<UserPointsWrapper> playerPoints;
     private String roundOverStatus;
     private String keyword;
 
-    public void setRoundOverStatus(String gameOverStatus){
-        this.roundOverStatus = gameOverStatus;
+    public void setRoundOverStatus(String roundOverStatus){
+        this.roundOverStatus = roundOverStatus;
     }
 
     public String getRoundOverStatus() {
@@ -28,16 +28,16 @@ public class RoundGetDTO {
         return keyword;
     }
 
-    public void setPoints(Map<User, Integer> playerPoints){
-        points = new ArrayList<>();
+    public void setPlayerPoints(Map<User, Integer> playerPoints){
+        this.playerPoints = new ArrayList<>();
         for (User u : playerPoints.keySet()) {
-            points.add(new UserPointsWrapper(u.getUsername(), playerPoints.get(u)));
+            this.playerPoints.add(new UserPointsWrapper(u.getUsername(), playerPoints.get(u)));
         }
-        points.sort(UserPointsWrapper.compareByPoints());
+        this.playerPoints.sort(UserPointsWrapper.compareByPoints());
     }
 
-    public List<UserPointsWrapper> getPoints() {
-        return points;
+    public List<UserPointsWrapper> getPlayerPoints() {
+        return this.playerPoints;
     }
 }
 
