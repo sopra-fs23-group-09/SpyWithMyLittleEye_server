@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Location;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.util.HtmlUtils;
 
 import java.util.Date;
+import java.util.List;
 
 @Controller
 public class GameStompController {
@@ -61,14 +63,12 @@ public class GameStompController {
         String guess = guessIn.getGuess();
         User user = userService.getUser(guessIn.getId());
         //evaluate guess and save String to be returned to subscribers
-        String guessBack = gameService.checkGuessAndAllocatePoints(gameId, user, guess, guessTime);
-
-        String username = user.getUsername();
+        List<Guess> playerGuesses = gameService.checkGuessAndAllocatePoints(gameId, user, guess, guessTime);
 
         //TODO: guess is automatically stored in list of guesses, there also is a method in gameservice to get them (getGuesses(gameId))
         //TODO: need to return the list/an DTO or something such that the Guess objects correctly reach the client
         //return GuessOut to subscribers
-        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/guesses", new GuessOut(username, guessBack));
+        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/guesses", playerGuesses);
     }
 
     @MessageMapping("/games/{gameId}/hints")
