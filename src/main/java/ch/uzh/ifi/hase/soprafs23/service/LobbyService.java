@@ -37,6 +37,9 @@ public class LobbyService {
     public Lobby createLobby(User host, int amountRounds){
         // to-do: make sure that host is not in another lobby, else throw error
         int accessCode = generateAccessCode();
+        if(amountRounds < 1 || amountRounds > 20){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The maximum amount of rounds is 20 and can't be less than 1");
+        }
         Lobby newLobby = new Lobby(host, newLobbyId, accessCode, amountRounds);
         LobbyRepository.addLobby(newLobby);
 
