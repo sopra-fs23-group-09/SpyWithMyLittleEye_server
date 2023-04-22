@@ -14,6 +14,7 @@ public class Game {
     private final int id;
     private Map<Long, Role> playerRoles;
     private String keyword;
+    private int nrPlayersGuessedCorrectly;
 
     private String roundOverStatus = "time out"; //TODO adapt that when timer etc works
     private Date startTime; // TODO: need to assign this value correctly, probably own method to assign and return
@@ -28,6 +29,13 @@ public class Game {
         initializePoints();
         this.amountRounds = amountRounds;
         this.currentRoundNr = 0;
+        this.nrPlayersGuessedCorrectly = 0; //TODO reset after each round
+    }
+
+    public void resetKeywordStarttimeNrplayerguessedcorrectly(){
+        this.startTime = null;
+        this.keyword = null;
+        this.nrPlayersGuessedCorrectly = 0;
     }
     public String getKeyword(){
         return keyword;
@@ -53,9 +61,18 @@ public class Game {
         }
     }
     public void allocatePoints(User player, Date guessTime){
-        //note c: adjust formula to calculate points, now: 500 - seconds needed to guess
+        // formula to compute points: 500 - seconds needed to guess
         int points = (int) (500 - (guessTime.getTime()- startTime.getTime())/1000);
         playerPoints.put(player, playerPoints.get(player) + points);
+        this.nrPlayersGuessedCorrectly++;
+    }
+
+    public boolean didAllPlayersGuessCorrectly(){
+        if (this.nrPlayersGuessedCorrectly == players.size()){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean checkGuess(String guess){ //TODO use levenshteindistance (static class in game for example) M4
@@ -96,7 +113,7 @@ public class Game {
         return amountRounds;
     }
 
-    public void initializeStartTime() { //TODO: check if correct that way
-        startTime = new Date();
+    public void initializeStartTime(Date startTime) {
+        this.startTime = startTime;
     }
 }

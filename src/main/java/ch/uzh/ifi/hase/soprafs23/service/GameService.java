@@ -10,13 +10,13 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
 
 public class GameService {
 
     public void saveSpiedObjectInfo(int gameId, String keyword){
         Game game = getGame(gameId);
         game.setKeyword(keyword);
-        game.initializeStartTime();
     }
 
     public List<Guess> checkGuessAndAllocatePoints(int gameId, User user, String guess, Date guessTime){
@@ -24,9 +24,25 @@ public class GameService {
         if (game.checkGuess(guess)){
             guess = "CORRECT";
             game.allocatePoints(user, guessTime);
+            if (game.didAllPlayersGuessCorrectly()){
+
+            }
         }
         game.storeGuess(user.getUsername(), guess);
         return game.getGuesses();
+    }
+
+    public boolean allPlayersGuessedCorrectly(int gameId){
+        Game game = getGame(gameId);
+        if (game.didAllPlayersGuessCorrectly()){
+            return true;
+        }
+        return false;
+    }
+
+    public void resetRoundFields(int gameId){
+        Game game = getGame(gameId);
+        game.resetKeywordStarttimeNrplayerguessedcorrectly();
     }
     public List<Guess> getGuesses(int gameId){
         Game game = getGame(gameId);
@@ -36,6 +52,13 @@ public class GameService {
         Game game = getGame(gameId);
         return game.getRole(playerId);
     }
+
+    public Date initializeStartTime(int gameId){
+        Date startTime = new Date();
+        getGame(gameId).initializeStartTime(startTime);
+        return startTime;
+    }
+
     public int getCurrentRoundNr(int gameId){ return getGame(gameId).getCurrentRoundNr(); }
     public int getTotalNrRounds(int gameId){ return getGame(gameId).getAmountRounds(); }
 
