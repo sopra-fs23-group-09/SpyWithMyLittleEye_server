@@ -19,14 +19,14 @@ public class GameService {
         game.initializeStartTime();
     }
 
-    public String checkGuessAndAllocatePoints(int gameId, User user, String guess, Date guessTime){
+    public List<Guess> checkGuessAndAllocatePoints(int gameId, User user, String guess, Date guessTime){
         Game game = getGame(gameId);
         if (game.checkGuess(guess)){
             guess = "CORRECT";
             game.allocatePoints(user, guessTime);
         }
         game.storeGuess(user.getUsername(), guess);
-        return guess;
+        return game.getGuesses();
     }
     public List<Guess> getGuesses(int gameId){
         Game game = getGame(gameId);
