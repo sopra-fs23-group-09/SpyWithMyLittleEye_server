@@ -51,15 +51,8 @@ public class GameStompController {
         //save information of spied object
         gameService.saveSpiedObjectInfo(gameId, keyword);
 
-        //return SpiedObjectOut to subscribers
-        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/spiedObject", new SpiedObjectOut(location, color));
-    }
-
-    @MessageMapping("/games/{gameId}/startRound")
-    public void handleStartRound(@DestinationVariable("gameId") int gameId) throws Exception{
-
         // Set duration to 3 minutes (180 seconds) => TODO don't hardcode the minutes
-        int duration = 1; //minutes TESTING
+        int duration = 1; //minutes TESTING //TODO change from testing to "real time"
 
         // Save time as start time of the round
         Date startTime = gameService.initializeStartTime(gameId);
@@ -67,10 +60,8 @@ public class GameStompController {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String startTimeString = dateFormat.format(startTime);
 
-
-        // Send start round message to subscribers
-        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/startRound", new StartRound(startTimeString, duration));
-
+        //return SpiedObjectOut to subscribers
+        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/spiedObject", new SpiedObjectOut(location, color, startTimeString, duration));
 
         roundTimer.schedule(new TimerTask() {
             @Override
@@ -84,7 +75,6 @@ public class GameStompController {
                 }
             }
         }, duration * 60 * 1000);
-
     }
 
     public void handleEndRound(int gameId, String message) throws Exception{
