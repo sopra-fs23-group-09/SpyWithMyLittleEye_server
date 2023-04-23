@@ -33,7 +33,7 @@ public class Lobby {
 
     public Game play(){
         if (this.gameStarted) return null;
-        Game game = new Game(id, players, amountRounds);
+        Game game = new Game(id, players, amountRounds, host);
         game.nextRound();
         this.gameStarted = true;
         return game;

@@ -40,5 +40,7 @@ public interface DTOMapper {
     @Mapping(source = "keyword", target = "keyword")
     @Mapping(source = "roundOverStatus", target = "roundOverStatus")
     @Mapping(source = "playerPoints", target = "playerPoints")
+    @Mapping(source = "currentRoundNr", target = "currentRoundNr")
+    @Mapping(source = "hostId", target = "hostId")
     RoundGetDTO convertGameToRoundGetDTO(Game game);
 }
