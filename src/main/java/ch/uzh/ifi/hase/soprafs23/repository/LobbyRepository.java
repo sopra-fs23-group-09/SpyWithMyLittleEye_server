@@ -27,7 +27,4 @@ public class LobbyRepository {
         lobbyRepositoryByID.remove(lobbyId);
         lobbyRepositoryByAccessCode.remove(l.getAccessCode());
     }
-
-
-
 }

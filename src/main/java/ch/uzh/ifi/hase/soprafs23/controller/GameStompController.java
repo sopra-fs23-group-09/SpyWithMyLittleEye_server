@@ -1,6 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
-import ch.uzh.ifi.hase.soprafs23.entity.Location;
+import ch.uzh.ifi.hase.soprafs23.stomp.dto.Location;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ScheduledExecutorService;
 
 @Controller
 public class GameStompController {
@@ -97,8 +96,8 @@ public class GameStompController {
         if (gameService.allPlayersGuessedCorrectly(gameId)){
             roundTimer.cancel();
             handleEndRound(gameId,"everyone guessed correctly");
+            gameService.resetRoundFields(gameId);
         }
-        gameService.resetRoundFields(gameId);
     }
 
     @MessageMapping("/games/{gameId}/guesses")

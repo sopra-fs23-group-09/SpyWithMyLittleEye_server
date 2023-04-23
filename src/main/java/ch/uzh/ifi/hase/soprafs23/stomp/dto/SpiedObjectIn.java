@@ -1,7 +1,5 @@
 package ch.uzh.ifi.hase.soprafs23.stomp.dto;
 
-import ch.uzh.ifi.hase.soprafs23.entity.Location;
-
 public class SpiedObjectIn {
 
     private String object;
