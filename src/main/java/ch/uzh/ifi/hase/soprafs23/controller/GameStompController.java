@@ -82,6 +82,11 @@ public class GameStompController {
         webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/endRound", new EndRoundMessage(message));
     }
 
+    @MessageMapping("/games/{gameId}/nextRound")
+    public void nextRound(@DestinationVariable("gameId") int gameId) throws Exception{
+        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/nextRound", new EndRoundMessage("Round over")); // TODO don't rly need to return anything...
+    }
+
     private void endRoundIfAllUsersGuessedCorrectly(int gameId) throws Exception {
         if (gameService.allPlayersGuessedCorrectly(gameId)){
             roundTimer.cancel();
