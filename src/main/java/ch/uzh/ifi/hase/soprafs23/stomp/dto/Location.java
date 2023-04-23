@@ -1,4 +1,4 @@
-package ch.uzh.ifi.hase.soprafs23.entity;
+package ch.uzh.ifi.hase.soprafs23.stomp.dto;
 
 public class Location { //if we don't want to store location in game clas probably not needed
     private double lat;

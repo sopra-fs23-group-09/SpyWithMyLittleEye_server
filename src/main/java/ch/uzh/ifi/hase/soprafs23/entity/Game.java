@@ -63,7 +63,8 @@ public class Game {
     public void allocatePoints(User player, Date guessTime){
         // formula to compute points: 500 - seconds needed to guess
         int points = (int) (500 - (guessTime.getTime()- startTime.getTime())/1000);
-        playerPoints.put(player, playerPoints.get(player) + points);
+        //int pointsOfCurrentPlayer = playerPoints.get(player) + points;
+        //playerPoints.put(player, pointsOfCurrentPlayer);
         this.nrPlayersGuessedCorrectly++;
     }
 

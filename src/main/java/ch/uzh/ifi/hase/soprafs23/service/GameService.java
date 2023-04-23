@@ -10,7 +10,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
 
 public class GameService {
 
@@ -24,9 +23,6 @@ public class GameService {
         if (game.checkGuess(guess)){
             guess = "CORRECT";
             game.allocatePoints(user, guessTime);
-            if (game.didAllPlayersGuessCorrectly()){
-
-            }
         }
         game.storeGuess(user.getUsername(), guess);
         return game.getGuesses();
