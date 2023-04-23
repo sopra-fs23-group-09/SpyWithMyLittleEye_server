@@ -11,6 +11,8 @@ public class RoundGetDTO {
     private List<UserPointsWrapper> playerPoints;
     private String roundOverStatus;
     private String keyword;
+    private Long hostId;
+    private int currentRoundNr;
 
     public void setRoundOverStatus(String roundOverStatus){
         this.roundOverStatus = roundOverStatus;
@@ -38,6 +40,18 @@ public class RoundGetDTO {
 
     public List<UserPointsWrapper> getPlayerPoints() {
         return this.playerPoints;
+    }
+
+    public void setHostId(Long hostId) { this.hostId = hostId;}
+
+    public Long getHostId() { return hostId;}
+
+    public int getCurrentRoundNr() {
+        return currentRoundNr;
+    }
+
+    public void setCurrentRoundNr(int currentRoundNr) {
+        this.currentRoundNr = currentRoundNr;
     }
 }
 

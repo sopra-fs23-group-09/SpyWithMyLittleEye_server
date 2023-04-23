@@ -15,12 +15,13 @@ public class Game {
     private Map<Long, Role> playerRoles;
     private String keyword;
     private int nrPlayersGuessedCorrectly;
+    private Long hostId;
 
     private String roundOverStatus = "time out"; //TODO adapt that when timer etc works
     private Date startTime; // TODO: need to assign this value correctly, probably own method to assign and return
                             // TODO: instead of the method getStartTime (or let this method set the starTime?
 
-    public Game(int id, List<User> players, int amountRounds){
+    public Game(int id, List<User> players, int amountRounds, User host){
         this.playerRoles = new HashMap<>();
         this.playerGuesses = new ArrayList<>();
         this.playerPoints = new HashMap<>();
@@ -30,6 +31,7 @@ public class Game {
         this.amountRounds = amountRounds;
         this.currentRoundNr = 0;
         this.nrPlayersGuessedCorrectly = 0; //TODO reset after each round
+        this.hostId = host.getId();
     }
 
     public void resetKeywordStarttimeNrplayerguessedcorrectly(){
@@ -116,5 +118,13 @@ public class Game {
 
     public void initializeStartTime(Date startTime) {
         this.startTime = startTime;
+    }
+
+    public Long getHostId() {
+        return hostId;
+    }
+
+    public void setHostId(Long hostId) {
+        this.hostId = hostId;
     }
 }
