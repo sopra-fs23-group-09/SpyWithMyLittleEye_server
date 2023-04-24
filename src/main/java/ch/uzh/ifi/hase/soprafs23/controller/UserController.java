@@ -62,7 +62,7 @@ public class UserController {
         List<User> users = userService.getUsers();
 
         for (User user : users) {
-            if(user.getId() == userId) { //we could fix that bug (== vs equals) but it also works that way
+            if(user.getId().equals(userId)){
                 return ResponseEntity.ok().headers(header).body(DTOMapper.INSTANCE.convertEntityToUserGetDTO(user));
             }
         }
@@ -83,6 +83,21 @@ public class UserController {
             }
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The credentials don't allow you to log in!");
+    }
+    @GetMapping("users/ranking")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<UserGetDTO> top100User(@RequestHeader(value = "Token", defaultValue = "null") String token){
+        userService.checkToken(token);
+
+        List<User> users =  userService.getTop100User();
+        List<UserGetDTO> userGetDTOs = new ArrayList<>();
+
+        for(User u: users){
+            userGetDTOs.add(DTOMapper.INSTANCE.convertEntityToUserGetDTO(u));
+        }
+
+        return userGetDTOs;
     }
 
     @PutMapping("/users/logout")
