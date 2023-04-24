@@ -52,5 +52,10 @@ public class LobbyGetDTO {
         return playerNames;
     }
     public String getEvent() {return this.event;}
+
+    @Override
+    public String toString() {
+        return String.format("LobbyGetDTO [id=%d, accessCode=%d]", id, accessCode);
+    }
 }
 

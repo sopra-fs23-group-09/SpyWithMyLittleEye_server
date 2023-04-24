@@ -11,4 +11,9 @@ public class GuessIn {
     public Long getId() {
         return Long.valueOf(id);
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s [id=%s, guess=%s]", this.getClass().getName(), id, guess);
+    }
 }

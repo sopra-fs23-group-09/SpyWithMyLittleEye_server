@@ -67,4 +67,10 @@ public class Lobby {
         return host.getId();
     }
 
+    //debugging
+    @Override
+    public String toString(){
+        return String.format("Lobby [id=%d, accessCode=%d]", id, accessCode);
+    }
+
 }
