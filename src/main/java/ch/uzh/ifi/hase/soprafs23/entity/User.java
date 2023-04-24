@@ -6,6 +6,7 @@ import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Internal User Representation
@@ -99,4 +100,19 @@ public class User implements Serializable {
 
     public UserStatus getStatus() {return status;}
     public void setStatus(UserStatus status) {this.status = status;}
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null){
+            return false;
+        }else if((obj instanceof User)){
+            return this.id.equals(((User) obj).id);
+        }
+        return false;
+    }
 }

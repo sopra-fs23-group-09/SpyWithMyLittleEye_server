@@ -47,6 +47,7 @@ public class GameStompController {
         String keyword = spiedObjectIn.getObject();
         String color = spiedObjectIn.getColor();
         Location location = spiedObjectIn.getLocation();
+        logger.info("Received spiedObject with keyword {} for game {}", keyword, gameId);
 
         //save information of spied object
         gameService.saveSpiedObjectInfo(gameId, keyword);
@@ -97,6 +98,7 @@ public class GameStompController {
 
     @MessageMapping("/games/{gameId}/guesses")
     public void handleGuess(GuessIn guessIn, @DestinationVariable("gameId") int gameId) throws Exception{
+        logger.info("Handling guess '{}'", guessIn);
         Date guessTime = new Date(); // guess time is registered at request to evaluate how many points the player gets
 
         //extract information from JSON
@@ -113,6 +115,7 @@ public class GameStompController {
     @MessageMapping("/games/{gameId}/hints")
     public void distributeHints(Hint hint, @DestinationVariable("gameId") int gameId) throws Exception{
         //send hint directly to all subscribers
+        logger.info("Distributing hint '{}' for game {}", hint, gameId);
         webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/hints", hint);
     }
 }

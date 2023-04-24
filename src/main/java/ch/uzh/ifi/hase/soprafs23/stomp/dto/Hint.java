@@ -12,4 +12,9 @@ public class Hint {
     public String getHint() {
         return hint;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s [hint=%s]", Hint.class.getName(), hint);
+    }
 }

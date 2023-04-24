@@ -17,6 +17,8 @@ import java.util.Set;
 @Service
 @Transactional
 public class WebSocketService {
+
+    private final Logger log = LoggerFactory.getLogger(WebSocketService.class);
     private final UserRepository userRepository;
     private final UserService userService;
     @Autowired
@@ -29,6 +31,7 @@ public class WebSocketService {
     }
 
     public void sendMessageToSubscribers(String mapping, Object o) {
+        log.info("Sending {} to {}", o, mapping);
         this.simpMessagingTemplate.convertAndSend(mapping, o);
     }
 }

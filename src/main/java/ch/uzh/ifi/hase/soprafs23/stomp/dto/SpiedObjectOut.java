@@ -22,11 +22,19 @@ public class SpiedObjectOut {
         return location;
     }
 
+
     public String getStartTime() {
         return startTime;
     }
 
     public int getDuration() {
         return duration;
+
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s [color=%s, location=%s]", getClass().getName(), color, location);
+
     }
 }
