@@ -1,22 +1,30 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
+import ch.uzh.ifi.hase.soprafs23.controller.GameStompController;
 import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
 public class Game {
-
+    public static final int DURATION = 1;
+    private final int id;
+    private Long hostId;
     private final Map<User, Integer> playerPoints;
-    private List<Guess> playerGuesses;
     private final List<User> players;
     private final int amountRounds;
+    private List<Guess> playerGuesses;
     private int currentRoundNr;
-    private final int id;
+    private Timer roundTimer;
+
+    private boolean timerStarted;
     private Map<Long, Role> playerRoles;
+    //TODO: need variable to know if game started?
+
+    //TODO: need to send always round number to check if access allowed correct?
     private String keyword;
     private int nrPlayersGuessedCorrectly;
-    private Long hostId;
-
     private String roundOverStatus = "time out"; //TODO adapt that when timer etc works
     private Date startTime; // TODO: need to assign this value correctly, probably own method to assign and return
                             // TODO: instead of the method getStartTime (or let this method set the starTime?
@@ -34,10 +42,15 @@ public class Game {
         this.hostId = host.getId();
     }
 
-    public void resetKeywordStarttimeNrplayerguessedcorrectly(){
-        this.startTime = null;
-        this.keyword = null;
-        this.nrPlayersGuessedCorrectly = 0;
+    //TODO: check if save/flush needed for user
+    public void updatePointsIfGameEnded(){ //TODO: M4 allow more than 1 winner
+        User winner = players.get(0);
+        for(User u : players){
+            if(playerPoints.get(u) > playerPoints.get(winner)) winner = u;
+            u.setHighScore(u.getHighScore()+ playerPoints.get(u));
+            u.setGamesPlayed(u.getGamesPlayed() + 1);
+        }
+        winner.setGamesWon(winner.getGamesWon() + 1);
     }
     public String getKeyword(){
         return keyword;
@@ -45,6 +58,20 @@ public class Game {
     public String getRoundOverStatus(){
         return roundOverStatus;
     }
+
+    public void runTimer(GameStompController conG){
+        if (!timerStarted) {
+            timerStarted = true;
+            roundTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    roundTimer.cancel();
+                    conG.handleEndRound(id, "time is up");
+                }
+            }, DURATION * 60 * 1000);
+        }
+    }
+
     public Map<User, Integer> getPlayerPoints(){
         return new HashMap<>(playerPoints);
     }
@@ -71,24 +98,24 @@ public class Game {
     }
 
     public boolean didAllPlayersGuessCorrectly(){
-        if (this.nrPlayersGuessedCorrectly == players.size()){
-            return true;
-        } else {
-            return false;
-        }
+        return this.nrPlayersGuessedCorrectly == players.size();
     }
 
     public boolean checkGuess(String guess){ //TODO use levenshteindistance (static class in game for example) M4
         return guess.equalsIgnoreCase(this.keyword);
     }
 
-    public boolean nextRound(){ //TODO: return if it was possible to have a next round? no check in gameservice atm
-        if(currentRoundNr + 1  > amountRounds){ return false;}
+    public void nextRound(){ //TODO
+        if(currentRoundNr + 1  > amountRounds){ throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "All rounds were played");}
         playerRoles = new HashMap<>();
         playerGuesses = new ArrayList<>();
+        keyword = null; //TODO ???
+        startTime = null;
+        roundTimer = new Timer();
+        timerStarted = false;
+        nrPlayersGuessedCorrectly = 0;
         currentRoundNr++;
         distributeRoles();
-        return true;
     }
     public int getId(){
         return this.id;
