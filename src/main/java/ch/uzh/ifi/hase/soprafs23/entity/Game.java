@@ -98,7 +98,7 @@ public class Game {
     }
 
     public boolean didAllPlayersGuessCorrectly(){
-        return this.nrPlayersGuessedCorrectly == players.size();
+        return this.nrPlayersGuessedCorrectly == (players.size() -1 );
     }
 
     public boolean checkGuess(String guess){ //TODO use levenshteindistance (static class in game for example) M4
