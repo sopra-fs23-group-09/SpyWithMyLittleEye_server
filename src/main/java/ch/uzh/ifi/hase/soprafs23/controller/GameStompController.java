@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
+import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.stomp.dto.Location;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
@@ -10,9 +11,11 @@ import ch.uzh.ifi.hase.soprafs23.service.WebSocketService;
 import ch.uzh.ifi.hase.soprafs23.stomp.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -52,8 +55,6 @@ public class GameStompController {
         //save information of spied object
         gameService.saveSpiedObjectInfo(gameId, keyword);
 
-        // Set duration to 3 minutes (180 seconds) => TODO don't hardcode the minutes
-        int duration = 1; //minutes TESTING //TODO change from testing to "real time"
 
         // Save time as start time of the round
         Date startTime = gameService.initializeStartTime(gameId);
@@ -62,42 +63,30 @@ public class GameStompController {
         String startTimeString = dateFormat.format(startTime);
 
         //return SpiedObjectOut to subscribers
-        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/spiedObject", new SpiedObjectOut(location, color, startTimeString, duration));
-
-        roundTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    roundTimer.cancel();
-                    handleEndRound(gameId, "time is up");
-                }
-                catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }, duration * 60 * 1000);
+        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/spiedObject", new SpiedObjectOut(location, color, startTimeString, Game.DURATION));
+        gameService.runTimer(this, gameId);
     }
 
-    public void handleEndRound(int gameId, String message) throws Exception{
+    public void handleEndRound(int gameId, String message) {
         // send end round message to subscribers
         webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/endRound", new EndRoundMessage(message));
     }
 
     @MessageMapping("/games/{gameId}/nextRound")
-    public void nextRound(@DestinationVariable("gameId") int gameId) throws Exception{
+    public void nextRound(@DestinationVariable("gameId") int gameId) {
+        gameService.nextRound(gameId);
         webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/nextRound", new EndRoundMessage("Round over")); // TODO don't rly need to return anything...
     }
 
-    private void endRoundIfAllUsersGuessedCorrectly(int gameId) throws Exception {
+    private void endRoundIfAllUsersGuessedCorrectly(int gameId) {
         if (gameService.allPlayersGuessedCorrectly(gameId)){
             roundTimer.cancel();
             handleEndRound(gameId,"everyone guessed correctly");
-            gameService.resetRoundFields(gameId);
         }
     }
 
     @MessageMapping("/games/{gameId}/guesses")
-    public void handleGuess(GuessIn guessIn, @DestinationVariable("gameId") int gameId) throws Exception{
+    public void handleGuess(GuessIn guessIn, @DestinationVariable("gameId") int gameId) {
         logger.info("Handling guess '{}'", guessIn);
         Date guessTime = new Date(); // guess time is registered at request to evaluate how many points the player gets
 
@@ -113,9 +102,15 @@ public class GameStompController {
     }
 
     @MessageMapping("/games/{gameId}/hints")
-    public void distributeHints(Hint hint, @DestinationVariable("gameId") int gameId) throws Exception{
+    public void distributeHints(Hint hint, @DestinationVariable("gameId") int gameId){
         //send hint directly to all subscribers
         logger.info("Distributing hint '{}' for game {}", hint, gameId);
         webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/hints", hint);
+    }
+
+    @MessageMapping("games/{gameId}/gameOver")
+    public void endGame(@DestinationVariable("gameId") int gameId){
+        gameService.handleGameOver(gameId);
+        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/gameOver", "gameOver");
     }
 }

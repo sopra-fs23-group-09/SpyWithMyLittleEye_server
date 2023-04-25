@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
+import ch.uzh.ifi.hase.soprafs23.controller.GameStompController;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
@@ -40,18 +41,23 @@ public class GameService {
         }
         return false;
     }
+    public void handleGameOver(int gameId){
+        Game game = getGame(gameId);
+        game.updatePointsIfGameEnded();
+        GameRepository.deleteGame(gameId);
+    }
+    public void nextRound(int gameId){
+        getGame(gameId).nextRound();
+    }
 
-    public void resetRoundFields(int gameId){
-        Game game = getGame(gameId);
-        game.resetKeywordStarttimeNrplayerguessedcorrectly();
-    }
-    public List<Guess> getGuesses(int gameId){
-        Game game = getGame(gameId);
-        return game.getGuesses();
-    }
     public Role getRole(int gameId, Long playerId){
         Game game = getGame(gameId);
         return game.getRole(playerId);
+    }
+
+    public void runTimer(GameStompController conG, int gameId){
+        Game game = getGame(gameId);
+        game.runTimer(conG);
     }
 
     public Date initializeStartTime(int gameId){
@@ -69,9 +75,6 @@ public class GameService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This game doesn't exist.");
         }
         return game;
-    }
-    public void deleteGame(int gameId){
-        GameRepository.deleteGame(gameId);
     }
 
     private int calculateLevenshteinDistance(String string1, String string2){

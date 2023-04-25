@@ -48,11 +48,6 @@ public class UserService {
         }
     }
 
-    public List<User> getTop100Users(){
-        //userRepository.findAll(Sort.by("highScore"));
-        return userRepository.findTop100ByOrderByHighScoreDesc();
-    }
-
     //could be renamed to deleteToken as written in class diagram
     public void clearToken(String token){
         User u = userRepository.findByToken(token);
@@ -76,7 +71,7 @@ public class UserService {
         Long id = u.getId();
         return id;
     }
-    //TODO: update the password and the profile picture
+    //TODO: update ((the password +))the profile picture for M4 (probably not the password but don't know yet)
     //this method combines all the update [attribute] methods in the class diagram
     public void updateUser(User u, String token, Long userId){
         Optional<User> uToUpdateO = userRepository.findById(userId);
