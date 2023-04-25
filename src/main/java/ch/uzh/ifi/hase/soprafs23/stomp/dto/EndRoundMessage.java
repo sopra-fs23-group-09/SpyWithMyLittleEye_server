@@ -14,4 +14,6 @@ public class EndRoundMessage {
     public String getEndRoundMessage() {
         return endRoundMessage;
     }
+    public int getAmountOfRounds(){return amountOfRounds;}
+    public int getCurrentRound(){return currentRound;}
 }
