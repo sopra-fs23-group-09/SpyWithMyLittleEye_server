@@ -67,22 +67,15 @@ public class GameStompController {
         gameService.runTimer(this, gameId);
     }
 
-    public void handleEndRound(int gameId, String message) {
+    public void handleEndRound(int gameId, String message, int amountOfRounds, int currentRound) {
         // send end round message to subscribers
-        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/endRound", new EndRoundMessage(message));
+        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/endRound", new EndRoundMessage(message, amountOfRounds, currentRound));
     }
 
     @MessageMapping("/games/{gameId}/nextRound")
     public void nextRound(@DestinationVariable("gameId") int gameId) {
         gameService.nextRound(gameId);
-        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/nextRound", new EndRoundMessage("Round over")); // TODO don't rly need to return anything...
-    }
-
-    private void endRoundIfAllUsersGuessedCorrectly(int gameId) {
-        if (gameService.allPlayersGuessedCorrectly(gameId)){
-            roundTimer.cancel();
-            handleEndRound(gameId,"everyone guessed correctly");
-        }
+        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/nextRound", "nextRound"); // TODO don't rly need to return anything...
     }
 
     @MessageMapping("/games/{gameId}/guesses")
@@ -98,7 +91,7 @@ public class GameStompController {
 
         webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/guesses", playerGuesses);
 
-        endRoundIfAllUsersGuessedCorrectly(gameId);
+        gameService.endRoundIfAllUsersGuessedCorrectly(this, gameId);
     }
 
     @MessageMapping("/games/{gameId}/hints")

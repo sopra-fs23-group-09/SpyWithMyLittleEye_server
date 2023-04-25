@@ -66,9 +66,16 @@ public class Game {
                 @Override
                 public void run() {
                     roundTimer.cancel();
-                    conG.handleEndRound(id, "time is up");
+                    conG.handleEndRound(id, "time is up", amountRounds, currentRoundNr);
                 }
             }, DURATION * 60 * 1000);
+        }
+    }
+
+    public void endRoundIfAllUsersGuessedCorrectly(GameStompController conG){
+        if (this.nrPlayersGuessedCorrectly == (players.size() -1)){
+            roundTimer.cancel();
+            conG.handleEndRound(id, "all guessed correctly", amountRounds, currentRoundNr);
         }
     }
 
@@ -95,10 +102,6 @@ public class Game {
         int pointsOfCurrentPlayer = playerPoints.get(player) + points;
         playerPoints.put(player, pointsOfCurrentPlayer);
         this.nrPlayersGuessedCorrectly++;
-    }
-
-    public boolean didAllPlayersGuessCorrectly(){
-        return this.nrPlayersGuessedCorrectly == (players.size() -1 );
     }
 
     public boolean checkGuess(String guess){ //TODO use levenshteindistance (static class in game for example) M4

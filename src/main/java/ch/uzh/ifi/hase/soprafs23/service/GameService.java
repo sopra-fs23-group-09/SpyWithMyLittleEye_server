@@ -34,13 +34,11 @@ public class GameService {
         return game.getGuesses();
     }
 
-    public boolean allPlayersGuessedCorrectly(int gameId){
+    public void endRoundIfAllUsersGuessedCorrectly(GameStompController conG, int gameId){
         Game game = getGame(gameId);
-        if (game.didAllPlayersGuessCorrectly()){
-            return true;
-        }
-        return false;
+        game.endRoundIfAllUsersGuessedCorrectly(conG);
     }
+
     public void handleGameOver(int gameId){
         Game game = getGame(gameId);
         game.updatePointsIfGameEnded();
