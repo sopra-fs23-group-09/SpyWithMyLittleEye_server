@@ -75,7 +75,7 @@ public class GameStompController {
     @MessageMapping("/games/{gameId}/nextRound")
     public void nextRound(@DestinationVariable("gameId") int gameId) {
         gameService.nextRound(gameId);
-        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/nextRound", "nextRound"); // TODO don't rly need to return anything...
+        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/nextRound", new EndRoundMessage("nextRound", 0,0)); // TODO don't rly need to return anything...
     }
 
     @MessageMapping("/games/{gameId}/guesses")
