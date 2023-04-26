@@ -28,20 +28,16 @@ import java.util.TimerTask;
 public class GameStompController {
 
     private final Logger logger = LoggerFactory.getLogger(GameStompController.class);
-
-    private Timer roundTimer;
     private final UserService userService;
-    private final LobbyService lobbyService;
+
     private final GameService gameService;
 
     private final WebSocketService webSocketService;
 
-    GameStompController(UserService userService, GameService gameService, LobbyService lobbyService, WebSocketService ws){
+    GameStompController(UserService userService, GameService gameService, WebSocketService ws){
         this.userService = userService;
         this.gameService = gameService;
-        this.lobbyService = lobbyService;
         this.webSocketService = ws;
-        this.roundTimer = new Timer();
     }
 
     @MessageMapping("/games/{gameId}/spiedObject")

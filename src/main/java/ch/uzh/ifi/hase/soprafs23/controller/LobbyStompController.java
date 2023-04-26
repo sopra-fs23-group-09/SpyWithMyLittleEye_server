@@ -13,7 +13,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
-//import com.solidfire.gson.Gson;
 
 
 @Controller
@@ -44,7 +43,6 @@ public class LobbyStompController {
         Game game = lobbyService.startGame(Integer.parseInt(lobbyId));
         GameStartedGetDTO gameStartedGetDTO = DTOMapper.INSTANCE.convertGameToGameStartedGetDTO(game);
         webSocketService.sendMessageToSubscribers("/topic/lobbies/" + lobbyId, gameStartedGetDTO);
-        //note n: true einfach so returnen ist natürlich nicht korrekt, schaue es mir noch an
     }
 
 
