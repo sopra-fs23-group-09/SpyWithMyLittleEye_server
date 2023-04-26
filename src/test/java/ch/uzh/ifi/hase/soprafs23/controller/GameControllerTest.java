@@ -4,34 +4,22 @@ import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
-import ch.uzh.ifi.hase.soprafs23.entity.wrappers.UserPointsWrapper;
-import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.RoundGetDTO;
-import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.hamcrest.core.IsNull;
 
-import static org.hamcrest.Matchers.is;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.mockito.BDDMockito.given;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -52,7 +40,7 @@ class GameControllerTest {
 
     @Test
     void getRole() throws Exception {
-        // given
+        // create a new game
         User player1 = new User();
         player1.setId(1L);
         player1.setUsername("petra");
@@ -214,14 +202,19 @@ class GameControllerTest {
 
         int gameid = 1;
 
-        UserPointsWrapper userPointsWrapper1 = new UserPointsWrapper("petra", 500);
-        UserPointsWrapper userPointsWrapper2 = new UserPointsWrapper("eva", 250);
-        UserPointsWrapper userPointsWrapper3 = new UserPointsWrapper("elena", 50);
+        List<UserPointsWrapper> userPointsWrappers = new ArrayList<>();
 
-        List<UserPointsWrapper> playerPoints = new ArrayList<>();
-        playerPoints.add(userPointsWrapper1);
-        playerPoints.add(userPointsWrapper2);
-        playerPoints.add(userPointsWrapper3);
+        UserPointsWrapper userPointsWrapper1 = new UserPointsWrapper(player1.getUsername(), 500);
+        UserPointsWrapper userPointsWrapper2 = new UserPointsWrapper(player2.getUsername(), 250);
+        UserPointsWrapper userPointsWrapper3 = new UserPointsWrapper(player3.getUsername(), 100);
+        userPointsWrappers.add(userPointsWrapper1);
+        userPointsWrappers.add(userPointsWrapper2);
+        userPointsWrappers.add(userPointsWrapper3);
+
+        Map<User,Integer> playerPointsMap = new HashMap<>();
+        playerPointsMap.put(player1,500);
+        playerPointsMap.put(player2,250);
+        playerPointsMap.put(player3,100);
 
         String roundOverStatus = "time is up";
         String keyword = "car";
@@ -231,14 +224,12 @@ class GameControllerTest {
         Game game = new Game(gameid,players,3,player1);
         game.nextRound();
 
-
         RoundGetDTO roundGetDTO = new RoundGetDTO();
-        roundGetDTO.setPlayerPoints(player1,500);
+        roundGetDTO.setPlayerPoints(playerPointsMap);
         roundGetDTO.setRoundOverStatus(roundOverStatus);
         roundGetDTO.setKeyword(keyword);
         roundGetDTO.setHostId(hostId);
         roundGetDTO.setCurrentRoundNr(currentRoundNr);
-
 
         //mocking gameService
         given(DTOMapper.INSTANCE.convertGameToRoundGetDTO(GameRepository.getGameById(gameid))).willReturn(roundGetDTO);
@@ -248,7 +239,7 @@ class GameControllerTest {
 
         mockMvc.perform(getRequest)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.playerPoints").value(playerPoints))
+                .andExpect(jsonPath("$.playerPoints").value(userPointsWrappers))
                 .andExpect(jsonPath("$.roundOverStatus").value(roundOverStatus))
                 .andExpect(jsonPath("$.keyword").value(keyword))
                 .andExpect(jsonPath("$.hostId").value(hostId))

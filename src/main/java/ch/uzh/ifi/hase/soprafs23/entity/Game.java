@@ -17,10 +17,8 @@ public class Game {
     private List<Guess> playerGuesses;
     private int currentRoundNr;
     private Timer roundTimer;
-
     private boolean timerStarted;
     private Map<Long, Role> playerRoles;
-
     private String keyword;
     private int nrPlayersGuessedCorrectly;
     private String roundOverStatus;
