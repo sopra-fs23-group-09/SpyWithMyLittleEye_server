@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class GameController {
 
-    private final Logger logger = LoggerFactory.getLogger(GameController.class);
-
     private final UserService userService;
     private final LobbyService lobbyService;
     private final GameService gameService;
@@ -28,26 +26,20 @@ public class GameController {
         this.lobbyService = lobbyService;
     }
 
-    @GetMapping("/game/{lobbyId}/roleForUser/{playerId}") //probably should rename lobbyId to gameId, probably change Integer to int
-    public ResponseEntity<Role> getRole(@PathVariable("lobbyId") Integer lobbyId, @PathVariable("playerId") Long playerId){
-        //TODO: check that game has been started
-        //TODO: check token
-        return ResponseEntity.ok(gameService.getRole(lobbyId, playerId));
+    @GetMapping("/game/{gameId}/roleForUser/{playerId}")
+    public ResponseEntity<Role> getRole(@PathVariable("gameId") int gameId, @PathVariable("playerId") Long playerId){
+        return ResponseEntity.ok(gameService.getRole(gameId, playerId));
     }
 
-    @GetMapping("/game/{lobbyId}/roundnr") //probably should rename lobbyId to gameId
-    public ResponseEntity<RoundNr> getRound(@PathVariable("lobbyId") Integer lobbyId) { //probably change Integer to int
-        //TODO: check that game has been started
-        //TODO: check token
-        int currentRound = gameService.getCurrentRoundNr(lobbyId);
-        int totalRounds = gameService.getTotalNrRounds(lobbyId);
+    @GetMapping("/game/{gameId}/roundnr")
+    public ResponseEntity<RoundNr> getRound(@PathVariable("gameId") int gameId) {
+        int currentRound = gameService.getCurrentRoundNr(gameId);
+        int totalRounds = gameService.getTotalNrRounds(gameId);
         return ResponseEntity.ok(new RoundNr(currentRound, totalRounds));
     }
 
     @GetMapping("/games/{gameId}/round/results")
     public ResponseEntity<RoundGetDTO> getRoundInformation(@PathVariable("gameId") int gameId){
-        //TODO: check that game has been started and round over
-        //TODO: check token
         return ResponseEntity.ok().body(DTOMapper.INSTANCE.convertGameToRoundGetDTO(GameRepository.getGameById(gameId)));
     }
 }

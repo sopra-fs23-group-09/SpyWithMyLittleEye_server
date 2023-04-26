@@ -1,6 +1,5 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
-import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
@@ -16,22 +15,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.Random;
 
 @Service
 @Transactional
 public class LobbyService {
     private final Logger log = LoggerFactory.getLogger(UserService.class);
-    // note c: added UserRepository, to check whether user is already in lobby and then add the lobbyID to the user
     private final UserRepository userRepository;
-
     private int newLobbyId;
+    private final Random random;
 
     @Autowired
     public LobbyService(@Qualifier("userRepository") UserRepository userRepository) {
         this.userRepository = userRepository;
         this.newLobbyId = 1;
+        this.random = new Random();
     }
 
     public Lobby createLobby(User host, int amountRounds){
@@ -58,7 +56,6 @@ public class LobbyService {
 
     //generate a random (and unique) lobby access number between 10000 and 99999
     private int generateAccessCode(){
-        Random random = new Random();
         int accessCode = 0;
         //generate random access code until it is unique
         do {
@@ -74,7 +71,6 @@ public class LobbyService {
         return LobbyRepository.getLobbyByAccessCode(accessCode) != null;
     }
 
-    //note c: added accessCode as parameter: checkAccessCode is private method and find correct lobby to add user
     public Lobby addUser(User player, int accessCode){
         // check if accessCode exists
         if (!checkAccessCode(accessCode)){

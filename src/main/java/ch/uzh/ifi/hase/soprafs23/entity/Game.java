@@ -17,17 +17,12 @@ public class Game {
     private List<Guess> playerGuesses;
     private int currentRoundNr;
     private Timer roundTimer;
-
     private boolean timerStarted;
     private Map<Long, Role> playerRoles;
-    //TODO: need variable to know if game started?
-
-    //TODO: need to send always round number to check if access allowed correct?
     private String keyword;
     private int nrPlayersGuessedCorrectly;
-    private String roundOverStatus = "time out"; //TODO adapt that when timer etc works
-    private Date startTime; // TODO: need to assign this value correctly, probably own method to assign and return
-                            // TODO: instead of the method getStartTime (or let this method set the starTime?
+    private String roundOverStatus;
+    private Date startTime;
 
     public Game(int id, List<User> players, int amountRounds, User host){
         this.playerRoles = new HashMap<>();
@@ -38,12 +33,11 @@ public class Game {
         initializePoints();
         this.amountRounds = amountRounds;
         this.currentRoundNr = 0;
-        this.nrPlayersGuessedCorrectly = 0; //TODO reset after each round
+        this.nrPlayersGuessedCorrectly = 0;
         this.hostId = host.getId();
     }
 
-    //TODO: check if save/flush needed for user
-    public void updatePointsIfGameEnded(){ //TODO: M4 allow more than 1 winner
+    public void updatePointsIfGameEnded(){
         User winner = players.get(0);
         for(User u : players){
             if(playerPoints.get(u) > playerPoints.get(winner)) winner = u;
@@ -59,23 +53,31 @@ public class Game {
         return roundOverStatus;
     }
 
+    public void setRoundOverStatus(String roundOverStatus) {
+        this.roundOverStatus = roundOverStatus;
+    }
+
     public void runTimer(GameStompController conG){
         if (!timerStarted) {
             timerStarted = true;
             roundTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
+                    String message = "time is up";
+                    setRoundOverStatus(message);
                     roundTimer.cancel();
-                    conG.handleEndRound(id, "time is up", amountRounds, currentRoundNr);
+                    conG.handleEndRound(id, message, amountRounds, currentRoundNr);
                 }
-            }, DURATION * 60 * 1000);
+            }, (long) DURATION * 60 * 1000);
         }
     }
 
     public void endRoundIfAllUsersGuessedCorrectly(GameStompController conG){
         if (this.nrPlayersGuessedCorrectly == (players.size() -1)){
             roundTimer.cancel();
-            conG.handleEndRound(id, "all guessed correctly", amountRounds, currentRoundNr);
+            String message = "all guessed correctly";
+            setRoundOverStatus(message);
+            conG.handleEndRound(id, message, amountRounds, currentRoundNr);
         }
     }
 
@@ -89,7 +91,7 @@ public class Game {
     }
     private void distributeRoles(){
         for(int i = 0; i < players.size(); i++){
-            if(i == (currentRoundNr - 1) % players.size()){ //is this better as counting from 0?
+            if(i == (currentRoundNr - 1) % players.size()){
                 playerRoles.put(players.get(i).getId(), Role.SPIER);
             }else{
                 playerRoles.put(players.get(i).getId(), Role.GUESSER);
@@ -97,8 +99,8 @@ public class Game {
         }
     }
     public void allocatePoints(User player, Date guessTime){
-        // formula to compute points: 500 - seconds needed to guess
-        int points = (int) ((DURATION *60) - (guessTime.getTime()- startTime.getTime())/1000); //TODO: Better point calc M4
+        // formula to compute points: duration in seconds - seconds needed to guess
+        int points = (int) ((DURATION *60) - (guessTime.getTime()- startTime.getTime())/1000);
         int pointsOfCurrentPlayer = playerPoints.get(player) + points;
         playerPoints.put(player, pointsOfCurrentPlayer);
         this.nrPlayersGuessedCorrectly++;
@@ -108,11 +110,11 @@ public class Game {
         return guess.equalsIgnoreCase(this.keyword);
     }
 
-    public void nextRound(){ //TODO
+    public void nextRound(){
         if(currentRoundNr + 1  > amountRounds){ throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "All rounds were played");}
         playerRoles = new HashMap<>();
         playerGuesses = new ArrayList<>();
-        keyword = null; //TODO ???
+        keyword = null;
         startTime = null;
         roundTimer = new Timer();
         timerStarted = false;
