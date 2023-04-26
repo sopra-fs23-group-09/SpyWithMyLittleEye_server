@@ -97,9 +97,9 @@ public class GameStompController {
         webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/hints", hint);
     }
 
-    @MessageMapping("games/{gameId}/gameOver")
+    @MessageMapping("/games/{gameId}/gameOver")
     public void endGame(@DestinationVariable("gameId") int gameId){
         gameService.handleGameOver(gameId);
-        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/gameOver", "gameOver");
+        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/gameOver", new EndRoundMessage("endGame", 0, 0));
     }
 }
