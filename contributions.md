@@ -79,7 +79,10 @@
 - Xena
   1. 
 - Loubna
-  1. 
+  1. Login UI : https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/178
+  2. Signup UI: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/179
+  3. Startpage UI: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/180
+  4. Waitingroom UI + entertainement: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/181
 - Thereza
   1. Leaderboard Logic https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/13
   2. Leaderboard UI https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/177
