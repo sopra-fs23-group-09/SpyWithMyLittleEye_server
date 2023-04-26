@@ -81,5 +81,6 @@
 - Loubna
   1. 
 - Thereza
-  1. Leaderboard View https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/13
-  2. Misc: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/97 , 
+  1. Leaderboard Logic https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/13
+  2. Leaderboard UI https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/177
+  3. Misc: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/97 
