@@ -145,16 +145,16 @@ class GameServiceTest {
         String spiedObject = "car";
 
         gameService.saveSpiedObjectInfo(gameid, spiedObject);
+        int waitingPeriod = 5;
         try {
-            Thread.sleep(5000); // sleep for 5 seconds
+            Thread.sleep(waitingPeriod*1000); // sleep for 5 seconds
         } catch (InterruptedException e) {
-            // Handle the exception if necessary
         }
 
         Date guessTime = new Date();
         gameService.checkGuessAndAllocatePoints(gameid,player2,spiedObject, guessTime);
 
-        assertEquals(495,game.getPlayerPoints().get(player2));
+        assertEquals(Game.DURATION*60-waitingPeriod,game.getPlayerPoints().get(player2));
     }
 
     @Test
