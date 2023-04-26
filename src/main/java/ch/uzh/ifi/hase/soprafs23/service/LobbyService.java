@@ -34,8 +34,12 @@ public class LobbyService {
         this.newLobbyId = 1;
     }
 
-    public Lobby createLobby(User host, int amountRounds){
+    public Lobby createLobby(User host, int amountRounds){  //TODO: ensure that lobbyId deleted from user
         // to-do: make sure that host is not in another lobby, else throw error
+        if (host.getLobbyID() != 0){ // note c: after game ends, lobbyID and gameID have to be set to null again
+            //to-do: ResponseStatusException for websocket (?!)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can only play one game at a time.");
+        }
         int accessCode = generateAccessCode();
         if(amountRounds < 1 || amountRounds > 20){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The maximum amount of rounds is 20 and can't be less than 1");
@@ -92,7 +96,7 @@ public class LobbyService {
 
         // check if lobby is  already full
         if (!lobby.addPlayer(player)){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The lobby is full.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "The lobby is full.");
         }
         return lobby;
     }
