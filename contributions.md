@@ -70,3 +70,16 @@
   1. Round Over Page (#29) https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/29
   2. Game Over Page (#36) https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/36
   3. WaitingRoom (#108) https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/108
+  
+### Week 5: 27.04. - 02.05. 
+- Nina
+  1. 
+- Claudia
+  1. 
+- Xena
+  1. 
+- Loubna
+  1. 
+- Thereza
+  1. Leaderboard View https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/13
+  2. Misc: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/97 , 
