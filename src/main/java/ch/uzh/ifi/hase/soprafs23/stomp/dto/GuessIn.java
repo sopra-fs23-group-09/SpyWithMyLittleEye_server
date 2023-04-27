@@ -4,6 +4,9 @@ public class GuessIn {
     private String guess;
     private String id;
 
+    public GuessIn() {
+    }
+
     public GuessIn(String guess, String id) {
         this.guess = guess;
         this.id = id;
@@ -13,8 +16,16 @@ public class GuessIn {
         return guess;
     }
 
+    public void setGuess(String guess) {
+        this.guess = guess;
+    }
+
     public Long getId() {
         return Long.valueOf(id);
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override

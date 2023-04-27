@@ -6,7 +6,10 @@ public class SpiedObjectIn {
     private String color;
     private Location location;
 
-    public SpiedObjectIn(String object,String color, Location location){
+    public SpiedObjectIn() {
+    }
+
+    public SpiedObjectIn(String object, String color, Location location) {
         this.object = object;
         this.color = color;
         this.location = location;
@@ -16,13 +19,23 @@ public class SpiedObjectIn {
         return object;
     }
 
+    public void setObject(String object) {
+        this.object = object;
+    }
+
     public String getColor() {
         return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public Location getLocation() {
         return location;
     }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 }
-
-
