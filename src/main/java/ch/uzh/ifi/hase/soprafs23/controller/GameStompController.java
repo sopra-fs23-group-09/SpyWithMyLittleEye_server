@@ -32,11 +32,14 @@ public class GameStompController {
 
     private final GameService gameService;
 
+    private final LobbyService lobbyService;
+
     private final WebSocketService webSocketService;
 
-    GameStompController(UserService userService, GameService gameService, WebSocketService ws){
+    GameStompController(UserService userService, GameService gameService, LobbyService lobbyService, WebSocketService ws){
         this.userService = userService;
         this.gameService = gameService;
+        this.lobbyService = lobbyService;
         this.webSocketService = ws;
     }
 
