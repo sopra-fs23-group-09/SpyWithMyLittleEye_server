@@ -17,6 +17,7 @@ public class Lobby {
     public Lobby(User host, int id, int accessCode, int amountRounds){
         this.id = id;
         this.host = host;
+        host.setLobbyID(id);
         this.accessCode = accessCode;
         this.players = new ArrayList<>(MAX_AMOUNT_PLAYERS);
         this.players.add(host);
