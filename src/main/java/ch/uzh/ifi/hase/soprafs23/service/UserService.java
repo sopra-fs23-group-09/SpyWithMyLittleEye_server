@@ -137,7 +137,7 @@ public class UserService {
     //annotated so we don't forget to check
     public User getUser(Long id){
 
-        Optional<User> user = userRepository.findById(id); //note c: merge-conflict resolved in github, CHECK!
+        Optional<User> user = userRepository.findById(id);
         if (user.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This user is doing no existing!");
         }

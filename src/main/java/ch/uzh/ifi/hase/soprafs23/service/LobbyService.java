@@ -34,8 +34,8 @@ public class LobbyService {
 
     public Lobby createLobby(User host, int amountRounds){  //TODO: ensure that lobbyId deleted from user
         // to-do: make sure that host is not in another lobby, else throw error
-        if (host.getLobbyID() != 0){ // note c: after game ends, lobbyID and gameID have to be set to null again
-            //to-do: ResponseStatusException for websocket (?!)
+        if (host.getLobbyID() != 0){
+            //to-do: ResponseStatusException for websocket
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can only play one game at a time.");
         }
         int accessCode = generateAccessCode();
@@ -83,8 +83,7 @@ public class LobbyService {
         //probably add a check here for rejoin as additional feature for M4
 
         // check if user is already in a lobby or in a game, if so throw error
-        if (player.getLobbyID() != 0){ // note c: after game ends, lobbyID and gameID have to be set to null again
-            //to-do: ResponseStatusException for websocket (?!)
+        if (player.getLobbyID() != 0){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can only play one game at a time.");
         }
 
@@ -109,5 +108,4 @@ public class LobbyService {
         }
         return lobby;
     }
-
 }
