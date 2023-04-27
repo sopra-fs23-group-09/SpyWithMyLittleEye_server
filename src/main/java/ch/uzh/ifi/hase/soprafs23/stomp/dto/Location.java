@@ -1,8 +1,8 @@
 package ch.uzh.ifi.hase.soprafs23.stomp.dto;
 
-public class Location { //if we don't want to store location in game clas probably not needed
-    private double lat;
-    private double lng;
+public class Location {
+    private final double lat;
+    private final double lng;
 
     public Location(double lat, double lng) {
         this.lat = lat;
@@ -20,10 +20,16 @@ public class Location { //if we don't want to store location in game clas probab
     @Override
     public boolean equals(Object obj) {
         if(obj == null) return false;
-        if(obj instanceof  Location) {
-            Location o = (Location) obj;
+        if(obj instanceof Location o) {
             return o.lat == lat && o.lng == lng;
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int latHash = Double.hashCode(lat);
+        int lngHash = Double.hashCode(lng);
+        return 12 * latHash + lngHash;
     }
 }

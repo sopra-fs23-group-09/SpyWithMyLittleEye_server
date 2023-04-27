@@ -1,16 +1,10 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
-import ch.uzh.ifi.hase.soprafs23.controller.GameStompController;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -155,21 +149,5 @@ class GameServiceTest {
         gameService.checkGuessAndAllocatePoints(gameid,player2,spiedObject, guessTime);
 
         assertEquals(Game.DURATION*60-waitingPeriod,game.getPlayerPoints().get(player2));
-    }
-
-    @Test
-    void endRoundIfAllUsersGuessedCorrectly_notAllUsersGuessedCorrectly() {
-    }
-
-    @Test
-    void handleGameOver() {
-    }
-
-    @Test
-    void nextRound() {
-    }
-
-    @Test
-    void initializeStartTime() {
     }
 }

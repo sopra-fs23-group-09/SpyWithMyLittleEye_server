@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
@@ -22,7 +23,6 @@ import java.util.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
 @WebMvcTest(GameController.class)
 class GameControllerTest {
 
@@ -37,6 +37,9 @@ class GameControllerTest {
 
     @MockBean
     private LobbyService lobbyService;
+
+    @MockBean
+    private GameRepository gameRepository;
 
     @Test
     void getRole() throws Exception {
@@ -200,39 +203,26 @@ class GameControllerTest {
         players.add(player2);
         players.add(player3);
 
-        int gameid = 1;
-
-        List<UserPointsWrapper> userPointsWrappers = new ArrayList<>();
-
-        UserPointsWrapper userPointsWrapper1 = new UserPointsWrapper(player1.getUsername(), 500);
-        UserPointsWrapper userPointsWrapper2 = new UserPointsWrapper(player2.getUsername(), 250);
-        UserPointsWrapper userPointsWrapper3 = new UserPointsWrapper(player3.getUsername(), 100);
-        userPointsWrappers.add(userPointsWrapper1);
-        userPointsWrappers.add(userPointsWrapper2);
-        userPointsWrappers.add(userPointsWrapper3);
-
-        Map<User,Integer> playerPointsMap = new HashMap<>();
-        playerPointsMap.put(player1,500);
-        playerPointsMap.put(player2,250);
-        playerPointsMap.put(player3,100);
-
         String roundOverStatus = "time is up";
+        int gameid = 1;
         String keyword = "car";
         Long hostId = 1L;
         int currentRoundNr = 1;
 
         Game game = new Game(gameid,players,3,player1);
         game.nextRound();
+        Date startTime = new Date();
+        game.initializeStartTime(startTime);
 
-        RoundGetDTO roundGetDTO = new RoundGetDTO();
-        roundGetDTO.setPlayerPoints(playerPointsMap);
-        roundGetDTO.setRoundOverStatus(roundOverStatus);
-        roundGetDTO.setKeyword(keyword);
-        roundGetDTO.setHostId(hostId);
-        roundGetDTO.setCurrentRoundNr(currentRoundNr);
+        //add game to GameRepository
+        //GameRepository.addGame(game);
 
-        //mocking gameService
-        given(DTOMapper.INSTANCE.convertGameToRoundGetDTO(GameRepository.getGameById(gameid))).willReturn(roundGetDTO);
+        List<UserPointsWrapper> userPointsWrappers = new ArrayList<>();
+        userPointsWrappers.add(new UserPointsWrapper(player1.getUsername(), 0));
+        userPointsWrappers.add(new UserPointsWrapper(player2.getUsername(), 0));
+        userPointsWrappers.add(new UserPointsWrapper(player3.getUsername(), 0));
+
+        given(GameRepository.getGameById(gameid)).willReturn(game);
 
         //when
         MockHttpServletRequestBuilder getRequest = get("/game/"+gameid+"/round/results");

@@ -1,28 +1,24 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
-import ch.uzh.ifi.hase.soprafs23.constant.Role;
-import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
-import org.hibernate.hql.internal.ast.tree.CollectionPathNode;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class Lobby {
     private static final int MAX_AMOUNT_PLAYERS = 10;
-    private int id;
-    private int accessCode;
-    private List<User> players;
-    private User host;
+    private final int id;
+    private final int accessCode;
+    private final List<User> players;
+    private final User host;
     private boolean full;
-    private int amountRounds;
+    private final int amountRounds;
     private boolean gameStarted;
 
     public Lobby(User host, int id, int accessCode, int amountRounds){
         this.id = id;
         this.host = host;
         this.accessCode = accessCode;
-        this.players = new ArrayList<User>(MAX_AMOUNT_PLAYERS);
+        this.players = new ArrayList<>(MAX_AMOUNT_PLAYERS);
         this.players.add(host);
         this.full = false;
         this.amountRounds = amountRounds;

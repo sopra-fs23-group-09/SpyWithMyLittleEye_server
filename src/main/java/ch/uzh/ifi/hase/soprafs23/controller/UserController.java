@@ -53,7 +53,7 @@ public class UserController {
         return ResponseEntity.created(null).headers(header).body(DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser));
     }
     @GetMapping("/users/{userId}")
-    public ResponseEntity<UserGetDTO> getUser(@PathVariable(value = "userId") Long userId, @RequestHeader(value = "token", defaultValue = "null") String token) {//TODO: token check
+    public ResponseEntity<UserGetDTO> getUser(@PathVariable(value = "userId") Long userId, @RequestHeader(value = "token", defaultValue = "null") String token) {
         userService.checkToken(token);
         Long id = userService.getUserID(token);
         HttpHeaders header = new HttpHeaders();
