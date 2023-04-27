@@ -24,6 +24,7 @@ public class LobbyRepository {
     }
     public static void deleteLobby(int lobbyId){
         Lobby l = lobbyRepositoryByID.get(lobbyId);
+        if (l == null) return;
         lobbyRepositoryByID.remove(lobbyId);
         lobbyRepositoryByAccessCode.remove(l.getAccessCode());
     }
