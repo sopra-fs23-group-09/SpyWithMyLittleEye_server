@@ -44,7 +44,6 @@ public class LobbyStompController {
         Game game = lobbyService.startGame(Integer.parseInt(lobbyId));
         GameStartedGetDTO gameStartedGetDTO = DTOMapper.INSTANCE.convertGameToGameStartedGetDTO(game);
         webSocketService.sendMessageToSubscribers("/topic/lobbies/" + lobbyId, gameStartedGetDTO);
-        //note n: true einfach so returnen ist natürlich nicht korrekt, schaue es mir noch an
     }
 
 
