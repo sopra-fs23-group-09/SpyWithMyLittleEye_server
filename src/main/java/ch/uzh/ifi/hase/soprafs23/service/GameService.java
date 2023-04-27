@@ -74,28 +74,4 @@ public class GameService {
         }
         return game;
     }
-
-    private int calculateLevenshteinDistance(String string1, String string2){
-        int lengthString1 = string1.length();
-        int lengthString2 = string2.length();
-
-        if (lengthString1 == 0){ // base case 1: string 1 is empty
-            return lengthString2;
-        } else if (lengthString2 == 0) { //base case 2: string 2 is empty
-            return lengthString1;
-        } else if (string1.charAt(lengthString1 - 1) == string2.charAt(lengthString2 - 1)) { // case A: the last character match
-            return calculateLevenshteinDistance(string1.substring(0, lengthString1 - 1),string2.substring(0, lengthString2 - 1));
-        } else { // case B: the last character don't match: is the shortest way to delete, insert or substitute a character?
-            // insertion
-            int distance_insertion = calculateLevenshteinDistance(string1, string2.substring(lengthString2 - 1));
-
-            // deletion
-            int distance_deletion = calculateLevenshteinDistance(string1.substring(0, lengthString1 - 1), string2);
-
-            // substitution
-            int distance_substitution = calculateLevenshteinDistance(string1.substring(0, lengthString1 - 1), string2.substring(0, lengthString2 - 1));
-
-            return 1 + Math.min(Math.min(distance_insertion, distance_deletion), distance_substitution); //add 1 to the Levenshtein distance of the substrings because deletion, insertion or substitution was needed
-        }
-    }
 }

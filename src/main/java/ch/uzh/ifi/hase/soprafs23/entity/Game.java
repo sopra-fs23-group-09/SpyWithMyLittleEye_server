@@ -106,7 +106,7 @@ public class Game {
         this.nrPlayersGuessedCorrectly++;
     }
 
-    public boolean checkGuess(String guess){ //TODO use levenshteindistance (static class in game for example) M4
+    public boolean checkGuess(String guess){
         return guess.equalsIgnoreCase(this.keyword);
     }
 
