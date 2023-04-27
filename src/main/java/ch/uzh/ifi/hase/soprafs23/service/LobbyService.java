@@ -53,7 +53,9 @@ public class LobbyService {
 
     public Game startGame(int lobbyId){
         Lobby lobby = LobbyRepository.getLobbyById(lobbyId);
+        if(lobby == null) throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "Lobby doesn't exist.");
         Game game = lobby.play();
+        if (game == null) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "game already started.");
         GameRepository.addGame(game);
         return game;
     }
