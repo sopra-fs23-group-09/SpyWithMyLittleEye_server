@@ -45,7 +45,7 @@ public class GameStompController {
     }
 
     @MessageMapping("/games/{gameId}/spiedObject")
-    public void handleSpiedObject(SpiedObjectIn spiedObjectIn, @DestinationVariable("gameId") int gameId) throws Exception{
+    public void handleSpiedObject(SpiedObjectIn spiedObjectIn, @DestinationVariable("gameId") int gameId) {
         //extract information from JSON
         String keyword = spiedObjectIn.getObject();
         String color = spiedObjectIn.getColor();

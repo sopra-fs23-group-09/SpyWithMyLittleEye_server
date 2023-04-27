@@ -1,0 +1,348 @@
+package ch.uzh.ifi.hase.soprafs23.controller;
+
+import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs23.entity.Game;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.LobbyGetDTO;
+import ch.uzh.ifi.hase.soprafs23.service.GameService;
+import ch.uzh.ifi.hase.soprafs23.service.UserService;
+import ch.uzh.ifi.hase.soprafs23.stomp.dto.*;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.converter.MessageConverter;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
+import org.springframework.web.socket.sockjs.client.SockJsClient;
+import org.springframework.web.socket.sockjs.client.WebSocketTransport;
+
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+
+import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class GameStompControllerTest {
+
+    @LocalServerPort
+    // automatically allocated random port
+    private Integer port;
+
+    @MockBean
+    private GameService gameService;
+
+    @MockBean
+    private UserService userService;
+
+    private WebSocketStompClient webSocketStompClient;
+
+    private User testUser;
+
+    @BeforeEach
+    void setup() {
+        webSocketStompClient = new WebSocketStompClient(new SockJsClient(List.of(
+                new WebSocketTransport(new StandardWebSocketClient()))));
+
+        testUser = new User();
+        testUser.setId(3L);
+        testUser.setPassword("password");
+        testUser.setUsername("testUser");
+        testUser.setToken("1");
+        testUser.setStatus(UserStatus.ONLINE);
+        testUser.setCreationDate(new Date(0L));
+    }
+
+    private String getWsPath() { return String.format("ws://localhost:%d/ws", port); }
+
+    private MessageConverter getSpiedObjOutConverter() {
+        return new MessageConverter() {
+            private final Gson gson = new Gson();
+            @Override
+            public Object fromMessage(Message<?> message, Class<?> targetClass) {
+                String text = new String((byte[]) message.getPayload(), StandardCharsets.UTF_8);
+                return gson.fromJson(text, SpiedObjectOut.class);
+            }
+
+            @Override
+            public Message<?> toMessage(Object payload, MessageHeaders headers) {
+                return new Message<Object>() {
+                    @Override
+                    public Object getPayload() {
+                        return gson.toJson(payload).getBytes(StandardCharsets.UTF_8);
+                    }
+
+                    @Override
+                    public MessageHeaders getHeaders() {
+                        return headers;
+                    }
+                };
+            }
+        };
+    }
+
+    private MessageConverter getEndRoundConverter() {
+        return new MessageConverter() {
+            private final Gson gson = new Gson();
+            @Override
+            public Object fromMessage(Message<?> message, Class<?> targetClass) {
+                String text = new String((byte[]) message.getPayload(), StandardCharsets.UTF_8);
+                return gson.fromJson(text, EndRoundMessage.class);
+            }
+
+            @Override
+            public Message<?> toMessage(Object payload, MessageHeaders headers) {
+                return null;
+            }
+        };
+    }
+
+    private MessageConverter getGuessConverter() {
+        return new MessageConverter() {
+            private final Gson gson = new Gson();
+            @Override
+            public Object fromMessage(Message<?> message, Class<?> targetClass) {
+                String text = new String((byte[]) message.getPayload(), StandardCharsets.UTF_8);
+                return gson.fromJson(text, new TypeToken<List<Guess>>(){}.getType());
+            }
+
+            @Override
+            public Message<?> toMessage(Object payload, MessageHeaders headers) {
+                return new Message<Object>() {
+                    @Override
+                    public Object getPayload() {
+                        return gson.toJson(payload).getBytes(StandardCharsets.UTF_8);
+                    }
+
+                    @Override
+                    public MessageHeaders getHeaders() {
+                        return headers;
+                    }
+                };
+            }
+        };
+    }
+
+    private MessageConverter getHintConverter() {
+        return new MessageConverter() {
+            private final Gson gson = new Gson();
+            @Override
+            public Object fromMessage(Message<?> message, Class<?> targetClass) {
+                String text = new String((byte[]) message.getPayload(), StandardCharsets.UTF_8);
+                return gson.fromJson(text, Hint.class);
+            }
+
+            @Override
+            public Message<?> toMessage(Object payload, MessageHeaders headers) {
+                return new Message<Object>() {
+                    @Override
+                    public Object getPayload() {
+                        return gson.toJson(payload).getBytes(StandardCharsets.UTF_8);
+                    }
+
+                    @Override
+                    public MessageHeaders getHeaders() {
+                        return headers;
+                    }
+                };
+            }
+        };
+    }
+
+    @Test
+    public void endGame() throws ExecutionException, InterruptedException {
+        BlockingQueue<EndRoundMessage> queue = new ArrayBlockingQueue<>(1);
+        Random random = new Random(398);
+        int gameId = random.nextInt(30) + 1;
+
+        webSocketStompClient.setMessageConverter(getEndRoundConverter());
+
+        StompSession session = webSocketStompClient.connect(getWsPath(), new StompSessionHandlerAdapter() {}).get();
+        session.subscribe("/topic/games/" + gameId + "/gameOver", new StompSessionHandlerAdapter() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return EndRoundMessage.class;
+            }
+
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                queue.add((EndRoundMessage) payload);
+            }
+        });
+        session.send("/app/games/" + gameId + "/gameOver", "");
+
+        await()
+                .atMost(2, TimeUnit.SECONDS)
+                .untilAsserted(() -> assertNotEquals(null, queue.peek()));
+
+        EndRoundMessage out = queue.poll();
+        assert out != null;
+        assertEquals("endGame", out.getEndRoundMessage());
+        assertEquals(0, out.getCurrentRound());
+        assertEquals(0, out.getAmountOfRounds());
+    }
+
+    @Test
+    public void distributeHints() throws ExecutionException, InterruptedException {
+        BlockingQueue<Hint> queue = new ArrayBlockingQueue<>(1);
+        Random random = new Random(398);
+        int gameId = random.nextInt(30) + 1;
+
+        Hint in = new Hint("large");
+
+        webSocketStompClient.setMessageConverter(getHintConverter());
+
+        StompSession session = webSocketStompClient.connect(getWsPath(), new StompSessionHandlerAdapter() {}).get();
+        session.subscribe("/topic/games/" + gameId + "/hints", new StompSessionHandlerAdapter() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return Hint.class;
+            }
+
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                queue.add((Hint) payload);
+            }
+        });
+        session.send("/app/games/" + gameId + "/hints", in);
+
+        await()
+                .atMost(2, TimeUnit.SECONDS)
+                .untilAsserted(() -> assertNotEquals(null, queue.peek()));
+
+        Hint out = queue.poll();
+        assert out != null;
+        assertEquals(in.getHint(), out.getHint());
+    }
+
+    @Test
+    public void handleGuess() throws ExecutionException, InterruptedException {
+        BlockingQueue<List<Guess>> queue = new ArrayBlockingQueue<>(1);
+        Random random = new Random(398);
+        int gameId = random.nextInt(30) + 1;
+
+        GuessIn in = new GuessIn("cat", ""+testUser.getId());
+
+        Mockito.when(userService.getUser(Mockito.anyLong())).thenReturn(testUser);
+        Mockito.when(gameService.checkGuessAndAllocatePoints(Mockito.anyInt(), Mockito.any(), Mockito.anyString(), Mockito.any()))
+                .thenReturn(List.of(new Guess(testUser.getUsername(), in.getGuess())));
+
+        webSocketStompClient.setMessageConverter(getGuessConverter());
+
+        StompSession session = webSocketStompClient.connect(getWsPath(), new StompSessionHandlerAdapter() {}).get();
+        session.subscribe("/topic/games/" + gameId + "/guesses", new StompSessionHandlerAdapter() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return List.class;
+            }
+
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                queue.add((List<Guess>) payload);
+            }
+        });
+        session.send("/app/games/" + gameId + "/guesses", in);
+
+        await()
+                .atMost(2, TimeUnit.SECONDS)
+                .untilAsserted(() -> assertNotEquals(null, queue.peek()));
+
+        List<Guess> out = queue.poll();
+        assert out != null;
+        assertEquals(testUser.getUsername(), out.get(0).getGuesserName());
+        assertEquals(in.getGuess(), out.get(0).getGuess());
+    }
+
+    @Test
+    public void nextRound() throws ExecutionException, InterruptedException {
+        BlockingQueue<EndRoundMessage> queue = new ArrayBlockingQueue<>(1);
+        Random random = new Random(398);
+        int gameId = random.nextInt(30) + 1;
+
+        webSocketStompClient.setMessageConverter(getEndRoundConverter());
+
+        StompSession session = webSocketStompClient.connect(getWsPath(), new StompSessionHandlerAdapter() {}).get();
+        session.subscribe("/topic/games/" + gameId + "/nextRound", new StompSessionHandlerAdapter() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return SpiedObjectOut.class;
+            }
+
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                queue.add((EndRoundMessage) payload);
+            }
+        });
+        session.send("/app/games/" + gameId + "/nextRound", "");
+
+        await()
+                .atMost(2, TimeUnit.SECONDS)
+                .untilAsserted(() -> assertNotEquals(null, queue.peek()));
+
+        EndRoundMessage end = queue.poll();
+        assert end != null;
+        assertEquals("nextRound", end.getEndRoundMessage());
+        assertEquals(0, end.getAmountOfRounds());
+        assertEquals(0, end.getCurrentRound());
+    }
+
+    @Test
+    public void handleSpiedObject() throws ExecutionException, InterruptedException {
+        BlockingQueue<SpiedObjectOut> queue = new ArrayBlockingQueue<>(1);
+        Random random = new Random(398);
+        int gameId = random.nextInt(30) + 1;
+
+        SpiedObjectIn in = new SpiedObjectIn("tree", "green", new Location(0, 0));
+
+        Mockito.when(gameService.initializeStartTime(Mockito.anyInt())).thenReturn(new Date(0L));
+
+        webSocketStompClient.setMessageConverter(getSpiedObjOutConverter());
+
+        StompSession session = webSocketStompClient.connect(getWsPath(), new StompSessionHandlerAdapter() {}).get();
+        session.subscribe("/topic/games/" + gameId + "/spiedObject", new StompSessionHandlerAdapter() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return SpiedObjectOut.class;
+            }
+
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                queue.add((SpiedObjectOut) payload);
+            }
+        });
+        session.send("/app/games/" + gameId + "/spiedObject", in);
+
+        await()
+                .atMost(2, TimeUnit.SECONDS)
+                .untilAsserted(() -> assertNotEquals(null, queue.peek()));
+
+        SpiedObjectOut out = queue.poll();
+        assert out != null;
+        assertEquals(in.getLocation(), out.getLocation());
+        assertEquals(in.getColor(), out.getColor());
+        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(0L));
+        assertEquals(time, out.getStartTime());
+        assertEquals(Game.DURATION, out.getDuration());
+    }
+}

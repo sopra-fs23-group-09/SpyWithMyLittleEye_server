@@ -4,6 +4,11 @@ public class GuessIn {
     private String guess;
     private String id;
 
+    public GuessIn(String guess, String id) {
+        this.guess = guess;
+        this.id = id;
+    }
+
     public String getGuess() {
         return guess;
     }

@@ -16,4 +16,14 @@ public class Location { //if we don't want to store location in game clas probab
     public double getLng() {
         return lng;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null) return false;
+        if(obj instanceof  Location) {
+            Location o = (Location) obj;
+            return o.lat == lat && o.lng == lng;
+        }
+        return false;
+    }
 }
