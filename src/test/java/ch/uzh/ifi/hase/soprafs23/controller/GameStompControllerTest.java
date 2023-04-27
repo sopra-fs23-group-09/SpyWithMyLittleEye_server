@@ -4,7 +4,6 @@ import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.LobbyGetDTO;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
 import ch.uzh.ifi.hase.soprafs23.stomp.dto.*;
@@ -12,8 +11,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -46,6 +46,8 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class GameStompControllerTest {
 
+    private final Logger logger = LoggerFactory.getLogger(GameStompControllerTest.class);
+
     @LocalServerPort
     // automatically allocated random port
     private Integer port;
@@ -74,11 +76,14 @@ public class GameStompControllerTest {
         testUser.setCreationDate(new Date(0L));
     }
 
-    private String getWsPath() { return String.format("ws://localhost:%d/ws", port); }
+    private String getWsPath() {
+        return String.format("ws://localhost:%d/ws", port);
+    }
 
     private MessageConverter getSpiedObjOutConverter() {
         return new MessageConverter() {
             private final Gson gson = new Gson();
+
             @Override
             public Object fromMessage(Message<?> message, Class<?> targetClass) {
                 String text = new String((byte[]) message.getPayload(), StandardCharsets.UTF_8);
@@ -105,6 +110,7 @@ public class GameStompControllerTest {
     private MessageConverter getEndRoundConverter() {
         return new MessageConverter() {
             private final Gson gson = new Gson();
+
             @Override
             public Object fromMessage(Message<?> message, Class<?> targetClass) {
                 String text = new String((byte[]) message.getPayload(), StandardCharsets.UTF_8);
@@ -121,10 +127,12 @@ public class GameStompControllerTest {
     private MessageConverter getGuessConverter() {
         return new MessageConverter() {
             private final Gson gson = new Gson();
+
             @Override
             public Object fromMessage(Message<?> message, Class<?> targetClass) {
                 String text = new String((byte[]) message.getPayload(), StandardCharsets.UTF_8);
-                return gson.fromJson(text, new TypeToken<List<Guess>>(){}.getType());
+                return gson.fromJson(text, new TypeToken<List<Guess>>() {
+                }.getType());
             }
 
             @Override
@@ -147,6 +155,7 @@ public class GameStompControllerTest {
     private MessageConverter getHintConverter() {
         return new MessageConverter() {
             private final Gson gson = new Gson();
+
             @Override
             public Object fromMessage(Message<?> message, Class<?> targetClass) {
                 String text = new String((byte[]) message.getPayload(), StandardCharsets.UTF_8);
@@ -178,7 +187,8 @@ public class GameStompControllerTest {
 
         webSocketStompClient.setMessageConverter(getEndRoundConverter());
 
-        StompSession session = webSocketStompClient.connect(getWsPath(), new StompSessionHandlerAdapter() {}).get();
+        StompSession session = webSocketStompClient.connect(getWsPath(), new StompSessionHandlerAdapter() {
+        }).get();
         session.subscribe("/topic/games/" + gameId + "/gameOver", new StompSessionHandlerAdapter() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
@@ -213,7 +223,8 @@ public class GameStompControllerTest {
 
         webSocketStompClient.setMessageConverter(getHintConverter());
 
-        StompSession session = webSocketStompClient.connect(getWsPath(), new StompSessionHandlerAdapter() {}).get();
+        StompSession session = webSocketStompClient.connect(getWsPath(), new StompSessionHandlerAdapter() {
+        }).get();
         session.subscribe("/topic/games/" + gameId + "/hints", new StompSessionHandlerAdapter() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
@@ -242,15 +253,17 @@ public class GameStompControllerTest {
         Random random = new Random(398);
         int gameId = random.nextInt(30) + 1;
 
-        GuessIn in = new GuessIn("cat", ""+testUser.getId());
+        GuessIn in = new GuessIn("cat", "" + testUser.getId());
 
         Mockito.when(userService.getUser(Mockito.anyLong())).thenReturn(testUser);
-        Mockito.when(gameService.checkGuessAndAllocatePoints(Mockito.anyInt(), Mockito.any(), Mockito.anyString(), Mockito.any()))
+        Mockito.when(gameService.checkGuessAndAllocatePoints(Mockito.anyInt(), Mockito.any(), Mockito.anyString(),
+                Mockito.any()))
                 .thenReturn(List.of(new Guess(testUser.getUsername(), in.getGuess())));
 
         webSocketStompClient.setMessageConverter(getGuessConverter());
 
-        StompSession session = webSocketStompClient.connect(getWsPath(), new StompSessionHandlerAdapter() {}).get();
+        StompSession session = webSocketStompClient.connect(getWsPath(), new StompSessionHandlerAdapter() {
+        }).get();
         session.subscribe("/topic/games/" + gameId + "/guesses", new StompSessionHandlerAdapter() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
@@ -282,7 +295,8 @@ public class GameStompControllerTest {
 
         webSocketStompClient.setMessageConverter(getEndRoundConverter());
 
-        StompSession session = webSocketStompClient.connect(getWsPath(), new StompSessionHandlerAdapter() {}).get();
+        StompSession session = webSocketStompClient.connect(getWsPath(), new StompSessionHandlerAdapter() {
+        }).get();
         session.subscribe("/topic/games/" + gameId + "/nextRound", new StompSessionHandlerAdapter() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
@@ -319,7 +333,8 @@ public class GameStompControllerTest {
 
         webSocketStompClient.setMessageConverter(getSpiedObjOutConverter());
 
-        StompSession session = webSocketStompClient.connect(getWsPath(), new StompSessionHandlerAdapter() {}).get();
+        StompSession session = webSocketStompClient.connect(getWsPath(), new StompSessionHandlerAdapter() {
+        }).get();
         session.subscribe("/topic/games/" + gameId + "/spiedObject", new StompSessionHandlerAdapter() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
@@ -328,9 +343,11 @@ public class GameStompControllerTest {
 
             @Override
             public void handleFrame(StompHeaders headers, Object payload) {
+                logger.info("Handling frame for {}", payload);
                 queue.add((SpiedObjectOut) payload);
             }
         });
+        logger.info("subscribed to /topic/games/{}/spiedObject", gameId);
         session.send("/app/games/" + gameId + "/spiedObject", in);
 
         await()

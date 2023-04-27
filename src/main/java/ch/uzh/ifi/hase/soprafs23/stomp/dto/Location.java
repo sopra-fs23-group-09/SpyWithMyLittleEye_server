@@ -1,8 +1,13 @@
 package ch.uzh.ifi.hase.soprafs23.stomp.dto;
 
-public class Location {
-    private final double lat;
-    private final double lng;
+
+public class Location { // if we don't want to store location in game clas probably not needed
+    private double lat;
+    private double lng;
+
+
+    public Location() {
+    }
 
     public Location(double lat, double lng) {
         this.lat = lat;
@@ -17,10 +22,22 @@ public class Location {
         return lng;
     }
 
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
+
     @Override
     public boolean equals(Object obj) {
-        if(obj == null) return false;
-        if(obj instanceof Location o) {
+
+        if (obj == null)
+            return false;
+        if (obj instanceof Location) {
+            Location o = (Location) obj;
+
             return o.lat == lat && o.lng == lng;
         }
         return false;

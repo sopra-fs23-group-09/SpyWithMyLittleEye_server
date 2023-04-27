@@ -14,7 +14,6 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.persistence.EntityNotFoundException;
 
 import java.util.Date;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
