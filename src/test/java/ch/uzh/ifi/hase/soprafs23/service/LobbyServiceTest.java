@@ -157,7 +157,7 @@ public class LobbyServiceTest {
 
     @ParameterizedTest
     @ValueSource(ints = { Integer.MIN_VALUE, -1234, -126, -23, -5, 0, 1, 34, 231, Integer.MAX_VALUE })
-    public void deleteLobby_shouldNotThrow(int lobbyId) {
-        assertDoesNotThrow(() -> lobbyService.deleteLobby(lobbyId));
+    public void deleteLobby_failureNonexisting(int lobbyId) {
+        assertThrows(ResponseStatusException.class, () -> lobbyService.deleteLobby(lobbyId));
     }
 }
