@@ -71,8 +71,7 @@ public class UserService {
         if(u == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The user doesn't exist");
         }
-        Long id = u.getId();
-        return id;
+        return u.getId();
     }
     //TODO: update ((the password +))the profile picture for M4 (probably not the password but don't know yet)
     //this method combines all the update [attribute] methods in the class diagram
