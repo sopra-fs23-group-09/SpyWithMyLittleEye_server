@@ -53,6 +53,8 @@ public class LobbyGetDTO {
     }
     public String getEvent() {return this.event;}
 
+    public void setEvent(String event) { this.event = event; }
+
     @Override
     public String toString() {
         return String.format("LobbyGetDTO [id=%d, accessCode=%d]", id, accessCode);

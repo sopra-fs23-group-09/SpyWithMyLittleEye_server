@@ -17,4 +17,11 @@ public class Guess {
         return guess;
     }
 
+    public void setGuesserName(String guesserName) {
+        this.guesserName = guesserName;
+    }
+
+    public void setGuess(String guess) {
+        this.guess = guess;
+    }
 }

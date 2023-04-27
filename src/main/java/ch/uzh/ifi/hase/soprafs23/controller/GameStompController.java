@@ -41,7 +41,7 @@ public class GameStompController {
     }
 
     @MessageMapping("/games/{gameId}/spiedObject")
-    public void handleSpiedObject(SpiedObjectIn spiedObjectIn, @DestinationVariable("gameId") int gameId) throws Exception{
+    public void handleSpiedObject(SpiedObjectIn spiedObjectIn, @DestinationVariable("gameId") int gameId) {
         //extract information from JSON
         String keyword = spiedObjectIn.getObject();
         String color = spiedObjectIn.getColor();
@@ -100,6 +100,7 @@ public class GameStompController {
     @MessageMapping("/games/{gameId}/gameOver")
     public void endGame(@DestinationVariable("gameId") int gameId){
         gameService.handleGameOver(gameId);
+        lobbyService.deleteLobby(gameId);
         webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/gameOver", new EndRoundMessage("endGame", 0, 0));
     }
 }

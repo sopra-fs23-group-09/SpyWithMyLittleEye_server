@@ -51,6 +51,9 @@ public class UserService {
     //could be renamed to deleteToken as written in class diagram
     public void clearToken(String token){
         User u = userRepository.findByToken(token);
+        if (u == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with this token exists");
+        }
         u.setToken(null);
         userRepository.save(u);
         userRepository.flush();
@@ -59,6 +62,7 @@ public class UserService {
     //with status so i would prefer setOffline
     public void setOffline(String token, boolean status){
         User u = userRepository.findByToken(token);
+        if (u == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user");
         u.setStatus(status?UserStatus.OFFLINE:UserStatus.ONLINE);
         userRepository.save(u);
         userRepository.flush();
@@ -68,8 +72,10 @@ public class UserService {
     }
     public Long getUserID(String token){
         User u = userRepository.findByToken(token);
-        Long id = u.getId();
-        return id;
+        if(u == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The user doesn't exist");
+        }
+        return u.getId();
     }
     //TODO: update ((the password +))the profile picture for M4 (probably not the password but don't know yet)
     //this method combines all the update [attribute] methods in the class diagram

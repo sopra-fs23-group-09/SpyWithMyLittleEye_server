@@ -48,7 +48,32 @@ public class UserRepositoryIntegrationTest {
     }
 
     @Test
-    public void getTop2Users(){
+    public void findByToken_success() {
+        // given
+        User user = new User();
+        user.setPassword("password");
+        user.setUsername("firstname@lastname");
+        user.setStatus(UserStatus.ONLINE);
+        user.setToken("1");
+        user.setCreationDate(new Date());
+
+        entityManager.persist(user);
+        entityManager.flush();
+
+        // when
+        User found = userRepository.findByToken(user.getToken());
+
+        // then
+        assertNotNull(found.getId());
+        assertEquals(found.getPassword(), user.getPassword());
+        assertEquals(found.getUsername(), user.getUsername());
+        assertEquals(found.getToken(), user.getToken());
+        assertEquals(found.getStatus(), user.getStatus());
+        assertEquals(found.getCreationDate(), user.getCreationDate());
+    }
+
+    @Test
+    public void getTop100Users(){
         User testUser = new User();
         testUser.setPassword("testPassword");
         testUser.setUsername("testUsername");
