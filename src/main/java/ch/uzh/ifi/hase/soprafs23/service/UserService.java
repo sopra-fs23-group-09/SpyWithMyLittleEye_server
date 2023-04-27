@@ -80,6 +80,10 @@ public class UserService {
     //TODO: update ((the password +))the profile picture for M4 (probably not the password but don't know yet)
     //this method combines all the update [attribute] methods in the class diagram
     public void updateUser(User u, String token, Long userId){
+        updateUser(u, token, userId, false);
+    }
+
+    public void updateUser(User u, String token, Long userId, boolean updateLobbyId) {
         Optional<User> uToUpdateO = userRepository.findById(userId);
         if(uToUpdateO.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The user doesn't exist!");
@@ -94,6 +98,9 @@ public class UserService {
         }
         if(u.getBirthday() != null){
             uToUpdate.setBirthday(u.getBirthday());
+        }
+        if(updateLobbyId) {
+            uToUpdate.setLobbyID(u.getLobbyID());
         }
         userRepository.save(uToUpdate);
         userRepository.flush();

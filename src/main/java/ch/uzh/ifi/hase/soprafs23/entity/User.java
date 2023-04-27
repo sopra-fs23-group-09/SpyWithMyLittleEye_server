@@ -60,6 +60,23 @@ public class User implements Serializable {
     @Column
     private int lobbyID;
 
+    public User() {
+    }
+
+    public User(User u) {
+        id = u.id;
+        password = u.password;
+        birthday = u.birthday;
+        username = u.username;
+        token = u.token;
+        status = u.status;
+        creationDate = u.creationDate;
+        profilePicture = u.profilePicture;
+        highScore = u.highScore;
+        gamesPlayed = u.gamesWon;
+        lobbyID = u.lobbyID;
+    }
+
     public void setProfilePicture(String profilePicture){this.profilePicture = profilePicture;} //M4
     public String getProfilePicture(){return profilePicture;} //M4
 

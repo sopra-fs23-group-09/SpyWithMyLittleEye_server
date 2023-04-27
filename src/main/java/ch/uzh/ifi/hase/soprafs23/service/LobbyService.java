@@ -6,7 +6,6 @@ import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.LobbyRepository;
 
-import org.aspectj.weaver.NewConstructorTypeMunger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.Random;
 
 @Service
@@ -108,9 +106,11 @@ public class LobbyService {
 
     public void deleteLobby(int lobbyId) {
         Lobby l = getLobby(lobbyId);
-        List<User> players = l.getPlayers();
-        for (int i = 0; i < players.size(); i++)
-            players.get(i).setLobbyID(0);
+        for (User u : l.getPlayers()) {
+            User newUser = new User(u);
+            newUser.setLobbyID(0);
+            userService.updateUser(newUser, u.getToken(), u.getId(), true);
+        }
         LobbyRepository.deleteLobby(lobbyId);
     }
 
