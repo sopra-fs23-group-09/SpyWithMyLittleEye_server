@@ -5,6 +5,8 @@ import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.LobbyRepository;
+
+import org.aspectj.weaver.NewConstructorTypeMunger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -22,16 +25,19 @@ public class LobbyService {
     private int newLobbyId;
     private final Random random;
 
+    private final UserService userService;
+
     @Autowired
-    public LobbyService() {
+    public LobbyService(UserService userService) {
         this.newLobbyId = 1;
         this.random = new Random();
+        this.userService = userService;
     }
 
     public Lobby createLobby(User host, int amountRounds) { // TODO: ensure that lobbyId deleted from user
         // to-do: make sure that host is not in another lobby, else throw error
-        if (host.getLobbyID() != 0){
-            //to-do: ResponseStatusException for websocket
+        if (host.getLobbyID() != 0) {
+            // to-do: ResponseStatusException for websocket
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can only play one game at a time.");
         }
         int accessCode = generateAccessCode();
@@ -86,7 +92,7 @@ public class LobbyService {
 
         // check if user is already in a lobby or in a game, if so throw error
 
-        if (player.getLobbyID() != 0){
+        if (player.getLobbyID() != 0) {
 
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can only play one game at a time.");
         }
@@ -100,8 +106,11 @@ public class LobbyService {
         return lobby;
     }
 
-    public void deleteLobby(int lobbyId) { // TODO: need to delete the lobbyId of all players in this 
-        // TODO: method, so they can join a new lobby
+    public void deleteLobby(int lobbyId) {
+        Lobby l = getLobby(lobbyId);
+        List<User> players = l.getPlayers();
+        for (int i = 0; i < players.size(); i++)
+            players.get(i).setLobbyID(0);
         LobbyRepository.deleteLobby(lobbyId);
     }
 

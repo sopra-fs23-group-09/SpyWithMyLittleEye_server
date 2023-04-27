@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
+import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
 import ch.uzh.ifi.hase.soprafs23.stomp.dto.*;
 import com.google.gson.Gson;
@@ -57,6 +58,9 @@ public class GameStompControllerTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private LobbyService lobbyService;
 
     private WebSocketStompClient webSocketStompClient;
 
