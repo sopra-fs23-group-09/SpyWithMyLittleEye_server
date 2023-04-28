@@ -47,6 +47,9 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No permission to enter.");
         }
     }
+    public void saveFlushUser(User u){
+        userRepository.saveAndFlush(u);
+    }
 
     //could be renamed to deleteToken as written in class diagram
     public void clearToken(String token){
