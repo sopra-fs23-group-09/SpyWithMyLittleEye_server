@@ -73,7 +73,7 @@ public class UserRepositoryIntegrationTest {
     }
 
     @Test
-    public void getTop100Users(){
+    public void getTop15Users(){
         User testUser = new User();
         testUser.setPassword("testPassword");
         testUser.setUsername("testUsername");
@@ -105,7 +105,7 @@ public class UserRepositoryIntegrationTest {
         entityManager.persist(testUser3);
         entityManager.flush();
 
-        List<User> users = userRepository.findTop100ByOrderByHighScoreDesc();
+        List<User> users = userRepository.findTop15ByOrderByHighScoreDesc();
         assertEquals(users.get(0),testUser3);
         assertEquals(users.get(1),testUser2);
     }

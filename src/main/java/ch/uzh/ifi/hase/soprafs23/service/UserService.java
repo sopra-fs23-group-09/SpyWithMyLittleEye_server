@@ -131,8 +131,13 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "The username provided is not unique. Choose another one!");
         }
     }
-    public List<User> getTop100User(){
-        List<User> topUsers = userRepository.findTop100ByOrderByHighScoreDesc();
+    public List<User> getTop15User(){
+        List<User> topUsers = userRepository.findTop15ByOrderByHighScoreDesc();
+        return Collections.unmodifiableList(topUsers);
+    }
+
+    public List<User> getTop15UsersGamesWon() {
+        List<User> topUsers = userRepository.findTop15ByOrderByGamesWonDesc();
         return Collections.unmodifiableList(topUsers);
     }
 
