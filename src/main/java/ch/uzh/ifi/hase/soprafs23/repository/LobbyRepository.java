@@ -16,7 +16,7 @@ public class LobbyRepository {
         lobbyRepositoryByAccessCode = new HashMap<>();
     }
 
-    ////// Externel interface
+    ////// External interface
 
     public static void reset() {
         INSTANCE = new LobbyRepository();
