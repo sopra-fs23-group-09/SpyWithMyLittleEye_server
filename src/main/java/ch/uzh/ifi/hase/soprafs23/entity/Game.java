@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.entity;
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.controller.GameStompController;
 import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
+import ch.uzh.ifi.hase.soprafs23.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,11 +24,13 @@ public class Game {
     private int nrPlayersGuessedCorrectly;
     private String roundOverStatus;
     private Date startTime;
+    private final UserService userService;
 
-    public Game(int id, List<User> players, int amountRounds, User host){
+    public Game(int id, List<User> players, int amountRounds, User host, UserService userService){
         this.playerRoles = new HashMap<>();
         this.playerGuesses = new ArrayList<>();
         this.playerPoints = new HashMap<>();
+        this.userService = userService;
         this.id = id;
         this.players = players;
         initializePoints();
@@ -43,8 +46,10 @@ public class Game {
             if(playerPoints.get(u) > playerPoints.get(winner)) winner = u;
             u.setHighScore(u.getHighScore()+ playerPoints.get(u));
             u.setGamesPlayed(u.getGamesPlayed() + 1);
+            userService.saveFlushUser(u);
         }
         winner.setGamesWon(winner.getGamesWon() + 1);
+        userService.saveFlushUser(winner);
     }
     public String getKeyword(){
         return keyword;

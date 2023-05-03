@@ -10,5 +10,7 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByUsername(String username);
     User findByToken(String token);
-    List<User> findTop100ByOrderByHighScoreDesc();
+    List<User> findTop15ByOrderByHighScoreDesc();
+
+    List<User> findTop15ByOrderByGamesWonDesc();
 }

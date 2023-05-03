@@ -6,7 +6,6 @@ import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.LobbyRepository;
 
-import org.aspectj.weaver.NewConstructorTypeMunger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +25,8 @@ public class LobbyService {
     private final Random random;
 
     private final UserService userService;
+
+
 
     @Autowired
     public LobbyService(UserService userService) {
@@ -58,7 +59,7 @@ public class LobbyService {
         Lobby lobby = LobbyRepository.getLobbyById(lobbyId);
         if (lobby == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lobby doesn't exist.");
-        Game game = lobby.play();
+        Game game = lobby.play(userService);
         if (game == null)
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "game already started.");
         GameRepository.addGame(game);
@@ -109,8 +110,10 @@ public class LobbyService {
     public void deleteLobby(int lobbyId) {
         Lobby l = getLobby(lobbyId);
         List<User> players = l.getPlayers();
-        for (int i = 0; i < players.size(); i++)
+        for (int i = 0; i < players.size(); i++) {
             players.get(i).setLobbyID(0);
+            userService.saveFlushUser(players.get(i));
+        }
         LobbyRepository.deleteLobby(lobbyId);
     }
 

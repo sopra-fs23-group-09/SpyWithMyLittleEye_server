@@ -8,6 +8,7 @@ import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -41,10 +42,16 @@ class GameControllerTest {
     @MockBean
     private GameRepository gameRepository;
 
-    @Test
-    void getRole() throws Exception {
-        // create a new game
-        User player1 = new User();
+    private User player1, player2, player3;
+
+    private List<User> players;
+
+    private int gameId, currentRound, amountRounds;
+
+    @BeforeEach
+    void setup() {
+        // given
+        player1 = new User();
         player1.setId(1L);
         player1.setUsername("petra");
         player1.setPassword("password");
@@ -53,7 +60,7 @@ class GameControllerTest {
         player1.setCreationDate(new Date(0L));
         player1.setBirthday(new Date(0L));
 
-        User player2 = new User();
+        player2 = new User();
         player2.setId(2L);
         player2.setUsername("eva");
         player2.setPassword("1234");
@@ -62,7 +69,7 @@ class GameControllerTest {
         player2.setCreationDate(new Date(0L));
         player2.setBirthday(new Date(0L));
 
-        User player3 = new User();
+        player3 = new User();
         player3.setId(3L);
         player3.setUsername("elena");
         player3.setPassword("admin");
@@ -71,24 +78,26 @@ class GameControllerTest {
         player3.setCreationDate(new Date(0L));
         player3.setBirthday(new Date(0L));
 
-        List<User> players = new ArrayList<>();
-        players.add(player1);
-        players.add(player2);
-        players.add(player3);
+        players = List.of(player1, player2, player3);
 
-        int gameid = 1;
+        gameId = 1;
+        currentRound = 1;
+        amountRounds = 3;
 
-        Game game = new Game(gameid,players,3,player1);
+        Game game = new Game(gameId,players,amountRounds,player1, userService);
         game.nextRound();
+    }
 
+    @Test
+    void getRole() throws Exception {
         //mocking gameService
-        given(gameService.getRole(gameid, player1.getId())).willReturn(Role.SPIER);
-        given(gameService.getRole(gameid, player2.getId())).willReturn(Role.GUESSER);
-        given(gameService.getRole(gameid, player3.getId())).willReturn(Role.GUESSER);
+        given(gameService.getRole(gameId, player1.getId())).willReturn(Role.SPIER);
+        given(gameService.getRole(gameId, player2.getId())).willReturn(Role.GUESSER);
+        given(gameService.getRole(gameId, player3.getId())).willReturn(Role.GUESSER);
 
         //testing response for player1
         //when
-        MockHttpServletRequestBuilder getRequestPlayer1 = get("/game/"+gameid+"/roleForUser/"+player1.getId());
+        MockHttpServletRequestBuilder getRequestPlayer1 = get("/game/"+gameId+"/roleForUser/"+player1.getId());
 
         mockMvc.perform(getRequestPlayer1)
                 .andExpect(status().isOk())
@@ -96,7 +105,7 @@ class GameControllerTest {
 
         //testing response for player2
         //when
-        MockHttpServletRequestBuilder getRequestPlayer2 = get("/game/"+gameid+"/roleForUser/"+player2.getId());
+        MockHttpServletRequestBuilder getRequestPlayer2 = get("/game/"+gameId+"/roleForUser/"+player2.getId());
 
         mockMvc.perform(getRequestPlayer2)
                 .andExpect(status().isOk())
@@ -104,7 +113,7 @@ class GameControllerTest {
 
         //testing response for player3
         //when
-        MockHttpServletRequestBuilder getRequestPlayer3 = get("/game/"+gameid+"/roleForUser/"+player3.getId());
+        MockHttpServletRequestBuilder getRequestPlayer3 = get("/game/"+gameId+"/roleForUser/"+player3.getId());
 
         mockMvc.perform(getRequestPlayer3)
                 .andExpect(status().isOk())
@@ -113,127 +122,16 @@ class GameControllerTest {
 
     @Test
     void getRound() throws Exception {
-        // given
-        User player1 = new User();
-        player1.setId(1L);
-        player1.setUsername("petra");
-        player1.setPassword("password");
-        player1.setStatus(UserStatus.ONLINE);
-        player1.setToken("token");
-        player1.setCreationDate(new Date(0L));
-        player1.setBirthday(new Date(0L));
-
-        User player2 = new User();
-        player2.setId(2L);
-        player2.setUsername("eva");
-        player2.setPassword("1234");
-        player2.setStatus(UserStatus.ONLINE);
-        player2.setToken("token");
-        player2.setCreationDate(new Date(0L));
-        player2.setBirthday(new Date(0L));
-
-        User player3 = new User();
-        player3.setId(3L);
-        player3.setUsername("elena");
-        player3.setPassword("admin");
-        player3.setStatus(UserStatus.ONLINE);
-        player3.setToken("token");
-        player3.setCreationDate(new Date(0L));
-        player3.setBirthday(new Date(0L));
-
-        List<User> players = new ArrayList<>();
-        players.add(player1);
-        players.add(player2);
-        players.add(player3);
-
-        int gameid = 1;
-        int currentRound = 1;
-        int amountRounds = 3;
-
-        Game game = new Game(gameid,players,amountRounds,player1);
-        game.nextRound();
-
         //mocking gameService
-        given(gameService.getCurrentRoundNr(gameid)).willReturn(currentRound);
-        given(gameService.getTotalNrRounds(gameid)).willReturn(amountRounds);
+        given(gameService.getCurrentRoundNr(gameId)).willReturn(currentRound);
+        given(gameService.getTotalNrRounds(gameId)).willReturn(amountRounds);
 
         //when
-        MockHttpServletRequestBuilder getRequest = get("/game/"+gameid+"/roundnr");
+        MockHttpServletRequestBuilder getRequest = get("/game/"+gameId+"/roundnr");
 
         mockMvc.perform(getRequest)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.currentRound").value(currentRound))
                 .andExpect(jsonPath("$.totalRounds").value(amountRounds));
     }
-
-    /*
-    @Test
-    void getRoundInformation() throws Exception {
-
-        // given
-        User player1 = new User();
-        player1.setId(1L);
-        player1.setUsername("petra");
-        player1.setPassword("password");
-        player1.setStatus(UserStatus.ONLINE);
-        player1.setToken("token");
-        player1.setCreationDate(new Date(0L));
-        player1.setBirthday(new Date(0L));
-
-        User player2 = new User();
-        player2.setId(2L);
-        player2.setUsername("eva");
-        player2.setPassword("1234");
-        player2.setStatus(UserStatus.ONLINE);
-        player2.setToken("token");
-        player2.setCreationDate(new Date(0L));
-        player2.setBirthday(new Date(0L));
-
-        User player3 = new User();
-        player3.setId(3L);
-        player3.setUsername("elena");
-        player3.setPassword("admin");
-        player3.setStatus(UserStatus.ONLINE);
-        player3.setToken("token");
-        player3.setCreationDate(new Date(0L));
-        player3.setBirthday(new Date(0L));
-
-        List<User> players = new ArrayList<>();
-        players.add(player1);
-        players.add(player2);
-        players.add(player3);
-
-        String roundOverStatus = "time is up";
-        int gameid = 1;
-        String keyword = "car";
-        Long hostId = 1L;
-        int currentRoundNr = 1;
-
-        Game game = new Game(gameid,players,3,player1);
-        game.nextRound();
-        Date startTime = new Date();
-        game.initializeStartTime(startTime);
-
-        //add game to GameRepository
-        //GameRepository.addGame(game);
-
-        List<UserPointsWrapper> userPointsWrappers = new ArrayList<>();
-        userPointsWrappers.add(new UserPointsWrapper(player1.getUsername(), 0));
-        userPointsWrappers.add(new UserPointsWrapper(player2.getUsername(), 0));
-        userPointsWrappers.add(new UserPointsWrapper(player3.getUsername(), 0));
-
-        given(GameRepository.getGameById(gameid)).willReturn(game);
-
-        //when
-        MockHttpServletRequestBuilder getRequest = get("/game/"+gameid+"/round/results");
-
-        mockMvc.perform(getRequest)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.playerPoints").value(userPointsWrappers))
-                .andExpect(jsonPath("$.roundOverStatus").value(roundOverStatus))
-                .andExpect(jsonPath("$.keyword").value(keyword))
-                .andExpect(jsonPath("$.hostId").value(hostId))
-                .andExpect(jsonPath("$.currentRoundNr").value(currentRoundNr));
-    }
-     */
 }

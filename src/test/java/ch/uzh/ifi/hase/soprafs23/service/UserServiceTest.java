@@ -164,10 +164,10 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getTop100User() {
-        Mockito.when(userRepository.findTop100ByOrderByHighScoreDesc()).thenReturn(Collections.unmodifiableList(List.of(testUser)));
+    public void getTop15User() {
+        Mockito.when(userRepository.findTop15ByOrderByHighScoreDesc()).thenReturn(Collections.unmodifiableList(List.of(testUser)));
 
-        User returned = userService.getTop100User().get(0);
+        User returned = userService.getTop15User().get(0);
         assertEquals(testUser.getId(), returned.getId());
         assertEquals(testUser.getPassword(), returned.getPassword());
         assertEquals(testUser.getUsername(), returned.getUsername());

@@ -6,6 +6,7 @@ import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GameStartedGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.LobbyGetDTO;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
+import ch.uzh.ifi.hase.soprafs23.service.UserService;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -155,7 +156,8 @@ public class LobbyStompControllerTest {
     public void startGame_lobbyExists() throws ExecutionException, InterruptedException {
         BlockingQueue<GameStartedGetDTO> queue = new ArrayBlockingQueue<>(1);
 
-        Mockito.when(lobbyService.startGame(Mockito.anyInt())).thenReturn(lobby.play());
+        UserService userService = Mockito.mock(UserService.class);
+        Mockito.when(lobbyService.startGame(Mockito.anyInt())).thenReturn(lobby.play(userService));
 
         webSocketStompClient.setMessageConverter(getGameStartedGetDTOConverter());
 
