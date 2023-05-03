@@ -1,7 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
-import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.RoundGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
@@ -25,19 +25,30 @@ public class GameController {
     }
 
     @GetMapping("/game/{gameId}/roleForUser/{playerId}")
-    public ResponseEntity<Role> getRole(@PathVariable("gameId") int gameId, @PathVariable("playerId") Long playerId){
+    public ResponseEntity<Role> getRole(@RequestHeader(value = "token", defaultValue = "null") String token, @PathVariable("gameId") int gameId, @PathVariable("playerId") Long playerId){
+        //user authentication over token in header
+        userService.checkToken(token);
+
         return ResponseEntity.ok(gameService.getRole(gameId, playerId));
     }
 
     @GetMapping("/game/{gameId}/roundnr")
-    public ResponseEntity<RoundNr> getRound(@PathVariable("gameId") int gameId) {
+    public ResponseEntity<RoundNr> getRound(@RequestHeader(value = "token", defaultValue = "null") String token, @PathVariable("gameId") int gameId) {
+        //user authentication over token in header
+        userService.checkToken(token);
+
         int currentRound = gameService.getCurrentRoundNr(gameId);
         int totalRounds = gameService.getTotalNrRounds(gameId);
         return ResponseEntity.ok(new RoundNr(currentRound, totalRounds));
     }
 
     @GetMapping("/games/{gameId}/round/results")
-    public ResponseEntity<RoundGetDTO> getRoundInformation(@PathVariable("gameId") int gameId){
-        return ResponseEntity.ok().body(DTOMapper.INSTANCE.convertGameToRoundGetDTO(GameRepository.getGameById(gameId)));
+    public ResponseEntity<RoundGetDTO> getRoundInformation(@RequestHeader(value = "token", defaultValue = "null") String token, @PathVariable("gameId") int gameId){
+        //user authentication over token in header
+        userService.checkToken(token);
+
+        Game game = gameService.getGame(gameId);
+
+        return ResponseEntity.ok().body(DTOMapper.INSTANCE.convertGameToRoundGetDTO(game));
     }
 }
