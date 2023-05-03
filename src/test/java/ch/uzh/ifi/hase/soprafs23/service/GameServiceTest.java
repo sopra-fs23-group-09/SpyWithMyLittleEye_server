@@ -22,6 +22,9 @@ class GameServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private UserService userService;
+
     @InjectMocks
     private GameService gameService;
 
@@ -60,7 +63,7 @@ class GameServiceTest {
 
         //create game
         gameId = 1;
-        game = new Game(gameId,players,3,player1);
+        game = new Game(gameId,players,3,player1,userService);
         game.nextRound();
 
         //set startTime

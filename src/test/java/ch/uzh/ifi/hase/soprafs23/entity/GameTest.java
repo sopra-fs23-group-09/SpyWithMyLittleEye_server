@@ -1,7 +1,12 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs23.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -12,10 +17,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest {
 
-    @Test
-    void allocatePoints() {
+    private User player1, player2;
+
+    private Game game;
+
+    @Mock
+    private UserService userService;
+
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);
+
         // create players
-        User player1 = new User();
+        player1 = new User();
         player1.setId(1L);
         player1.setUsername("petra");
         player1.setPassword("password");
@@ -24,7 +38,7 @@ class GameTest {
         player1.setCreationDate(new Date(0L));
         player1.setBirthday(new Date(0L));
 
-        User player2 = new User();
+        player2 = new User();
         player2.setId(2L);
         player2.setUsername("eva");
         player2.setPassword("1234");
@@ -38,9 +52,12 @@ class GameTest {
         players.add(player2);
 
         //create game
-        int gameid = 1;
-        Game game = new Game(gameid,players,3,player1);
+        int gameId = 1;
+        game = new Game(gameId,players,3,player1, userService);
         game.nextRound();
+    }
+    @Test
+    void allocatePoints() {
         Date startTime = new Date();
         game.initializeStartTime(startTime);
 
@@ -71,33 +88,6 @@ class GameTest {
 
     @Test
     void updatePointsIfGameEnded() {
-        // create players
-        User player1 = new User();
-        player1.setId(1L);
-        player1.setUsername("petra");
-        player1.setPassword("password");
-        player1.setStatus(UserStatus.ONLINE);
-        player1.setToken("token");
-        player1.setCreationDate(new Date(0L));
-        player1.setBirthday(new Date(0L));
-
-        User player2 = new User();
-        player2.setId(2L);
-        player2.setUsername("eva");
-        player2.setPassword("1234");
-        player2.setStatus(UserStatus.ONLINE);
-        player2.setToken("token");
-        player2.setCreationDate(new Date(0L));
-        player2.setBirthday(new Date(0L));
-
-        List<User> players = new ArrayList<>();
-        players.add(player1);
-        players.add(player2);
-
-        //create game
-        int gameid = 1;
-        Game game = new Game(gameid,players,3,player1);
-        game.nextRound();
         Date startTime = new Date();
         game.initializeStartTime(startTime);
 
