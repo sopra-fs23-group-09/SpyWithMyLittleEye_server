@@ -14,11 +14,19 @@ public class UserGetDTO {
     private UserStatus status;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date birthday;
+    private String profilePicture;
 
     private int gamesPlayed;
     private int gamesWon;
 
     private int highScore;
+
+    public String getProfilePicture(){
+        return profilePicture;
+    }
+    public void setProfilePicture(String profilePicture){
+        this.profilePicture = profilePicture;
+    }
 
     public int getHighScore(){return highScore;}
     public void setHighScore(int highScore){this.highScore = highScore;}
