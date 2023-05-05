@@ -93,7 +93,7 @@
   
 ### Week 6: 05.05. - 12.05.
 - Nina
-  1. handle irregular drop out: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/209
+  1. handle irregular drop out: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/165
   2. implement custom time: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/161
 - Claudia
   1. implement lobby exit: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/162
