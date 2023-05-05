@@ -73,11 +73,14 @@
   
 ### Week 5: 27.04. - 02.05. 
 - Nina
-  1. 
+  1. fix bug: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/154
+  2. profile picture server side: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/129
 - Claudia
-  1. 
+  1. websocket security:https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/155
+  2. refactoring repository: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/156
 - Xena
-  1. 
+  1. enable edit: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/189
+  2. user profile: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/84
 - Loubna
   1. Login UI : https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/178
   2. Signup UI: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/179
