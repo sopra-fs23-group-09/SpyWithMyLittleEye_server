@@ -1,5 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
+import ch.uzh.ifi.hase.soprafs23.service.UserService;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,9 +30,9 @@ public class Lobby {
         return id;
     }
 
-    public Game play(){
+    public Game play(UserService userService){
         if (this.gameStarted) return null;
-        Game game = new Game(id, players, amountRounds, host);
+        Game game = new Game(id, players, amountRounds, host, userService);
         game.nextRound();
         this.gameStarted = true;
         return game;

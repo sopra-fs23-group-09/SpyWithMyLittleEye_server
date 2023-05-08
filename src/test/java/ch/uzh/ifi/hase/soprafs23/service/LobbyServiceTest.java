@@ -27,6 +27,9 @@ public class LobbyServiceTest {
 
     private User testUser;
 
+    @Mock
+    private UserService userService;
+
     @InjectMocks
     private LobbyService lobbyService;
 

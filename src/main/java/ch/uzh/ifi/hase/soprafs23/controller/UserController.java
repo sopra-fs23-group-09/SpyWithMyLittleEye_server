@@ -87,10 +87,26 @@ public class UserController {
     @GetMapping("users/ranking")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<UserGetDTO> top100User(@RequestHeader(value = "Token", defaultValue = "null") String token){
+    public List<UserGetDTO> top15User(@RequestHeader(value = "Token", defaultValue = "null") String token){
         userService.checkToken(token);
 
-        List<User> users =  userService.getTop100User();
+        List<User> users =  userService.getTop15User();
+        List<UserGetDTO> userGetDTOs = new ArrayList<>();
+
+        for(User u: users){
+            userGetDTOs.add(DTOMapper.INSTANCE.convertEntityToUserGetDTO(u));
+        }
+
+        return userGetDTOs;
+    }
+
+    @GetMapping("users/rankingGamesWon")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<UserGetDTO> top15UserGamesWon(@RequestHeader(value = "Token", defaultValue = "null") String token){
+        userService.checkToken(token);
+
+        List<User> users =  userService.getTop15UsersGamesWon();
         List<UserGetDTO> userGetDTOs = new ArrayList<>();
 
         for(User u: users){

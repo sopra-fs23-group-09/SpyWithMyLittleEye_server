@@ -8,8 +8,14 @@ import java.util.Map;
 
 public class GameRepository {
     private static Map<Integer, Game> gameRepositoryByID = new HashMap<>();
+    private static GameRepository INSTANCE = new GameRepository();
 
-    private GameRepository(){ }
+    private GameRepository(){
+        gameRepositoryByID = new HashMap<>();
+    }
+
+    ////// External interface
+    public static void reset(){INSTANCE = new GameRepository();}
 
     public static void addGame(Game game){
         gameRepositoryByID.put(game.getId(), game);
@@ -20,6 +26,23 @@ public class GameRepository {
     }
 
     public static void deleteGame(int gameId){
+        gameRepositoryByID.remove(gameId);
+    }
+
+    ////// INTERNALS
+
+    private void addGame_internal(Game game){
+        gameRepositoryByID.put(game.getId(), game);
+    }
+
+    private Game getGameById_internal(int gameId) {
+        return gameRepositoryByID.get(gameId);
+    }
+
+    private void deleteGame_internal(int gameId) {
+        Game g = gameRepositoryByID.get(gameId);
+        if (g == null)
+            return;
         gameRepositoryByID.remove(gameId);
     }
 }

@@ -47,6 +47,9 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No permission to enter.");
         }
     }
+    public void saveFlushUser(User u){
+        userRepository.saveAndFlush(u);
+    }
 
     //could be renamed to deleteToken as written in class diagram
     public void clearToken(String token){
@@ -95,6 +98,9 @@ public class UserService {
         if(u.getBirthday() != null){
             uToUpdate.setBirthday(u.getBirthday());
         }
+        if(u.getProfilePicture() != null){
+            uToUpdate.setProfilePicture(u.getProfilePicture());
+        }
         userRepository.save(uToUpdate);
         userRepository.flush();
     }
@@ -128,13 +134,16 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "The username provided is not unique. Choose another one!");
         }
     }
-    public List<User> getTop100User(){
-        List<User> topUsers = userRepository.findTop100ByOrderByHighScoreDesc();
+    public List<User> getTop15User(){
+        List<User> topUsers = userRepository.findTop15ByOrderByHighScoreDesc();
         return Collections.unmodifiableList(topUsers);
     }
 
-    //class diagram says we should overload this method with parameter string, don't get the reason
-    //annotated so we don't forget to check
+    public List<User> getTop15UsersGamesWon() {
+        List<User> topUsers = userRepository.findTop15ByOrderByGamesWonDesc();
+        return Collections.unmodifiableList(topUsers);
+    }
+
     public User getUser(Long id){
 
         Optional<User> user = userRepository.findById(id);
@@ -143,9 +152,5 @@ public class UserService {
         }
         return user.get();
     }
-
-    //login of user is at the moment in usercontroller, probably implement this in userservice, would be
-    //more beautiful. Also, there is a loginUser method in the class diagram for the userservice
-    //maybe lower priority as it should work the way it is implemented at the moment
 
 }

@@ -208,7 +208,7 @@ public class UserServiceIntegrationTest {
     }
 
     @Test
-    public void getTop100User_success() {
+    public void getTop15User_success() {
         assertNull(userRepository.findByUsername("testUsername"));
 
         User testUser = new User();
@@ -216,7 +216,7 @@ public class UserServiceIntegrationTest {
         testUser.setUsername("testUsername");
         User createdUser = userService.createUser(testUser);
 
-        User top = userService.getTop100User().get(0);
+        User top = userService.getTop15User().get(0);
 
         assertEquals(createdUser.getId(), top.getId());
         assertEquals(createdUser.getPassword(), top.getPassword());

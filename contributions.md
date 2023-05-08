@@ -71,13 +71,16 @@
   2. Game Over Page (#36) https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/36
   3. WaitingRoom (#108) https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/108
   
-### Week 5: 27.04. - 02.05. 
+### Week 5: 27.04. - 05.05. 
 - Nina
-  1. 
+  1. fix bug: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/154
+  2. profile picture server side: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/129
 - Claudia
-  1. 
+  1. websocket security:https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/155
+  2. refactoring repository: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/156
 - Xena
-  1. 
+  1. enable edit: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/189
+  2. user profile: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/84
 - Loubna
   1. Login UI : https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/178
   2. Signup UI: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/179
@@ -87,3 +90,22 @@
   1. Leaderboard Logic https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/13
   2. Leaderboard UI https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/177
   3. Misc: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/97 
+  
+### Week 6: 05.05. - 12.05.
+- Nina
+  1. handle irregular drop out: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/165
+  2. implement custom time: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/161
+- Claudia
+  1. implement lobby exit: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/162
+  2. make database persistent: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/163
+- Xena
+  1. adapt timer to server: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/208
+  2. websocket security client: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/188
+  3. improve round over ui: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/174
+- Loubna
+  1. clickable logo: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/205
+  2. sound in buttons: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/204
+  3. set custom time: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/206
+- Thereza
+  1. add logout on all pages if user closes browser: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/140
+  2. profile picture client: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/113
