@@ -98,6 +98,9 @@ public class UserService {
         if(u.getBirthday() != null){
             uToUpdate.setBirthday(u.getBirthday());
         }
+        if(u.getProfilePicture() != null){
+            uToUpdate.setProfilePicture(u.getProfilePicture());
+        }
         userRepository.save(uToUpdate);
         userRepository.flush();
     }
@@ -141,8 +144,6 @@ public class UserService {
         return Collections.unmodifiableList(topUsers);
     }
 
-    //class diagram says we should overload this method with parameter string, don't get the reason
-    //annotated so we don't forget to check
     public User getUser(Long id){
 
         Optional<User> user = userRepository.findById(id);
@@ -151,9 +152,5 @@ public class UserService {
         }
         return user.get();
     }
-
-    //login of user is at the moment in usercontroller, probably implement this in userservice, would be
-    //more beautiful. Also, there is a loginUser method in the class diagram for the userservice
-    //maybe lower priority as it should work the way it is implemented at the moment
 
 }
