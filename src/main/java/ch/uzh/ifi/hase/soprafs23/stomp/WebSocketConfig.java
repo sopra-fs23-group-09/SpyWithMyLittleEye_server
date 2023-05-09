@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs23.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -47,6 +48,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private class HttpHandshakeInterceptor implements HandshakeInterceptor{
         @Override
         public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
+            if (request.getHeaders().get("token")==null){
+                return ResponseEntity.badRequest().body("Missing 'token' header").hasBody();
+            }
             String token = request.getHeaders().get("token").toString();
             if (userService.checkToken(token)){
                 return true;
