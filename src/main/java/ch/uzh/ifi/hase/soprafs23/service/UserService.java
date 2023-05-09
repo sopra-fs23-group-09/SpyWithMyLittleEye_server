@@ -42,11 +42,10 @@ public class UserService {
         userRepository.flush();
         return user;
     }
-    public boolean checkToken(String token){
+    public void checkToken(String token){
         if("null".equals(token) || userRepository.findByToken(token) == null){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No permission to enter.");
         }
-        return true;
     }
     public void saveFlushUser(User u){
         userRepository.saveAndFlush(u);
