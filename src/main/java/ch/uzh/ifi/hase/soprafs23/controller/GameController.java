@@ -1,7 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
-import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.RoundGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
@@ -28,11 +28,13 @@ public class GameController {
         //user authentication over token in header
         userService.checkToken(token);
 
+
         return ResponseEntity.ok(gameService.getRole(gameId, playerId));
     }
 
     @GetMapping("/games/{gameId}/roundnr")
     public ResponseEntity<RoundNr> getRound(@RequestHeader(value = "Token", defaultValue = "null") String token, @PathVariable("gameId") int gameId) {
+
         //user authentication over token in header
         userService.checkToken(token);
 
