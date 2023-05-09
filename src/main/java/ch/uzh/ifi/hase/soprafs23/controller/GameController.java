@@ -23,21 +23,29 @@ public class GameController {
         this.gameService = gameService;
         this.lobbyService = lobbyService;
     }
+    @GetMapping("/games/{gameId}/roleForUser/{playerId}")
+    public ResponseEntity<Role> getRole(@RequestHeader(value = "Token", defaultValue = "null") String token, @PathVariable("gameId") int gameId, @PathVariable("playerId") Long playerId){
+        //user authentication over token in header
+        userService.checkToken(token);
 
-    @GetMapping("/game/{gameId}/roleForUser/{playerId}")
-    public ResponseEntity<Role> getRole(@PathVariable("gameId") int gameId, @PathVariable("playerId") Long playerId){
         return ResponseEntity.ok(gameService.getRole(gameId, playerId));
     }
 
-    @GetMapping("/game/{gameId}/roundnr")
-    public ResponseEntity<RoundNr> getRound(@PathVariable("gameId") int gameId) {
+    @GetMapping("/games/{gameId}/roundnr")
+    public ResponseEntity<RoundNr> getRound(@RequestHeader(value = "Token", defaultValue = "null") String token, @PathVariable("gameId") int gameId) {
+        //user authentication over token in header
+        userService.checkToken(token);
+
         int currentRound = gameService.getCurrentRoundNr(gameId);
         int totalRounds = gameService.getTotalNrRounds(gameId);
         return ResponseEntity.ok(new RoundNr(currentRound, totalRounds));
     }
 
     @GetMapping("/games/{gameId}/round/results")
-    public ResponseEntity<RoundGetDTO> getRoundInformation(@PathVariable("gameId") int gameId){
+    public ResponseEntity<RoundGetDTO> getRoundInformation(@RequestHeader(value = "Token", defaultValue = "null") String token, @PathVariable("gameId") int gameId){
+        //user authentication over token in header
+        userService.checkToken(token);
+
         return ResponseEntity.ok().body(DTOMapper.INSTANCE.convertGameToRoundGetDTO(GameRepository.getGameById(gameId)));
     }
 }
