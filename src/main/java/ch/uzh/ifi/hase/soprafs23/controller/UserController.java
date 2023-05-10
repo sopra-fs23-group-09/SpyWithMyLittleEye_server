@@ -131,4 +131,10 @@ public class UserController {
         userService.updateUser(u, token, userId);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/users/keepAlive")
+    public ResponseEntity<Void> keepAlive(@RequestHeader(value = "token", defaultValue = "null") String token){
+        userService.keepAlive(token);
+        return ResponseEntity.noContent().build();
+    }
 }

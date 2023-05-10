@@ -135,12 +135,14 @@ public class UserServiceTest {
 
     @Test
     public void createUser_validInputs_success() {
+        Mockito.when(userRepository.findByToken(Mockito.anyString())).thenReturn(testUser);
+
         // when -> any object is being save in the userRepository -> return the dummy
         // testUser
         User createdUser = userService.createUser(testUser);
 
         // then
-        Mockito.verify(userRepository, Mockito.times(1)).save(Mockito.any());
+        Mockito.verify(userRepository, Mockito.times(2)).save(Mockito.any());
 
         assertEquals(testUser.getId(), createdUser.getId());
         assertEquals(testUser.getPassword(), createdUser.getPassword());
@@ -152,6 +154,8 @@ public class UserServiceTest {
 
     @Test
     public void createUser_duplicateUsername_throwsException() {
+        Mockito.when(userRepository.findByToken(Mockito.anyString())).thenReturn(testUser);
+
         // given -> a first user has already been created
         userService.createUser(testUser);
 

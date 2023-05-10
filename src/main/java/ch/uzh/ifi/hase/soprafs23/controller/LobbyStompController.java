@@ -40,7 +40,7 @@ public class LobbyStompController {
     @MessageMapping("games/{lobbyId}")
     @SendTo("topic/lobbies/{lobbyId}")
     public void startGame(@DestinationVariable("lobbyId") String lobbyId){  //TODO: n: why is lobbyId a string?
-        Game game = lobbyService.startGame(Integer.parseInt(lobbyId));
+        Game game = lobbyService.startGame(Integer.parseInt(lobbyId), userService);
         GameStartedGetDTO gameStartedGetDTO = DTOMapper.INSTANCE.convertGameToGameStartedGetDTO(game);
         webSocketService.sendMessageToSubscribers("/topic/lobbies/" + lobbyId, gameStartedGetDTO);
     }
