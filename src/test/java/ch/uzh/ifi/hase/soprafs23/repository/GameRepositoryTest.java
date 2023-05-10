@@ -44,7 +44,7 @@ class GameRepositoryTest {
         players.add(player2);
 
         //create game
-        testGame = new Game(1,players,3, player1, Mockito.mock(UserService.class));
+        testGame = new Game(1,players,3, player1, Mockito.mock(UserService.class), 1.5f);
     }
     @Test
     void getGameById() {

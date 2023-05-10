@@ -23,6 +23,7 @@ import java.util.Date;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyFloat;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -50,13 +51,13 @@ public class LobbyControllerTest {
         host.setStatus(UserStatus.ONLINE);
         host.setCreationDate(new Date(0L));
 
-        Lobby lobby = new Lobby(host, 1, 12345, 3);
+        Lobby lobby = new Lobby(host, 1, 12345, 3, 1.5f);
 
         LobbyPostDTO lobbyPostDTO = new LobbyPostDTO();
         lobbyPostDTO.setAmountRounds(3);
 
         given(userService.getUser(Mockito.any())).willReturn(host);
-        given(lobbyService.createLobby(Mockito.any(), Mockito.anyInt())).willReturn(lobby);
+        given(lobbyService.createLobby(Mockito.any(), Mockito.anyInt(), Mockito.anyFloat())).willReturn(lobby);
 
         // when/then -> do the request + validate the result
         MockHttpServletRequestBuilder postRequest = post("/lobbies")
@@ -91,7 +92,7 @@ public class LobbyControllerTest {
         lobbyPostDTO.setAmountRounds(3);
 
         given(userService.getUser(Mockito.any())).willReturn(host);
-        given(lobbyService.createLobby(Mockito.any(), Mockito.anyInt())).willThrow(e);
+        given(lobbyService.createLobby(Mockito.any(), Mockito.anyInt(), Mockito.anyFloat())).willThrow(e);
 
         // when/then -> do the request + validate the result
         MockHttpServletRequestBuilder postRequest = post("/lobbies")
@@ -124,7 +125,7 @@ public class LobbyControllerTest {
         user.setStatus(UserStatus.ONLINE);
         user.setCreationDate(new Date(0L));
 
-        Lobby lobby = new Lobby(host, 1, 12345, 3);
+        Lobby lobby = new Lobby(host, 1, 12345, 3, 1.5f);
         lobby.addPlayer(user);
 
         given(userService.getUser(Mockito.any())).willReturn(user);

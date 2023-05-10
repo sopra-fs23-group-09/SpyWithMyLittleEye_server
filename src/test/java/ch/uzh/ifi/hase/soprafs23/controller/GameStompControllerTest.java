@@ -334,6 +334,7 @@ public class GameStompControllerTest {
         SpiedObjectIn in = new SpiedObjectIn("tree", "green", new Location(0, 0));
 
         Mockito.when(gameService.initializeStartTime(Mockito.anyInt())).thenReturn(new Date(0L));
+        Mockito.when(gameService.getDuration(Mockito.anyInt())).thenReturn(1.5f);
 
         webSocketStompClient.setMessageConverter(getSpiedObjOutConverter());
 
@@ -364,6 +365,6 @@ public class GameStompControllerTest {
         assertEquals(in.getColor(), out.getColor());
         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(0L));
         assertEquals(time, out.getStartTime());
-        assertEquals(Game.DURATION, out.getDuration());
+        assertEquals(1.5f, out.getDuration());
     }
 }

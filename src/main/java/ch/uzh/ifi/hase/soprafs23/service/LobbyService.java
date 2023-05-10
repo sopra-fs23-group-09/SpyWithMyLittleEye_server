@@ -35,7 +35,7 @@ public class LobbyService {
         this.userService = userService;
     }
 
-    public Lobby createLobby(User host, int amountRounds) { // TODO: ensure that lobbyId deleted from user
+    public Lobby createLobby(User host, int amountRounds, float time) {
         // to-do: make sure that host is not in another lobby, else throw error
         if (host.getLobbyID() != 0) {
             // to-do: ResponseStatusException for websocket
@@ -46,7 +46,7 @@ public class LobbyService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "The maximum amount of rounds is 20 and can't be less than 1");
         }
-        Lobby newLobby = new Lobby(host, newLobbyId, accessCode, amountRounds);
+        Lobby newLobby = new Lobby(host, newLobbyId, accessCode, amountRounds, time);
         LobbyRepository.addLobby(newLobby);
 
         log.info("Created information for Lobby: {}", newLobby);
