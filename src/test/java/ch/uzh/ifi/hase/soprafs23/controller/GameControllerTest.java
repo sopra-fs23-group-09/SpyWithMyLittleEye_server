@@ -97,7 +97,7 @@ class GameControllerTest {
 
         //testing response for player1
         //when
-        MockHttpServletRequestBuilder getRequestPlayer1 = get("/game/"+gameId+"/roleForUser/"+player1.getId());
+        MockHttpServletRequestBuilder getRequestPlayer1 = get("/games/"+gameId+"/roleForUser/"+player1.getId());
 
         mockMvc.perform(getRequestPlayer1)
                 .andExpect(status().isOk())
@@ -105,7 +105,7 @@ class GameControllerTest {
 
         //testing response for player2
         //when
-        MockHttpServletRequestBuilder getRequestPlayer2 = get("/game/"+gameId+"/roleForUser/"+player2.getId());
+        MockHttpServletRequestBuilder getRequestPlayer2 = get("/games/"+gameId+"/roleForUser/"+player2.getId());
 
         mockMvc.perform(getRequestPlayer2)
                 .andExpect(status().isOk())
@@ -113,7 +113,7 @@ class GameControllerTest {
 
         //testing response for player3
         //when
-        MockHttpServletRequestBuilder getRequestPlayer3 = get("/game/"+gameId+"/roleForUser/"+player3.getId());
+        MockHttpServletRequestBuilder getRequestPlayer3 = get("/games/"+gameId+"/roleForUser/"+player3.getId());
 
         mockMvc.perform(getRequestPlayer3)
                 .andExpect(status().isOk())
@@ -127,7 +127,7 @@ class GameControllerTest {
         given(gameService.getTotalNrRounds(gameId)).willReturn(amountRounds);
 
         //when
-        MockHttpServletRequestBuilder getRequest = get("/game/"+gameId+"/roundnr");
+        MockHttpServletRequestBuilder getRequest = get("/games/"+gameId+"/roundnr");
 
         mockMvc.perform(getRequest)
                 .andExpect(status().isOk())
