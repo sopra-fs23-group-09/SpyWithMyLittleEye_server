@@ -58,6 +58,14 @@ public class GameService {
         game.runTimer(conG);
     }
 
+    /**
+     * @see Game#getDuration()
+     */
+    public float getDuration(int gameId){
+        Game game = getGame(gameId);
+        return game.getDuration();
+    }
+
     public Date initializeStartTime(int gameId){
         Date startTime = new Date();
         getGame(gameId).initializeStartTime(startTime);

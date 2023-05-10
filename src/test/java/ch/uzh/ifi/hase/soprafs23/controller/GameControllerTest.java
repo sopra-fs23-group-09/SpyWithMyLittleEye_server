@@ -84,7 +84,7 @@ class GameControllerTest {
         currentRound = 1;
         amountRounds = 3;
 
-        Game game = new Game(gameId,players,amountRounds,player1, userService);
+        Game game = new Game(gameId,players,amountRounds,player1, userService, 1.5f);
         game.nextRound();
     }
 

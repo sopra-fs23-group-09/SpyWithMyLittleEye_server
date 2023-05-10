@@ -53,7 +53,7 @@ class GameTest {
 
         //create game
         int gameId = 1;
-        game = new Game(gameId,players,3,player1, userService);
+        game = new Game(gameId,players,3,player1, userService, 1.5f);
         game.nextRound();
     }
     @Test
@@ -81,8 +81,8 @@ class GameTest {
         int pointsWonPlayer1 = game.getPlayerPoints().get(player1);
         int pointsWonPlayer2 = game.getPlayerPoints().get(player2);
 
-        assertEquals(Game.DURATION*60-guessingTimePlayer1,pointsWonPlayer1);
-        assertEquals(Game.DURATION*60-guessingTimePlayer2,pointsWonPlayer2);
+        assertEquals(game.getDuration()*60-guessingTimePlayer1,pointsWonPlayer1);
+        assertEquals(game.getDuration()*60-guessingTimePlayer2,pointsWonPlayer2);
 
     }
 

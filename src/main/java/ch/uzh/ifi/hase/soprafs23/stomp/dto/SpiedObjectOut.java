@@ -4,10 +4,10 @@ public class SpiedObjectOut {
     private Location location;
     private String color;
     private String startTime;
-    private int duration;
+    private float duration;
 
 
-    public SpiedObjectOut(Location location,String color, String startTime, int duration){
+    public SpiedObjectOut(Location location,String color, String startTime, float duration){
         this.location = location;
         this.color = color;
         this.startTime = startTime;
@@ -27,7 +27,7 @@ public class SpiedObjectOut {
         return startTime;
     }
 
-    public int getDuration() {
+    public float getDuration() {
         return duration;
 
     }

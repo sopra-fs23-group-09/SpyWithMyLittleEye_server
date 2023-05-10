@@ -63,7 +63,7 @@ class GameServiceTest {
 
         //create game
         gameId = 1;
-        game = new Game(gameId,players,3,player1,userService);
+        game = new Game(gameId,players,3,player1,userService, 1.5f);
         game.nextRound();
 
         //set startTime
@@ -113,6 +113,6 @@ class GameServiceTest {
         Date guessTime = new Date();
         gameService.checkGuessAndAllocatePoints(gameId,player2,spiedObject, guessTime);
 
-        assertEquals(Game.DURATION*60-waitingPeriod,game.getPlayerPoints().get(player2));
+        assertEquals(game.getDuration()*60-waitingPeriod,(float) game.getPlayerPoints().get(player2));
     }
 }
