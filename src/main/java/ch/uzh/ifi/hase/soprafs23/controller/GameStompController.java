@@ -57,8 +57,10 @@ public class GameStompController {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String startTimeString = dateFormat.format(startTime);
 
+        float duration = gameService.getDuration(gameId); //duration in minutes
+
         //return SpiedObjectOut to subscribers
-        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/spiedObject", new SpiedObjectOut(location, color, startTimeString, Game.DURATION));
+        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/spiedObject", new SpiedObjectOut(location, color, startTimeString, duration));
         gameService.runTimer(this, gameId);
     }
 

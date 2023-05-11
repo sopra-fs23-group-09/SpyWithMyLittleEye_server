@@ -77,7 +77,7 @@ public class LobbyStompControllerTest {
         int accessCode = random.nextInt(90000) + 10000;
         int amountRounds = random.nextInt(10);
 
-        lobby = new Lobby(testUser, id, accessCode, amountRounds);
+        lobby = new Lobby(testUser, id, accessCode, amountRounds, 1.5f);
     }
 
     private String getWsPath() { return String.format("ws://localhost:%d/ws", port); }

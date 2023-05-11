@@ -33,8 +33,9 @@ public class LobbyController {
         User host = userService.getUser(userService.getUserID(token));
 
         int amountRounds = lobbyPostDTO.getAmountRounds();
+        float time = lobbyPostDTO.getTime();
 
-        Lobby createdLobby = lobbyService.createLobby(host, amountRounds);
+        Lobby createdLobby = lobbyService.createLobby(host, amountRounds,time);
 
         return ResponseEntity.created(null).body(DTOMapper.INSTANCE.convertLobbyToLobbyGetDTO(createdLobby));
     }

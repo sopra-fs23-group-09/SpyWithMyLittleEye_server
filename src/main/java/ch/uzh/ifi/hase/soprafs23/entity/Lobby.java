@@ -15,8 +15,9 @@ public class Lobby {
     private boolean full;
     private final int amountRounds;
     private boolean gameStarted;
+    private final float duration;
 
-    public Lobby(User host, int id, int accessCode, int amountRounds){
+    public Lobby(User host, int id, int accessCode, int amountRounds, float duration){
         this.id = id;
         this.host = host;
         host.setLobbyID(id);
@@ -25,6 +26,7 @@ public class Lobby {
         this.players.add(host);
         this.full = false;
         this.amountRounds = amountRounds;
+        this.duration = duration;
     }
     public int getId() {
         return id;
@@ -32,7 +34,7 @@ public class Lobby {
 
     public Game play(UserService userService){
         if (this.gameStarted) return null;
-        Game game = new Game(id, players, amountRounds, host, userService);
+        Game game = new Game(id, players, amountRounds, host, userService, duration);
         game.nextRound();
         this.gameStarted = true;
         return game;
@@ -77,7 +79,7 @@ public class Lobby {
     //debugging
     @Override
     public String toString(){
-        return String.format("Lobby [id=%d, accessCode=%d]", id, accessCode);
+        return String.format("Lobby [id=%d, accessCode=%d, duration=%.1f]", id, accessCode, duration);
     }
 
 }

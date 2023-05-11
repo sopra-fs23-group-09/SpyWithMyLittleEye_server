@@ -49,7 +49,7 @@ public class LobbyServiceTest {
 
     @Test
     public void createLobby_success() {
-        Lobby created = lobbyService.createLobby(testUser, 2);
+        Lobby created = lobbyService.createLobby(testUser, 2, 1.5f);
 
         assertEquals(created.getHostId(), testUser.getId());
         assertEquals(created.getAmountRounds(), 2);
@@ -59,14 +59,14 @@ public class LobbyServiceTest {
     @ParameterizedTest
     @ValueSource(ints = { -12, -3, 0, 21, 100, Integer.MAX_VALUE })
     public void createLobby_failureAmountRounds(int amountRounds) {
-        assertThrows(ResponseStatusException.class, () -> lobbyService.createLobby(testUser, 22));
+        assertThrows(ResponseStatusException.class, () -> lobbyService.createLobby(testUser, amountRounds, 1.5f));
     }
 
     @ParameterizedTest
     @MethodSource("createLobby_failureHostInOtherLobby_arguments")
-    public void createLobby_failureHostInOtherLobby(int lobbyID, int amountRounds) {
+    public void createLobby_failureHostInOtherLobby(int lobbyID, int amountRounds, float duration) {
         testUser.setLobbyID(lobbyID);
-        assertThrows(ResponseStatusException.class, () -> lobbyService.createLobby(testUser, amountRounds));
+        assertThrows(ResponseStatusException.class, () -> lobbyService.createLobby(testUser, amountRounds, duration));
     }
 
     private static List<Arguments> createLobby_failureHostInOtherLobby_arguments() {
@@ -74,8 +74,8 @@ public class LobbyServiceTest {
         for (int rounds = 1; rounds <= 20; rounds++) {
             for (int i = 0; i < 10; i++) {
                 int r = (int) (Math.random() * 99 + 1);
-                ret.add(Arguments.of(r, rounds));
-                ret.add(Arguments.of(-r, rounds));
+                ret.add(Arguments.of(r, rounds, 1.5f));
+                ret.add(Arguments.of(-r, rounds, 1.5f));
             }
         }
         return ret;
@@ -83,7 +83,7 @@ public class LobbyServiceTest {
 
     @Test
     public void startGame_success() {
-        Lobby lobby = new Lobby(testUser, 2, 12345, 2);
+        Lobby lobby = new Lobby(testUser, 2, 12345, 2, 1.5f);
         LobbyRepository.addLobby(lobby);
 
         Game game = lobbyService.startGame(lobby.getId());
@@ -91,6 +91,7 @@ public class LobbyServiceTest {
         assertEquals(lobby.getId(), game.getId());
         assertEquals(lobby.getAmountRounds(), game.getAmountRounds());
         assertEquals(lobby.getHostId(), game.getHostId());
+        assertEquals(1.5f, game.getDuration());
     }
 
     @ParameterizedTest
@@ -101,7 +102,7 @@ public class LobbyServiceTest {
 
     @Test
     public void startGame_failureGameAlreadyStarted() {
-        Lobby lobby = new Lobby(testUser, 3, 12335, 2);
+        Lobby lobby = new Lobby(testUser, 3, 12335, 2, 1.5f);
         LobbyRepository.addLobby(lobby);
 
         lobbyService.startGame(lobby.getId());
@@ -110,7 +111,7 @@ public class LobbyServiceTest {
 
     @Test
     public void addUser_success() {
-        Lobby lobby = new Lobby(testUser, 4, 11345, 2);
+        Lobby lobby = new Lobby(testUser, 4, 11345, 2, 1.5f);
         LobbyRepository.addLobby(lobby);
 
         User u = new User();
@@ -135,7 +136,7 @@ public class LobbyServiceTest {
     @ParameterizedTest
     @ValueSource(ints = { Integer.MIN_VALUE, -1234, -126, -23, -5, 1, 34, 231, Integer.MAX_VALUE })
     public void addUser_failure(int lobbyID) {
-        Lobby lobby = new Lobby(testUser, 5, 17345, 2);
+        Lobby lobby = new Lobby(testUser, 5, 17345, 2, 1.5f);
         LobbyRepository.addLobby(lobby);
 
         User u = new User();
@@ -150,7 +151,7 @@ public class LobbyServiceTest {
 
     @Test
     public void deleteLobby_success() {
-        Lobby l = new Lobby(testUser, 89, 12345, 4);
+        Lobby l = new Lobby(testUser, 89, 12345, 4, 1.5f);
         LobbyRepository.addLobby(l);
 
         assertNotNull(lobbyService.getLobby(l.getId()));

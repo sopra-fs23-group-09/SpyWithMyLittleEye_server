@@ -9,7 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.*;
 
 public class Game {
-    public static final int DURATION = 1;
+    public final float duration;
     private final int id;
     private Long hostId;
     private final Map<User, Integer> playerPoints;
@@ -26,12 +26,13 @@ public class Game {
     private Date startTime;
     private final UserService userService;
 
-    public Game(int id, List<User> players, int amountRounds, User host, UserService userService){
+    public Game(int id, List<User> players, int amountRounds, User host, UserService userService, float duration){
         this.playerRoles = new HashMap<>();
         this.playerGuesses = new ArrayList<>();
         this.playerPoints = new HashMap<>();
         this.userService = userService;
         this.id = id;
+        this.duration = duration;
         this.players = players;
         initializePoints();
         this.amountRounds = amountRounds;
@@ -73,7 +74,7 @@ public class Game {
                     roundTimer.cancel();
                     conG.handleEndRound(id, message, amountRounds, currentRoundNr);
                 }
-            }, (long) DURATION * 60 * 1000);
+            }, (long)(duration * 60 * 1000));
         }
     }
 
@@ -105,7 +106,7 @@ public class Game {
     }
     public void allocatePoints(User player, Date guessTime){
         // formula to compute points: duration in seconds - seconds needed to guess
-        int points = (int) ((DURATION *60) - (guessTime.getTime()- startTime.getTime())/1000);
+        int points = (int) ((duration *60) - (guessTime.getTime()- startTime.getTime())/1000);
         int pointsOfCurrentPlayer = playerPoints.get(player) + points;
         playerPoints.put(player, pointsOfCurrentPlayer);
         this.nrPlayersGuessedCorrectly++;
@@ -163,5 +164,13 @@ public class Game {
 
     public void setHostId(Long hostId) {
         this.hostId = hostId;
+    }
+
+    /**
+     *
+     * @return duration in minutes
+     */
+    public float getDuration(){
+        return duration;
     }
 }
