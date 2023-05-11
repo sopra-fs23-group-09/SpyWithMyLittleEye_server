@@ -120,7 +120,6 @@ public class UserController {
     public ResponseEntity<Void> logout(@RequestHeader(value = "Token", defaultValue = "null") String token){
         userService.checkToken(token);
         userService.setOffline(token,true);
-        userService.clearToken(token);
         return ResponseEntity.noContent().build();
     }
 
@@ -129,6 +128,14 @@ public class UserController {
         User u = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
         userService.checkToken(token);
         userService.updateUser(u, token, userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/users/keepAlive")
+    public ResponseEntity<Void> keepAlive(@RequestHeader(value = "token", defaultValue = "null") String token){
+        //tokencheck hinzufügen?
+        //userService.checkToken(token);
+        userService.keepAlive(token);
         return ResponseEntity.noContent().build();
     }
 }

@@ -157,7 +157,7 @@ public class LobbyStompControllerTest {
         BlockingQueue<GameStartedGetDTO> queue = new ArrayBlockingQueue<>(1);
 
         UserService userService = Mockito.mock(UserService.class);
-        Mockito.when(lobbyService.startGame(Mockito.anyInt())).thenReturn(lobby.play(userService));
+        Mockito.when(lobbyService.startGame(Mockito.anyInt(), Mockito.any())).thenReturn(lobby.play(userService));
 
         webSocketStompClient.setMessageConverter(getGameStartedGetDTOConverter());
 

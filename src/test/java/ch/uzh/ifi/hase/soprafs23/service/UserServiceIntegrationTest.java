@@ -5,6 +5,8 @@ import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -79,36 +81,19 @@ public class UserServiceIntegrationTest {
     }
 
     @Test
-    public void clearToken_success() {
-        User testUser = new User();
-        testUser.setPassword("testPassword");
-        testUser.setUsername("testUsername");
-        User created = userService.createUser(testUser);
-        userService.clearToken(created.getToken());
-        User cleared = userService.getUser(created.getId());
-
-        assertEquals(null, cleared.getToken());
-    }
-
-    @Test
-    public void clearToken_failure() {
-        assertThrows(ResponseStatusException.class, () -> userService.clearToken("1"));
-    }
-
-    @Test
     public void setOffline_success() {
         User testUser = new User();
         testUser.setPassword("testPassword");
         testUser.setUsername("testUsername");
         User created = userService.createUser(testUser);
 
-        userService.setOffline(created.getToken(), true);
-        User updated = userService.getUser(created.getId());
-        assertEquals(UserStatus.OFFLINE, updated.getStatus());
-
         userService.setOffline(created.getToken(), false);
-        updated = userService.getUser(created.getId());
+        User updated = userService.getUser(created.getId());
         assertEquals(UserStatus.ONLINE, updated.getStatus());
+
+        userService.setOffline(created.getToken(), true);
+        updated = userService.getUser(created.getId());
+        assertEquals(UserStatus.OFFLINE, updated.getStatus());
     }
 
     @Test

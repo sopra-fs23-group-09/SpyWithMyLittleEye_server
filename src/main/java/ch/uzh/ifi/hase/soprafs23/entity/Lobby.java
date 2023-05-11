@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
+import ch.uzh.ifi.hase.soprafs23.service.WebSocketService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,7 +15,7 @@ public class Lobby {
     private final User host;
     private boolean full;
     private final int amountRounds;
-    private boolean gameStarted;
+    private Game game;
     private final float duration;
 
     public Lobby(User host, int id, int accessCode, int amountRounds, float duration){
@@ -33,11 +34,18 @@ public class Lobby {
     }
 
     public Game play(UserService userService){
-        if (this.gameStarted) return null;
-        Game game = new Game(id, players, amountRounds, host, userService, duration);
+        if (this.game != null) return null;
+        game = new Game(id, players, amountRounds, host, userService, duration);
         game.nextRound();
-        this.gameStarted = true;
         return game;
+    }
+
+    public void kickPlayer(User player, WebSocketService ws) {
+        if(this.game != null) {
+            game.kickPlayer(player, ws);
+        } else {
+            players.remove(player);
+        }
     }
 
     public List<User> getPlayers(){
