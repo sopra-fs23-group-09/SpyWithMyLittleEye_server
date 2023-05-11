@@ -1,6 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
-import ch.uzh.ifi.hase.soprafs23.service.UserService;
+import ch.uzh.ifi.hase.soprafs23.service.PlayerService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,14 +10,14 @@ public class Lobby {
     private static final int MAX_AMOUNT_PLAYERS = 10;
     private final int id;
     private final int accessCode;
-    private final List<User> players;
-    private final User host;
+    private final List<Player> players;
+    private final Player host;
     private boolean full;
     private final int amountRounds;
     private boolean gameStarted;
     private final float duration;
 
-    public Lobby(User host, int id, int accessCode, int amountRounds, float duration){
+    public Lobby(Player host, int id, int accessCode, int amountRounds, float duration){
         this.id = id;
         this.host = host;
         host.setLobbyID(id);
@@ -32,19 +32,19 @@ public class Lobby {
         return id;
     }
 
-    public Game play(UserService userService){
+    public Game play(PlayerService playerService){
         if (this.gameStarted) return null;
-        Game game = new Game(id, players, amountRounds, host, userService, duration);
+        Game game = new Game(id, players, amountRounds, host, playerService, duration);
         game.nextRound();
         this.gameStarted = true;
         return game;
     }
 
-    public List<User> getPlayers(){
+    public List<Player> getPlayers(){
         return Collections.unmodifiableList(players);
     }
 
-    public boolean addPlayer(User player){
+    public boolean addPlayer(Player player){
         if (isFull()) return false;
         players.add(player);
         if(players.size() == MAX_AMOUNT_PLAYERS){
@@ -54,7 +54,7 @@ public class Lobby {
         return true;
     }
 
-    public boolean removePlayer(User player){
+    public boolean removePlayer(Player player){
         if (players.contains(player)){
             players.remove(player);
             return true;

@@ -5,7 +5,7 @@ import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.RoundGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
-import ch.uzh.ifi.hase.soprafs23.service.UserService;
+import ch.uzh.ifi.hase.soprafs23.service.PlayerService;
 import ch.uzh.ifi.hase.soprafs23.stomp.dto.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,18 +13,18 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class GameController {
 
-    private final UserService userService;
+    private final PlayerService playerService;
     private final GameService gameService;
 
-    GameController(UserService userService, GameService gameService){
-        this.userService = userService;
+    GameController(PlayerService playerService, GameService gameService){
+        this.playerService = playerService;
         this.gameService = gameService;
     }
 
     @GetMapping("/games/{gameId}/roleForUser/{playerId}")
     public ResponseEntity<Role> getRole(@RequestHeader(value = "Token", defaultValue = "null") String token, @PathVariable("gameId") int gameId, @PathVariable("playerId") Long playerId){
         //user authentication over token in header
-        userService.checkToken(token);
+        playerService.checkToken(token);
 
         return ResponseEntity.ok(gameService.getRole(gameId, playerId));
     }
@@ -32,7 +32,7 @@ public class GameController {
     @GetMapping("/games/{gameId}/roundnr")
     public ResponseEntity<RoundNr> getRound(@RequestHeader(value = "Token", defaultValue = "null") String token, @PathVariable("gameId") int gameId) {
         //user authentication over token in header
-        userService.checkToken(token);
+        playerService.checkToken(token);
 
         int currentRound = gameService.getCurrentRoundNr(gameId);
         int totalRounds = gameService.getTotalNrRounds(gameId);
@@ -42,7 +42,7 @@ public class GameController {
     @GetMapping("/games/{gameId}/round/results")
     public ResponseEntity<RoundGetDTO> getRoundInformation(@RequestHeader(value = "Token", defaultValue = "null") String token, @PathVariable("gameId") int gameId){
         //user authentication over token in header
-        userService.checkToken(token);
+        playerService.checkToken(token);
 
         return ResponseEntity.ok().body(DTOMapper.INSTANCE.convertGameToRoundGetDTO(GameRepository.getGameById(gameId)));
     }

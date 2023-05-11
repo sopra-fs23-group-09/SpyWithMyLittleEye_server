@@ -1,12 +1,11 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
-import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
-import ch.uzh.ifi.hase.soprafs23.entity.Game;
-import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
+import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
-import ch.uzh.ifi.hase.soprafs23.service.UserService;
+import ch.uzh.ifi.hase.soprafs23.service.PlayerService;
 import ch.uzh.ifi.hase.soprafs23.stomp.dto.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -57,27 +56,27 @@ public class GameStompControllerTest {
     private GameService gameService;
 
     @MockBean
-    private UserService userService;
+    private PlayerService playerService;
 
     @MockBean
     private LobbyService lobbyService;
 
     private WebSocketStompClient webSocketStompClient;
 
-    private User testUser;
+    private Player testPlayer;
 
     @BeforeEach
     void setup() {
         webSocketStompClient = new WebSocketStompClient(new SockJsClient(List.of(
                 new WebSocketTransport(new StandardWebSocketClient()))));
 
-        testUser = new User();
-        testUser.setId(3L);
-        testUser.setPassword("password");
-        testUser.setUsername("testUser");
-        testUser.setToken("1");
-        testUser.setStatus(UserStatus.ONLINE);
-        testUser.setCreationDate(new Date(0L));
+        testPlayer = new Player();
+        testPlayer.setId(3L);
+        testPlayer.setPassword("password");
+        testPlayer.setUsername("testPlayer");
+        testPlayer.setToken("1");
+        testPlayer.setStatus(PlayerStatus.ONLINE);
+        testPlayer.setCreationDate(new Date(0L));
     }
 
     private String getWsPath() {
@@ -257,12 +256,12 @@ public class GameStompControllerTest {
         Random random = new Random(398);
         int gameId = random.nextInt(30) + 1;
 
-        GuessIn in = new GuessIn("cat", "" + testUser.getId());
+        GuessIn in = new GuessIn("cat", "" + testPlayer.getId());
 
-        Mockito.when(userService.getUser(Mockito.anyLong())).thenReturn(testUser);
+        Mockito.when(playerService.getUser(Mockito.anyLong())).thenReturn(testPlayer);
         Mockito.when(gameService.checkGuessAndAllocatePoints(Mockito.anyInt(), Mockito.any(), Mockito.anyString(),
                 Mockito.any()))
-                .thenReturn(List.of(new Guess(testUser.getUsername(), in.getGuess())));
+                .thenReturn(List.of(new Guess(testPlayer.getUsername(), in.getGuess())));
 
         webSocketStompClient.setMessageConverter(getGuessConverter());
 
@@ -287,7 +286,7 @@ public class GameStompControllerTest {
 
         List<Guess> out = queue.poll();
         assert out != null;
-        assertEquals(testUser.getUsername(), out.get(0).getGuesserName());
+        assertEquals(testPlayer.getUsername(), out.get(0).getGuesserName());
         assertEquals(in.getGuess(), out.get(0).getGuess());
     }
 

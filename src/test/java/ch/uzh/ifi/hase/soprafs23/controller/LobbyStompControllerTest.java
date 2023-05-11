@@ -1,12 +1,12 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
-import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
-import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.GameStartedGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.LobbyGetDTO;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
-import ch.uzh.ifi.hase.soprafs23.service.UserService;
+import ch.uzh.ifi.hase.soprafs23.service.PlayerService;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,7 +53,7 @@ public class LobbyStompControllerTest {
     @MockBean
     private LobbyService lobbyService;
 
-    private User testUser;
+    private Player testPlayer;
 
     private Lobby lobby;
 
@@ -64,20 +64,20 @@ public class LobbyStompControllerTest {
         webSocketStompClient = new WebSocketStompClient(new SockJsClient(List.of(
                 new WebSocketTransport(new StandardWebSocketClient()))));
 
-        testUser = new User();
-        testUser.setId(3L);
-        testUser.setPassword("password");
-        testUser.setUsername("testUser");
-        testUser.setToken("1");
-        testUser.setStatus(UserStatus.ONLINE);
-        testUser.setCreationDate(new Date(0L));
+        testPlayer = new Player();
+        testPlayer.setId(3L);
+        testPlayer.setPassword("password");
+        testPlayer.setUsername("testPlayer");
+        testPlayer.setToken("1");
+        testPlayer.setStatus(PlayerStatus.ONLINE);
+        testPlayer.setCreationDate(new Date(0L));
 
         Random random = new Random(789);
         int id = random.nextInt(30);
         int accessCode = random.nextInt(90000) + 10000;
         int amountRounds = random.nextInt(10);
 
-        lobby = new Lobby(testUser, id, accessCode, amountRounds, 1.5f);
+        lobby = new Lobby(testPlayer, id, accessCode, amountRounds, 1.5f);
     }
 
     private String getWsPath() { return String.format("ws://localhost:%d/ws", port); }
@@ -149,15 +149,15 @@ public class LobbyStompControllerTest {
         assertEquals(lobby.getAccessCode(), lobbyGetDTO.getAccessCode());
         assertEquals(lobby.getHostId(), lobbyGetDTO.getHostId());
         assertEquals(lobby.getAmountRounds(), lobbyGetDTO.getAmountRounds());
-        assertEquals(testUser.getUsername(), lobbyGetDTO.getPlayerNames().get(0));
+        assertEquals(testPlayer.getUsername(), lobbyGetDTO.getPlayerNames().get(0));
     }
 
     @Test
     public void startGame_lobbyExists() throws ExecutionException, InterruptedException {
         BlockingQueue<GameStartedGetDTO> queue = new ArrayBlockingQueue<>(1);
 
-        UserService userService = Mockito.mock(UserService.class);
-        Mockito.when(lobbyService.startGame(Mockito.anyInt())).thenReturn(lobby.play(userService));
+        PlayerService playerService = Mockito.mock(PlayerService.class);
+        Mockito.when(lobbyService.startGame(Mockito.anyInt())).thenReturn(lobby.play(playerService));
 
         webSocketStompClient.setMessageConverter(getGameStartedGetDTOConverter());
 

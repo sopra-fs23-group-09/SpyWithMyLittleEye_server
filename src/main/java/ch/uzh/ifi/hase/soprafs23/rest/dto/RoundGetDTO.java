@@ -1,6 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
-import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.entity.wrappers.UserPointsWrapper;
 
 import java.util.ArrayList;
@@ -30,9 +30,9 @@ public class RoundGetDTO {
         return keyword;
     }
 
-    public void setPlayerPoints(Map<User, Integer> playerPoints){
+    public void setPlayerPoints(Map<Player, Integer> playerPoints){
         this.playerPoints = new ArrayList<>();
-        for (User u : playerPoints.keySet()) {
+        for (Player u : playerPoints.keySet()) {
             this.playerPoints.add(new UserPointsWrapper(u.getUsername(), playerPoints.get(u)));
         }
         this.playerPoints.sort(UserPointsWrapper.compareByPoints());

@@ -6,7 +6,7 @@ import ch.uzh.ifi.hase.soprafs23.rest.dto.GameStartedGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.LobbyGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
-import ch.uzh.ifi.hase.soprafs23.service.UserService;
+import ch.uzh.ifi.hase.soprafs23.service.PlayerService;
 import ch.uzh.ifi.hase.soprafs23.service.WebSocketService;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -18,13 +18,13 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class LobbyStompController {
     private final LobbyService lobbyService;
-    private final UserService userService;
+    private final PlayerService playerService;
     private final WebSocketService webSocketService;
 
 
-    LobbyStompController(LobbyService lobbyService, UserService userService, WebSocketService webSocketService) {
+    LobbyStompController(LobbyService lobbyService, PlayerService playerService, WebSocketService webSocketService) {
         this.lobbyService = lobbyService;
-        this.userService = userService;
+        this.playerService = playerService;
         this.webSocketService = webSocketService;
     }
 
