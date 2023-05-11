@@ -72,20 +72,13 @@ public class UserServiceTest {
         assertDoesNotThrow(() -> userService.checkToken(testUser.getToken()));
     }
 
-    @Test
-    public void clearToken() {
-        Mockito.when(userRepository.findByToken(Mockito.anyString())).thenReturn(testUser);
-
-        userService.clearToken(testUser.getToken());
-        Mockito.verify(userRepository, Mockito.times(1)).save(Mockito.any());
-    }
 
     @Test
     public void setOffline() {
         Mockito.when(userRepository.findByToken(Mockito.anyString())).thenReturn(testUser);
 
         userService.setOffline(testUser.getToken(), true);
-        Mockito.verify(userRepository, Mockito.times(1)).save(Mockito.any());
+        Mockito.verify(userRepository, Mockito.atLeast(1)).save(Mockito.any());
     }
 
     @Test

@@ -64,7 +64,7 @@ public class UserService {
     }
 
     //could be renamed to deleteToken as written in class diagram
-    public void clearToken(String token){
+    private void clearToken(String token){
         User u = userRepository.findByToken(token);
         if (u == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with this token exists");
@@ -94,7 +94,7 @@ public class UserService {
                 }
             }, 10_000, 10_000);
         }else{
-            log.debug("Removing {} from maps.", u.getUsername());
+            log.info("Removing {} due to inactivity", u.getUsername());
             activeUserTimers.remove(u.getId());
             activeUserBooleans.remove(u.getId());
             clearToken(u.getToken());

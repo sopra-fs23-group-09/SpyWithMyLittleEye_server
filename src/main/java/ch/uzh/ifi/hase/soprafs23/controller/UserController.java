@@ -120,7 +120,6 @@ public class UserController {
     public ResponseEntity<Void> logout(@RequestHeader(value = "Token", defaultValue = "null") String token){
         userService.checkToken(token);
         userService.setOffline(token,true);
-        userService.clearToken(token);
         return ResponseEntity.noContent().build();
     }
 
