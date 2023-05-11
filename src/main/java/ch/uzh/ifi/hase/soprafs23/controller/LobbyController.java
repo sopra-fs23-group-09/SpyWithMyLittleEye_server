@@ -59,6 +59,7 @@ public class LobbyController {
         userService.checkToken(token);
         User player = userService.getUser(userId);
         lobbyService.removeUser(player,lobbyId);
-        return ResponseEntity.noContent().build();
+        userService.exitLobby(player);
+        return ResponseEntity.ok().build();
     }
 }
