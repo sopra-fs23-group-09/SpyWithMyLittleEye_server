@@ -105,6 +105,15 @@ public class UserService {
         userRepository.flush();
     }
 
+    public void exitLobby(User player){
+        if (player.getLobbyID() == 0){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "you are not in a lobby yet");
+        }
+        player.setLobbyID(0);
+        userRepository.save(player);
+        userRepository.flush();
+    }
+
     public User createUser(User newUser) {
         newUser.setToken(UUID.randomUUID().toString());
         newUser.setStatus(UserStatus.ONLINE);

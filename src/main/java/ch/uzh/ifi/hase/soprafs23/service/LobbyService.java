@@ -107,6 +107,15 @@ public class LobbyService {
         return lobby;
     }
 
+    public void removeUser(User player, int lobbyId){
+        Lobby lobby = LobbyRepository.getLobbyById(lobbyId);
+        // check if player is in lobby (and remove player) else throw exception
+        boolean wasPlayerInLobby = lobby.removePlayer(player);
+        if (!wasPlayerInLobby){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "the player is not in this lobby");
+        }
+    }
+
     public void deleteLobby(int lobbyId) {
         Lobby l = getLobby(lobbyId);
         List<User> players = l.getPlayers();

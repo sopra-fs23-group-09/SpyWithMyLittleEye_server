@@ -54,4 +54,11 @@ public class LobbyController {
         return ResponseEntity.ok(DTOMapper.INSTANCE.convertLobbyToLobbyGetDTO(lobby));
     }
 
+    @PutMapping("/lobbies/{lobbyId}/exit/{userId}")
+    public ResponseEntity<Void> exitLobby(@PathVariable(value = "userId") Long userId,@PathVariable("lobbyId") int lobbyId, @RequestHeader(value = "Token", defaultValue = "null") String token){
+        userService.checkToken(token);
+        User player = userService.getUser(userId);
+        lobbyService.removeUser(player,lobbyId);
+        return ResponseEntity.noContent().build();
+    }
 }

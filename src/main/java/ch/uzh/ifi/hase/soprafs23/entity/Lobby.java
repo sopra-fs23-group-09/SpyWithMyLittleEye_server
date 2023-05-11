@@ -52,6 +52,14 @@ public class Lobby {
         return true;
     }
 
+    public boolean removePlayer(User player){
+        if (players.contains(player)){
+            players.remove(player);
+            return true;
+        }
+        return false;
+    }
+
     public int getAccessCode(){
         return this.accessCode;
     }
