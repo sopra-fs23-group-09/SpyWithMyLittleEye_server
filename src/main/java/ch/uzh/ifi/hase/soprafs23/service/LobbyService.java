@@ -24,8 +24,6 @@ public class LobbyService {
     private int newLobbyId;
     private final Random random;
 
-
-
     @Autowired
     public LobbyService() {
         this.newLobbyId = 1;
@@ -107,6 +105,16 @@ public class LobbyService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "The lobby is full.");
         }
         return lobby;
+    }
+
+
+    public void removeUser(User player, int lobbyId){
+        Lobby lobby = LobbyRepository.getLobbyById(lobbyId);
+        // check if player is in lobby (and remove player) else throw exception
+        boolean wasPlayerInLobby = lobby.removePlayer(player);
+        if (!wasPlayerInLobby){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "the player is not in this lobby");
+        }
     }
 
     public void deleteLobby(int lobbyId, UserService userService) {
