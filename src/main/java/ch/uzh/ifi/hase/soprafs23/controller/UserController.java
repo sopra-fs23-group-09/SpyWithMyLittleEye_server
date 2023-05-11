@@ -133,6 +133,8 @@ public class UserController {
 
     @PutMapping("/users/keepAlive")
     public ResponseEntity<Void> keepAlive(@RequestHeader(value = "token", defaultValue = "null") String token){
+        //tokencheck hinzufügen?
+        //userService.checkToken(token);
         userService.keepAlive(token);
         return ResponseEntity.noContent().build();
     }

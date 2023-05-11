@@ -85,7 +85,7 @@ public class UserService {
         if(!status) {
             activeUserTimers.put(u.getId(), new Timer());
             activeUserBooleans.put(u.getId(), false);
-            log.debug("Initializing keepalive timer for {}", u.getUsername());
+            log.info("Initializing keepalive timer for {}", u.getUsername());
             activeUserTimers.get(u.getId()).scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
@@ -94,7 +94,8 @@ public class UserService {
                 }
             }, 10_000, 10_000);
         }else{
-            log.info("Removing {} due to inactivity", u.getUsername());
+            log.info("logging out user {} ", u.getUsername());
+            activeUserTimers.get(u.getId()).cancel();
             activeUserTimers.remove(u.getId());
             activeUserBooleans.remove(u.getId());
             clearToken(u.getToken());
@@ -107,6 +108,7 @@ public class UserService {
         } else {
             User u = getUser(userId);
             activeUserTimers.get(userId).cancel();
+            log.info("Removing {} due to inactivity", u.getUsername());
             setOffline(u.getToken(), true);
             if(u.getLobbyID() != 0) {
                 lobbyService.kickPlayer(u, webSocketService);
