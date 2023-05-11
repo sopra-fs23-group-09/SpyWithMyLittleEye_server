@@ -34,6 +34,7 @@ public interface DTOMapper {
     @Mapping(source = "accessCode", target = "accessCode")
     @Mapping(source = "hostId", target = "hostId")
     @Mapping(source = "players", target = "playerNames")
+    @Mapping(source = "players", target = "profilePictures")
     @Mapping(source = "amountRounds", target = "amountRounds")
     LobbyGetDTO convertLobbyToLobbyGetDTO(Lobby lobby);
 

@@ -14,6 +14,7 @@ public class LobbyGetDTO {
     private int amountRounds;
 
     private List<String> playerNames;
+    private List<String> profilePictures;
 
     public int getId() {
         return id;
@@ -41,6 +42,12 @@ public class LobbyGetDTO {
             this.playerNames.add(u.getUsername());
         }
     }
+    public void setProfilePictures(List<User> profilePictures){
+        this.profilePictures = new ArrayList<>(profilePictures.size());
+        for(User u: profilePictures){
+            this.profilePictures.add(u.getProfilePicture());
+        }
+    }
 
     public void setAmountRounds(int amountRounds) {
         this.amountRounds = amountRounds;
@@ -50,6 +57,9 @@ public class LobbyGetDTO {
 
     public List<String> getPlayerNames() {
         return playerNames;
+    }
+    public List<String> getProfilePictures(){
+        return profilePictures;
     }
     public String getEvent() {return this.event;}
 

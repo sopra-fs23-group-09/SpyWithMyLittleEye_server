@@ -3,6 +3,9 @@ import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.controller.GameStompController;
 import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
 import ch.uzh.ifi.hase.soprafs23.service.PlayerService;
+import ch.uzh.ifi.hase.soprafs23.service.WebSocketService;
+import ch.uzh.ifi.hase.soprafs23.stomp.dto.EndRoundMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -41,6 +44,16 @@ public class Game {
         this.hostId = host.getId();
     }
 
+    public void kickPlayer(Player player, WebSocketService ws) {
+        Role role = playerRoles.get(player.getId());
+        playerRoles.remove(player.getId());
+        playerPoints.remove(player);
+        players.remove(player);
+        if(role == Role.SPIER) {
+            nextRound();
+            ws.sendMessageToSubscribers("/topic/games/"+id+"/nextRound", new EndRoundMessage("spierLeft", 0,0));
+        }
+    }
     public void updatePointsIfGameEnded(){
         Player winner = players.get(0);
         for(Player u : players){

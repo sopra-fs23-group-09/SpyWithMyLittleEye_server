@@ -33,7 +33,7 @@ public class RoundGetDTO {
     public void setPlayerPoints(Map<Player, Integer> playerPoints){
         this.playerPoints = new ArrayList<>();
         for (Player u : playerPoints.keySet()) {
-            this.playerPoints.add(new UserPointsWrapper(u.getUsername(), playerPoints.get(u)));
+            this.playerPoints.add(new UserPointsWrapper(u.getUsername(), playerPoints.get(u), u.getProfilePicture()));
         }
         this.playerPoints.sort(UserPointsWrapper.compareByPoints());
     }

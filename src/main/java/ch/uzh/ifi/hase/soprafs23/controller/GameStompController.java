@@ -100,7 +100,7 @@ public class GameStompController {
     @MessageMapping("/games/{gameId}/gameOver")
     public void endGame(@DestinationVariable("gameId") int gameId){
         gameService.handleGameOver(gameId);
-        lobbyService.deleteLobby(gameId);
+        lobbyService.deleteLobby(gameId, userService);
         webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/gameOver", new EndRoundMessage("endGame", 0, 0));
     }
 }

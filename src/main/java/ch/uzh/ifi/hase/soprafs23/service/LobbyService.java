@@ -23,13 +23,17 @@ public class LobbyService {
     private final Logger log = LoggerFactory.getLogger(LobbyService.class);
     private int newLobbyId;
     private final Random random;
-    private final PlayerService playerService;
 
     @Autowired
-    public LobbyService(PlayerService playerService) {
+    public LobbyService() {
         this.newLobbyId = 1;
         this.random = new Random();
         this.playerService = playerService;
+    }
+
+    public void kickPlayer(Player player, WebSocketService ws) {
+        log.info("Kicking player {}", player);
+        getLobby(player.getLobbyID()).kickPlayer(player, ws);
     }
 
     public Lobby createLobby(Player host, int amountRounds, float time) {
@@ -52,7 +56,7 @@ public class LobbyService {
         return newLobby;
     }
 
-    public Game startGame(int lobbyId) {
+    public Game startGame(int lobbyId, PlayerService playerService) {
         Lobby lobby = LobbyRepository.getLobbyById(lobbyId);
         if (lobby == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lobby doesn't exist.");
@@ -112,7 +116,7 @@ public class LobbyService {
         }
     }
 
-    public void deleteLobby(int lobbyId) {
+    public void deleteLobby(int lobbyId, PlayerService playerService) {
         Lobby l = getLobby(lobbyId);
         List<Player> players = l.getPlayers();
         for (int i = 0; i < players.size(); i++) {
