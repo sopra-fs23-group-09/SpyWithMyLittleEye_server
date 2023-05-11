@@ -29,9 +29,21 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    private final LobbyService lobbyService;
+
+    private final WebSocketService webSocketService;
+
+    private final Map<Long, Timer> activeUserTimers;
+
+    private final Map<Long, Boolean> activeUserBooleans;
+
     @Autowired
-    public UserService(@Qualifier("userRepository") UserRepository userRepository) {
+    public UserService(@Qualifier("userRepository") UserRepository userRepository, LobbyService lobbyService, WebSocketService ws) {
         this.userRepository = userRepository;
+        this.lobbyService = lobbyService;
+        this.webSocketService = ws;
+        activeUserTimers = new HashMap<>();
+        activeUserBooleans = new HashMap<>();
     }
 
     //called setToken in the class diagram
@@ -52,7 +64,7 @@ public class UserService {
     }
 
     //could be renamed to deleteToken as written in class diagram
-    public void clearToken(String token){
+    private void clearToken(String token){
         User u = userRepository.findByToken(token);
         if (u == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with this token exists");
@@ -69,6 +81,44 @@ public class UserService {
         u.setStatus(status?UserStatus.OFFLINE:UserStatus.ONLINE);
         userRepository.save(u);
         userRepository.flush();
+
+        if(!status) {
+            activeUserTimers.put(u.getId(), new Timer());
+            activeUserBooleans.put(u.getId(), false);
+            log.info("Initializing keepalive timer for {}", u.getUsername());
+            activeUserTimers.get(u.getId()).scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    log.info("Checking keepalive for {}", u.getUsername());
+                    checkKeepalive(u.getId());
+                }
+            }, 10_000, 10_000);
+        }else{
+            log.info("logging out user {} ", u.getUsername());
+            activeUserTimers.get(u.getId()).cancel();
+            activeUserTimers.remove(u.getId());
+            activeUserBooleans.remove(u.getId());
+            clearToken(u.getToken());
+        }
+    }
+
+    private void checkKeepalive(long userId) {
+        if(activeUserBooleans.get(userId)){
+            activeUserBooleans.put(userId, false);
+        } else {
+            User u = getUser(userId);
+            activeUserTimers.get(userId).cancel();
+            log.info("Removing {} due to inactivity", u.getUsername());
+            setOffline(u.getToken(), true);
+            if(u.getLobbyID() != 0) {
+                lobbyService.kickPlayer(u, webSocketService);
+            }
+        }
+    }
+
+    public void keepAlive(String token) {
+        log.debug("Keeping user with token {} alive", token);
+        activeUserBooleans.put(getUserID(token), true);
     }
     public List<User> getUsers() {
         return this.userRepository.findAll();
@@ -114,6 +164,8 @@ public class UserService {
         // flush() is called
         newUser = userRepository.save(newUser);
         userRepository.flush();
+
+        setOffline(newUser.getToken(), false);
 
         log.debug("Created Information for User: {}", newUser);
         return newUser;
