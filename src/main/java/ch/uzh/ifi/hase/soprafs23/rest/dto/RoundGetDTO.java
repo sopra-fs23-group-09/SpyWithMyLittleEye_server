@@ -10,6 +10,7 @@ import java.util.Map;
 public class RoundGetDTO {
     private List<UserPointsWrapper> playerPoints;
     private String roundOverStatus;
+
     private String keyword;
     private Long hostId;
     private int currentRoundNr;
@@ -33,7 +34,7 @@ public class RoundGetDTO {
     public void setPlayerPoints(Map<User, Integer> playerPoints){
         this.playerPoints = new ArrayList<>();
         for (User u : playerPoints.keySet()) {
-            this.playerPoints.add(new UserPointsWrapper(u.getUsername(), playerPoints.get(u)));
+            this.playerPoints.add(new UserPointsWrapper(u.getUsername(), playerPoints.get(u), u.getProfilePicture()));
         }
         this.playerPoints.sort(UserPointsWrapper.compareByPoints());
     }
