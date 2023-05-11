@@ -76,7 +76,7 @@ public class UserServiceTest {
     @Test
     public void setOffline() {
         Mockito.when(userRepository.findByToken(Mockito.anyString())).thenReturn(testUser);
-
+        userService.setOffline("abc", false);
         userService.setOffline(testUser.getToken(), true);
         Mockito.verify(userRepository, Mockito.atLeast(1)).save(Mockito.any());
     }
