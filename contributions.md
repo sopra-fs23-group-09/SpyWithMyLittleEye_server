@@ -122,8 +122,10 @@
   1. 
   2. 
 - Loubna
-  1. 
-  2. 
+  1. music on off: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/238
+  2. copy code into clipboard : https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/239
+  3. show "hide password": https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/240
+  4. sound to wrong/correct guesses: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/242
 - Thereza
   1. bug fix keep alive: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/237
   2. nice error messages instead of alert: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/211
