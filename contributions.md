@@ -129,6 +129,6 @@
   3. show "hide password": https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/240
   4. sound to wrong/correct guesses: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/242
 - Thereza
-  1. bug fix keep alive: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/237
-  2. nice error messages instead of alert: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/211
+  1. Bug fix keepAlive / userDropOut: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/237
+  2. Nice error messages instead of alert: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/211
 
