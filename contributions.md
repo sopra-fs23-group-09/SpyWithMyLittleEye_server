@@ -109,3 +109,22 @@
 - Thereza
   1. add logout on all pages if user closes browser: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/140
   2. profile picture client: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/113
+
+### Week 7: 13.05. - 19.05.
+- Nina
+  1. assign new roles on irregular drop out: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/180
+  2. close lobby if game started: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/179
+  3. fix bug winner if all have 0 points: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/178
+- Claudia
+  1. play again server side: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/164
+  2. configure new databse: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/181
+- Xena
+  1. 
+  2. 
+- Loubna
+  1. 
+  2. 
+- Thereza
+  1. bug fix keep alive: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/237
+  2. nice error messages instead of alert: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/211
+
