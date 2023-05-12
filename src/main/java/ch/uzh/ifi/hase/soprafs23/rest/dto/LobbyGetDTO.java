@@ -1,6 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
-import ch.uzh.ifi.hase.soprafs23.entity.Player;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,15 +36,15 @@ public class LobbyGetDTO {
 
     public int getHostId() { return hostId;}
 
-    public void setPlayerNames(List<Player> playerNames) {
+    public void setPlayerNames(List<User> playerNames) {
         this.playerNames = new ArrayList<>(playerNames.size());
-        for(Player u : playerNames) {
+        for(User u : playerNames) {
             this.playerNames.add(u.getUsername());
         }
     }
-    public void setProfilePictures(List<Player> profilePictures){
+    public void setProfilePictures(List<User> profilePictures){
         this.profilePictures = new ArrayList<>(profilePictures.size());
-        for(Player u: profilePictures){
+        for(User u: profilePictures){
             this.profilePictures.add(u.getProfilePicture());
         }
     }

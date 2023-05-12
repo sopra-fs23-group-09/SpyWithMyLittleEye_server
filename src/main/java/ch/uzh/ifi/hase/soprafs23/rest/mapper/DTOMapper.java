@@ -2,7 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.rest.mapper;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
-import ch.uzh.ifi.hase.soprafs23.entity.Player;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.*;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
@@ -15,7 +15,7 @@ public interface DTOMapper {
     @Mapping(source = "password", target = "password")
     @Mapping(source = "username", target = "username")
     @Mapping(source = "profilePicture", target = "profilePicture")
-    Player convertPlayerPostDTOtoEntity(PlayerPostDTO playerPostDTO);
+    User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
 
     @Mapping(source = "id", target = "id")
     @Mapping(source = "username", target = "username")
@@ -23,12 +23,12 @@ public interface DTOMapper {
     @Mapping(source = "creationDate", target = "creationDate")
     @Mapping(source = "birthday", target = "birthday")
     @Mapping(source = "profilePicture", target = "profilePicture")
-    PlayerGetDTO convertEntityToPlayerGetDTO(Player player);
+    UserGetDTO convertEntityToUserGetDTO(User user);
 
     @Mapping(source = "birthday", target = "birthday")
     @Mapping(source = "username", target = "username")
     @Mapping(source = "profilePicture", target = "profilePicture")
-    Player convertPlayerPutDTOtoEntity(PlayerPutDTO playerPutDTO);
+    User convertUserPutDTOtoEntity(UserPutDTO userPutDTO);
 
     @Mapping(source = "id", target = "id")
     @Mapping(source = "accessCode", target = "accessCode")

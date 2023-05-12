@@ -2,7 +2,7 @@
 ## Sprint 1 
 ### Week 1: 31.03. - 07.04. 
 - Nina
-  1. LogIn + SignUp + LogOut #89, #91 (summarized the content of tasks #91, #20 and #26 in task #91 as it is all adapting methods for player processes)
+  1. LogIn + SignUp + LogOut #89, #91 (summarized the content of tasks #91, #20 and #26 in task #91 as it is all adapting methods for user processes)
   2. Entities #87
 - Claudia
   1. Lobby #48, #51, #88
@@ -21,7 +21,7 @@
 - Nina
   1. Websocket connection between server and client in Lobby: 44#
   2. refactor whole model (game, lobby, round no longer in JPA repository, new structure, new placement of methods) #78
-  3. fetch top 100 players #43
+  3. fetch top 100 users #43
 - Claudia
   1. WebSocket connection between server and client in Game #98
   2. distribute points #80
@@ -80,7 +80,7 @@
   2. refactoring repository: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/156
 - Xena
   1. enable edit: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/189
-  2. player profile: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/84
+  2. user profile: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/84
 - Loubna
   1. Login UI : https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/178
   2. Signup UI: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/179
@@ -107,7 +107,7 @@
   2. sound in buttons: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/204
   3. set custom time: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/206
 - Thereza
-  1. add logout on all pages if player closes browser: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/140
+  1. add logout on all pages if user closes browser: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/140
   2. profile picture client: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/113
 
 ### Week 7: 13.05. - 19.05.

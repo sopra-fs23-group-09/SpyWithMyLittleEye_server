@@ -1,10 +1,10 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
-import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
+import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
-import ch.uzh.ifi.hase.soprafs23.entity.Player;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
-import ch.uzh.ifi.hase.soprafs23.repository.PlayerRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -20,16 +20,16 @@ import static org.junit.jupiter.api.Assertions.*;
 class GameServiceTest {
 
     @Mock
-    private PlayerRepository playerRepository;
+    private UserRepository userRepository;
 
     @Mock
-    private PlayerService playerService;
+    private UserService userService;
 
     @InjectMocks
     private GameService gameService;
 
-    private Player player1;
-    private Player player2;
+    private User player1;
+    private User player2;
     private int gameId;
     private Game game;
 
@@ -39,31 +39,31 @@ class GameServiceTest {
 
         MockitoAnnotations.openMocks(this);
 
-        player1 = new Player();
+        player1 = new User();
         player1.setId(1L);
         player1.setUsername("petra");
         player1.setPassword("password");
-        player1.setStatus(PlayerStatus.ONLINE);
+        player1.setStatus(UserStatus.ONLINE);
         player1.setToken("token");
         player1.setCreationDate(new Date(0L));
         player1.setBirthday(new Date(0L));
 
-        player2 = new Player();
+        player2 = new User();
         player2.setId(2L);
         player2.setUsername("eva");
         player2.setPassword("1234");
-        player2.setStatus(PlayerStatus.ONLINE);
+        player2.setStatus(UserStatus.ONLINE);
         player2.setToken("token");
         player2.setCreationDate(new Date(0L));
         player2.setBirthday(new Date(0L));
 
-        List<Player> players = new ArrayList<>();
+        List<User> players = new ArrayList<>();
         players.add(player1);
         players.add(player2);
 
         //create game
         gameId = 1;
-        game = new Game(gameId,players,3,player1, playerService, 1.5f);
+        game = new Game(gameId,players,3,player1,userService, 1.5f);
         game.nextRound();
 
         //set startTime

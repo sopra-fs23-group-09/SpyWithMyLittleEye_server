@@ -1,17 +1,17 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
-import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
+import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
 
-public class PlayerGetDTO {
+public class UserGetDTO {
 
     private Long id;
     private String username;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date creationDate;
-    private PlayerStatus status;
+    private UserStatus status;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date birthday;
     private String profilePicture;
@@ -59,11 +59,11 @@ public class PlayerGetDTO {
         this.username = username;
     }
 
-    public PlayerStatus getStatus() {
+    public UserStatus getStatus() {
         return status;
     }
 
-    public void setStatus(PlayerStatus status) {
+    public void setStatus(UserStatus status) {
         this.status = status;
     }
 }

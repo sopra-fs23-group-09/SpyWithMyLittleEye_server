@@ -1,6 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
-public class PlayerPostDTO {
+public class UserPostDTO {
 
     private String password;
 

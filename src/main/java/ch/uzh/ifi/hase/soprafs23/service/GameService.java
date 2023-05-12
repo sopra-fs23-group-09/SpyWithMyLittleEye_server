@@ -3,8 +3,8 @@ package ch.uzh.ifi.hase.soprafs23.service;
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.controller.GameStompController;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
-import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,15 +22,15 @@ public class GameService {
         game.setKeyword(keyword);
     }
 
-    public List<Guess> checkGuessAndAllocatePoints(int gameId, Player player, String guess, Date guessTime){
+    public List<Guess> checkGuessAndAllocatePoints(int gameId, User user, String guess, Date guessTime){
         Game game = getGame(gameId);
         log.info("checking guess {} with keyword {}", guess, game.getKeyword());
         if (game.checkGuess(guess)){
             log.info("{} and {} are matching", guess, game.getKeyword());
             guess = "CORRECT";
-            game.allocatePoints(player, guessTime);
+            game.allocatePoints(user, guessTime);
         }
-        game.storeGuess(player.getUsername(), guess);
+        game.storeGuess(user.getUsername(), guess);
         return game.getGuesses();
     }
 

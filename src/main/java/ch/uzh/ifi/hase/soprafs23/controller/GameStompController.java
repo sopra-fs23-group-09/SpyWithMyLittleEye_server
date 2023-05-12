@@ -1,11 +1,12 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
-import ch.uzh.ifi.hase.soprafs23.entity.Player;
+import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.stomp.dto.Location;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
-import ch.uzh.ifi.hase.soprafs23.service.PlayerService;
+import ch.uzh.ifi.hase.soprafs23.service.UserService;
 import ch.uzh.ifi.hase.soprafs23.service.WebSocketService;
 import ch.uzh.ifi.hase.soprafs23.stomp.dto.*;
 import org.slf4j.Logger;
@@ -23,7 +24,7 @@ import java.util.List;
 public class GameStompController {
 
     private final Logger logger = LoggerFactory.getLogger(GameStompController.class);
-    private final PlayerService playerService;
+    private final UserService userService;
 
     private final GameService gameService;
 
@@ -31,8 +32,8 @@ public class GameStompController {
 
     private final WebSocketService webSocketService;
 
-    GameStompController(PlayerService playerService, GameService gameService, LobbyService lobbyService, WebSocketService ws){
-        this.playerService = playerService;
+    GameStompController(UserService userService, GameService gameService, LobbyService lobbyService, WebSocketService ws){
+        this.userService = userService;
         this.gameService = gameService;
         this.lobbyService = lobbyService;
         this.webSocketService = ws;
@@ -81,9 +82,9 @@ public class GameStompController {
 
         //extract information from JSON
         String guess = guessIn.getGuess();
-        Player player = playerService.getUser(guessIn.getId());
+        User user = userService.getUser(guessIn.getId());
 
-        List<Guess> playerGuesses = gameService.checkGuessAndAllocatePoints(gameId, player, guess, guessTime);
+        List<Guess> playerGuesses = gameService.checkGuessAndAllocatePoints(gameId, user, guess, guessTime);
 
         webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/guesses", playerGuesses);
 
@@ -100,7 +101,7 @@ public class GameStompController {
     @MessageMapping("/games/{gameId}/gameOver")
     public void endGame(@DestinationVariable("gameId") int gameId){
         gameService.handleGameOver(gameId);
-        lobbyService.deleteLobby(gameId, playerService);
+        lobbyService.deleteLobby(gameId, userService);
         webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/gameOver", new EndRoundMessage("endGame", 0, 0));
     }
 }

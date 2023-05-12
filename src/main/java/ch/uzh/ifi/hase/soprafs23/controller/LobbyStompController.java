@@ -6,7 +6,7 @@ import ch.uzh.ifi.hase.soprafs23.rest.dto.GameStartedGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.LobbyGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
-import ch.uzh.ifi.hase.soprafs23.service.PlayerService;
+import ch.uzh.ifi.hase.soprafs23.service.UserService;
 import ch.uzh.ifi.hase.soprafs23.service.WebSocketService;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -18,13 +18,13 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class LobbyStompController {
     private final LobbyService lobbyService;
-    private final PlayerService playerService;
+    private final UserService userService;
     private final WebSocketService webSocketService;
 
 
-    LobbyStompController(LobbyService lobbyService, PlayerService playerService, WebSocketService webSocketService) {
+    LobbyStompController(LobbyService lobbyService, UserService userService, WebSocketService webSocketService) {
         this.lobbyService = lobbyService;
-        this.playerService = playerService;
+        this.userService = userService;
         this.webSocketService = webSocketService;
     }
 
@@ -40,7 +40,7 @@ public class LobbyStompController {
     @MessageMapping("games/{lobbyId}")
     @SendTo("topic/lobbies/{lobbyId}")
     public void startGame(@DestinationVariable("lobbyId") String lobbyId){  //TODO: n: why is lobbyId a string?
-        Game game = lobbyService.startGame(Integer.parseInt(lobbyId), playerService);
+        Game game = lobbyService.startGame(Integer.parseInt(lobbyId), userService);
         GameStartedGetDTO gameStartedGetDTO = DTOMapper.INSTANCE.convertGameToGameStartedGetDTO(game);
         webSocketService.sendMessageToSubscribers("/topic/lobbies/" + lobbyId, gameStartedGetDTO);
     }

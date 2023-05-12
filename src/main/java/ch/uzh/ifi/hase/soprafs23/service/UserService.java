@@ -1,8 +1,8 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
-import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
-import ch.uzh.ifi.hase.soprafs23.entity.Player;
-import ch.uzh.ifi.hase.soprafs23.repository.PlayerRepository;
+import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.*;
 
 /**
- * Player Service
+ * User Service
  * This class is the "worker" and responsible for all functionality related to
  * the user
  * (e.g., it creates, modifies, deletes, finds). The result will be passed back
@@ -23,11 +23,11 @@ import java.util.*;
  */
 @Service
 @Transactional
-public class PlayerService {
+public class UserService {
 
-    private final Logger log = LoggerFactory.getLogger(PlayerService.class);
+    private final Logger log = LoggerFactory.getLogger(UserService.class);
 
-    private final PlayerRepository playerRepository;
+    private final UserRepository userRepository;
 
     private final LobbyService lobbyService;
 
@@ -38,8 +38,8 @@ public class PlayerService {
     private final Map<Long, Boolean> activeUserBooleans;
 
     @Autowired
-    public PlayerService(@Qualifier("playerRepository") PlayerRepository playerRepository, LobbyService lobbyService, WebSocketService ws) {
-        this.playerRepository = playerRepository;
+    public UserService(@Qualifier("userRepository") UserRepository userRepository, LobbyService lobbyService, WebSocketService ws) {
+        this.userRepository = userRepository;
         this.lobbyService = lobbyService;
         this.webSocketService = ws;
         activeUserTimers = new HashMap<>();
@@ -47,40 +47,40 @@ public class PlayerService {
     }
 
     //called setToken in the class diagram
-    public Player updateToken(Long id, String token){
-        Player player = playerRepository.getOne(id);
-        player.setToken(token);
-        player = playerRepository.save(player);
-        playerRepository.flush();
-        return player;
+    public User updateToken(Long id, String token){
+        User user = userRepository.getOne(id);
+        user.setToken(token);
+        user = userRepository.save(user);
+        userRepository.flush();
+        return user;
     }
     public void checkToken(String token){
-        if("null".equals(token) || playerRepository.findByToken(token) == null){
+        if("null".equals(token) || userRepository.findByToken(token) == null){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No permission to enter.");
         }
     }
-    public void saveFlushUser(Player u){
-        playerRepository.saveAndFlush(u);
+    public void saveFlushUser(User u){
+        userRepository.saveAndFlush(u);
     }
 
     //could be renamed to deleteToken as written in class diagram
     private void clearToken(String token){
-        Player u = playerRepository.findByToken(token);
+        User u = userRepository.findByToken(token);
         if (u == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with this token exists");
         }
         u.setToken(null);
-        playerRepository.save(u);
-        playerRepository.flush();
+        userRepository.save(u);
+        userRepository.flush();
     }
     //probably rename to logoutUser because of class diagram, but setOffline has a meaning in combination
     //with status so i would prefer setOffline
     public void setOffline(String token, boolean status){
-        Player u = playerRepository.findByToken(token);
+        User u = userRepository.findByToken(token);
         if (u == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user");
-        u.setStatus(status? PlayerStatus.OFFLINE: PlayerStatus.ONLINE);
-        playerRepository.save(u);
-        playerRepository.flush();
+        u.setStatus(status?UserStatus.OFFLINE:UserStatus.ONLINE);
+        userRepository.save(u);
+        userRepository.flush();
 
         if(!status) {
             activeUserTimers.put(u.getId(), new Timer());
@@ -106,7 +106,7 @@ public class PlayerService {
         if(activeUserBooleans.get(userId)){
             activeUserBooleans.put(userId, false);
         } else {
-            Player u = getUser(userId);
+            User u = getUser(userId);
             activeUserTimers.get(userId).cancel();
             log.info("Removing {} due to inactivity", u.getUsername());
             setOffline(u.getToken(), true);
@@ -120,11 +120,11 @@ public class PlayerService {
         log.debug("Keeping user with token {} alive", token);
         activeUserBooleans.put(getUserID(token), true);
     }
-    public List<Player> getUsers() {
-        return this.playerRepository.findAll();
+    public List<User> getUsers() {
+        return this.userRepository.findAll();
     }
     public Long getUserID(String token){
-        Player u = playerRepository.findByToken(token);
+        User u = userRepository.findByToken(token);
         if(u == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The user doesn't exist");
         }
@@ -132,12 +132,12 @@ public class PlayerService {
     }
     //TODO: update ((the password +))the profile picture for M4 (probably not the password but don't know yet)
     //this method combines all the update [attribute] methods in the class diagram
-    public void updateUser(Player u, String token, Long userId){
-        Optional<Player> uToUpdateO = playerRepository.findById(userId);
+    public void updateUser(User u, String token, Long userId){
+        Optional<User> uToUpdateO = userRepository.findById(userId);
         if(uToUpdateO.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The user doesn't exist!");
         }
-        Player uToUpdate = uToUpdateO.get();
+        User uToUpdate = uToUpdateO.get();
         if(!token.equals(uToUpdate.getToken())){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You can only change your own profile!");
         }
@@ -151,63 +151,63 @@ public class PlayerService {
         if(u.getProfilePicture() != null){
             uToUpdate.setProfilePicture(u.getProfilePicture());
         }
-        playerRepository.save(uToUpdate);
-        playerRepository.flush();
+        userRepository.save(uToUpdate);
+        userRepository.flush();
     }
 
-    public void exitLobby(Player player){
+    public void exitLobby(User player){
         if (player.getLobbyID() == 0){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "you are not in a lobby yet");
         }
         player.setLobbyID(0);
-        playerRepository.save(player);
-        playerRepository.flush();
+        userRepository.save(player);
+        userRepository.flush();
     }
 
-    public Player createUser(Player newPlayer) {
-        newPlayer.setToken(UUID.randomUUID().toString());
-        newPlayer.setStatus(PlayerStatus.ONLINE);
-        newPlayer.setCreationDate(new Date());
-        checkIfUserExists(newPlayer);
+    public User createUser(User newUser) {
+        newUser.setToken(UUID.randomUUID().toString());
+        newUser.setStatus(UserStatus.ONLINE);
+        newUser.setCreationDate(new Date());
+        checkIfUserExists(newUser);
         // saves the given entity but data is only persisted in the database once
         // flush() is called
-        newPlayer = playerRepository.save(newPlayer);
-        playerRepository.flush();
+        newUser = userRepository.save(newUser);
+        userRepository.flush();
 
-        setOffline(newPlayer.getToken(), false);
+        setOffline(newUser.getToken(), false);
 
-        log.debug("Created Information for Player: {}", newPlayer);
-        return newPlayer;
+        log.debug("Created Information for User: {}", newUser);
+        return newUser;
     }
 
 
     /**
      * This is a helper method that will check the uniqueness criteria of the
-     * username defined in the Player entity. The method will do nothing if the input is unique
+     * username defined in the User entity. The method will do nothing if the input is unique
      * and throw an error otherwise.
-     * @param playerToBeCreated
+     * @param userToBeCreated
      * @throws org.springframework.web.server.ResponseStatusException
-     * @see Player
+     * @see User
      */
-    private void checkIfUserExists(Player playerToBeCreated) {
-        Player playerByUsername = playerRepository.findByUsername(playerToBeCreated.getUsername());
-        if (playerByUsername != null) {
+    private void checkIfUserExists(User userToBeCreated) {
+        User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
+        if (userByUsername != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "The username provided is not unique. Choose another one!");
         }
     }
-    public List<Player> getTop15User(){
-        List<Player> topPlayers = playerRepository.findTop15ByOrderByHighScoreDesc();
-        return Collections.unmodifiableList(topPlayers);
+    public List<User> getTop15User(){
+        List<User> topUsers = userRepository.findTop15ByOrderByHighScoreDesc();
+        return Collections.unmodifiableList(topUsers);
     }
 
-    public List<Player> getTop15UsersGamesWon() {
-        List<Player> topPlayers = playerRepository.findTop15ByOrderByGamesWonDesc();
-        return Collections.unmodifiableList(topPlayers);
+    public List<User> getTop15UsersGamesWon() {
+        List<User> topUsers = userRepository.findTop15ByOrderByGamesWonDesc();
+        return Collections.unmodifiableList(topUsers);
     }
 
-    public Player getUser(Long id){
+    public User getUser(Long id){
 
-        Optional<Player> user = playerRepository.findById(id);
+        Optional<User> user = userRepository.findById(id);
         if (user.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This user is doing no existing!");
         }

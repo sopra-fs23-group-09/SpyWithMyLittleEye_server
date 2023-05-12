@@ -1,10 +1,10 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
-import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
-import ch.uzh.ifi.hase.soprafs23.entity.Player;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.PlayerPostDTO;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.PlayerPutDTO;
-import ch.uzh.ifi.hase.soprafs23.service.PlayerService;
+import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.UserPostDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.UserPutDTO;
+import ch.uzh.ifi.hase.soprafs23.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.IsNull;
@@ -34,85 +34,85 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * PlayerControllerTest
- * This is a WebMvcTest which allows to test the PlayerController i.e. GET/POST
+ * UserControllerTest
+ * This is a WebMvcTest which allows to test the UserController i.e. GET/POST
  * request without actually sending them over the network.
- * This tests if the PlayerController works.
+ * This tests if the UserController works.
  */
-@WebMvcTest(PlayerController.class)
-public class PlayerControllerTest {
+@WebMvcTest(UserController.class)
+public class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private PlayerService playerService;
+    private UserService userService;
 
     @Test
     public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
         // given
-        Player player = new Player();
-        player.setId(1L);
-        player.setPassword("password");
-        player.setUsername("firstname@lastname");
-        player.setStatus(PlayerStatus.ONLINE);
-        player.setToken("token");
-        player.setCreationDate(new Date(0L));
-        player.setBirthday(new Date(0L));
+        User user = new User();
+        user.setId(1L);
+        user.setPassword("password");
+        user.setUsername("firstname@lastname");
+        user.setStatus(UserStatus.ONLINE);
+        user.setToken("token");
+        user.setCreationDate(new Date(0L));
+        user.setBirthday(new Date(0L));
 
-        List<Player> allPlayers = Collections.singletonList(player);
+        List<User> allUsers = Collections.singletonList(user);
 
-        // this mocks the PlayerService -> we define above what the playerService should
+        // this mocks the UserService -> we define above what the userService should
         // return when getUsers() is called
-        given(playerService.getUsers()).willReturn(allPlayers);
+        given(userService.getUsers()).willReturn(allUsers);
 
         // when
         MockHttpServletRequestBuilder getRequest = get("/users").contentType(MediaType.APPLICATION_JSON);
 
         SimpleDateFormat dFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String creationD = dFormat.format(player.getCreationDate());
-        String birthd = dFormat.format(player.getBirthday());
+        String creationD = dFormat.format(user.getCreationDate());
+        String birthd = dFormat.format(user.getBirthday());
         // then
         mockMvc.perform(getRequest).andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].username", is(player.getUsername())))
-                .andExpect(jsonPath("$[0].status", is(player.getStatus().toString())))
+                .andExpect(jsonPath("$[0].username", is(user.getUsername())))
+                .andExpect(jsonPath("$[0].status", is(user.getStatus().toString())))
                 .andExpect(jsonPath("$[0].creationDate", is(creationD)))
                 .andExpect(jsonPath("$[0].birthday", is(birthd)))
-                .andExpect(jsonPath("$[0].id", is(player.getId().intValue())));
+                .andExpect(jsonPath("$[0].id", is(user.getId().intValue())));
     }
 
     @Test
     public void createUser_validInput_userCreated() throws Exception {
         // given
-        Player player = new Player();
-        player.setId(1L);
-        player.setPassword("password");
-        player.setUsername("testUsername");
-        player.setToken("1");
-        player.setStatus(PlayerStatus.ONLINE);
-        player.setCreationDate(new Date(0L));
+        User user = new User();
+        user.setId(1L);
+        user.setPassword("password");
+        user.setUsername("testUsername");
+        user.setToken("1");
+        user.setStatus(UserStatus.ONLINE);
+        user.setCreationDate(new Date(0L));
 
-        PlayerPostDTO playerPostDTO = new PlayerPostDTO();
-        playerPostDTO.setPassword("password");
-        playerPostDTO.setUsername("testUsername");
+        UserPostDTO userPostDTO = new UserPostDTO();
+        userPostDTO.setPassword("password");
+        userPostDTO.setUsername("testUsername");
 
-        given(playerService.createUser(Mockito.any())).willReturn(player);
+        given(userService.createUser(Mockito.any())).willReturn(user);
 
         // when/then -> do the request + validate the result
         MockHttpServletRequestBuilder postRequest = post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(playerPostDTO));
+                .content(asJsonString(userPostDTO));
 
         SimpleDateFormat dFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String creationD = dFormat.format(player.getCreationDate());
+        String creationD = dFormat.format(user.getCreationDate());
 
         // then
         mockMvc.perform(postRequest)
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", is(player.getId().intValue())))
-                .andExpect(jsonPath("$.username", is(player.getUsername())))
-                .andExpect(jsonPath("$.status", is(player.getStatus().toString())))
+                .andExpect(jsonPath("$.id", is(user.getId().intValue())))
+                .andExpect(jsonPath("$.username", is(user.getUsername())))
+                .andExpect(jsonPath("$.status", is(user.getStatus().toString())))
                 .andExpect(jsonPath("$.creationDate", is(creationD)))
                 .andExpect(jsonPath("$.birthday").value(IsNull.nullValue()));
     }
@@ -121,15 +121,15 @@ public class PlayerControllerTest {
     public void createUser_duplicateUsername_conflict() throws Exception{
         String errorMessage = "Reason";
         ResponseStatusException e = new ResponseStatusException(HttpStatus.CONFLICT, errorMessage);
-        given(playerService.createUser(Mockito.any())).willThrow(e);
+        given(userService.createUser(Mockito.any())).willThrow(e);
 
-        PlayerPostDTO playerPostDTO = new PlayerPostDTO();
-        playerPostDTO.setPassword("password");
-        playerPostDTO.setUsername("testUsername");
+        UserPostDTO userPostDTO = new UserPostDTO();
+        userPostDTO.setPassword("password");
+        userPostDTO.setUsername("testUsername");
 
         MockHttpServletRequestBuilder postRequest = post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString((playerPostDTO)));
+                .content(asJsonString((userPostDTO)));
 
         mockMvc.perform(postRequest)
                 .andExpect(status().isConflict())
@@ -139,13 +139,13 @@ public class PlayerControllerTest {
 
     @Test
     public void editUser_success() throws Exception {
-        PlayerPutDTO playerPutDTO = new PlayerPutDTO();
-        playerPutDTO.setBirthday(new Date(0L));
-        playerPutDTO.setUsername("newUsername");
+        UserPutDTO userPutDTO = new UserPutDTO();
+        userPutDTO.setBirthday(new Date(0L));
+        userPutDTO.setUsername("newUsername");
 
         MockHttpServletRequestBuilder putRequest = put("/users/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(playerPutDTO));
+                .content(asJsonString(userPutDTO));
 
         mockMvc.perform(putRequest).andExpect(status().isNoContent());
     }
@@ -154,15 +154,15 @@ public class PlayerControllerTest {
     public void editUser_notFound() throws Exception{
         String errorMessage = "Reason";
         ResponseStatusException e = new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage);
-        doThrow(e).when(playerService).updateUser(Mockito.any(), Mockito.anyString(), Mockito.anyLong());
+        doThrow(e).when(userService).updateUser(Mockito.any(), Mockito.anyString(), Mockito.anyLong());
 
-        PlayerPutDTO playerPutDTO = new PlayerPutDTO();
-        playerPutDTO.setBirthday(new Date(0L));
-        playerPutDTO.setUsername("newUsername");
+        UserPutDTO userPutDTO = new UserPutDTO();
+        userPutDTO.setBirthday(new Date(0L));
+        userPutDTO.setUsername("newUsername");
 
         MockHttpServletRequestBuilder putRequest = put("/users/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(playerPutDTO));
+                .content(asJsonString(userPutDTO));
 
         mockMvc.perform(putRequest)
                 .andExpect(status().isNotFound())
@@ -172,34 +172,34 @@ public class PlayerControllerTest {
 
     @Test
     public void getUser_withId_success() throws Exception{
-        Player player = new Player();
-        player.setId(1L);
-        player.setPassword("password");
-        player.setUsername("testUsername");
-        player.setToken("1");
-        player.setStatus(PlayerStatus.ONLINE);
-        player.setCreationDate(new Date(0L));
+        User user = new User();
+        user.setId(1L);
+        user.setPassword("password");
+        user.setUsername("testUsername");
+        user.setToken("1");
+        user.setStatus(UserStatus.ONLINE);
+        user.setCreationDate(new Date(0L));
 
-        List<Player> allPlayers = Collections.singletonList(player);
-        given(playerService.getUsers()).willReturn(allPlayers);
+        List<User> allUsers = Collections.singletonList(user);
+        given(userService.getUsers()).willReturn(allUsers);
 
-        MockHttpServletRequestBuilder getRequest = get("/users/"+ player.getId());
+        MockHttpServletRequestBuilder getRequest = get("/users/"+user.getId());
 
         SimpleDateFormat dFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String creationD = dFormat.format(player.getCreationDate());
+        String creationD = dFormat.format(user.getCreationDate());
         System.out.println(creationD);
 
         mockMvc.perform(getRequest)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(player.getId().intValue())))
-                .andExpect(jsonPath("$.username", is(player.getUsername())))
-                .andExpect(jsonPath("$.status", is(player.getStatus().toString())))
+                .andExpect(jsonPath("$.id", is(user.getId().intValue())))
+                .andExpect(jsonPath("$.username", is(user.getUsername())))
+                .andExpect(jsonPath("$.status", is(user.getStatus().toString())))
                 .andExpect(jsonPath("$.creationDate", is(creationD)))
                 .andExpect(jsonPath("$.birthday").value(IsNull.nullValue()));
     }
     @Test
     public void getUser_withId_notFound() throws Exception{
-        given(playerService.getUsers()).willReturn(Collections.emptyList());
+        given(userService.getUsers()).willReturn(Collections.emptyList());
 
         MockHttpServletRequestBuilder getRequest = get("/users/1");
 
@@ -211,7 +211,7 @@ public class PlayerControllerTest {
     /**
      * Helper Method to convert userPostDTO into a JSON string such that the input
      * can be processed
-     * Input will look like this: {"name": "Test Player", "username": "testUsername"}
+     * Input will look like this: {"name": "Test User", "username": "testUsername"}
      *
      * @param object
      * @return string

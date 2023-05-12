@@ -1,9 +1,9 @@
 package ch.uzh.ifi.hase.soprafs23.repository;
 
-import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
+import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
-import ch.uzh.ifi.hase.soprafs23.entity.Player;
-import ch.uzh.ifi.hase.soprafs23.service.PlayerService;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -21,30 +21,30 @@ class GameRepositoryTest {
     @BeforeEach
     void setup() {
         //create players
-        Player player1 = new Player();
+        User player1 = new User();
         player1.setId(1L);
         player1.setUsername("petra");
         player1.setPassword("password");
-        player1.setStatus(PlayerStatus.ONLINE);
+        player1.setStatus(UserStatus.ONLINE);
         player1.setToken("token");
         player1.setCreationDate(new Date(0L));
         player1.setBirthday(new Date(0L));
 
-        Player player2 = new Player();
+        User player2 = new User();
         player2.setId(2L);
         player2.setUsername("eva");
         player2.setPassword("1234");
-        player2.setStatus(PlayerStatus.ONLINE);
+        player2.setStatus(UserStatus.ONLINE);
         player2.setToken("token");
         player2.setCreationDate(new Date(0L));
         player2.setBirthday(new Date(0L));
 
-        List<Player> players = new ArrayList<>();
+        List<User> players = new ArrayList<>();
         players.add(player1);
         players.add(player2);
 
         //create game
-        testGame = new Game(1,players,3, player1, Mockito.mock(PlayerService.class), 1.5f);
+        testGame = new Game(1,players,3, player1, Mockito.mock(UserService.class), 1.5f);
     }
     @Test
     void getGameById() {
