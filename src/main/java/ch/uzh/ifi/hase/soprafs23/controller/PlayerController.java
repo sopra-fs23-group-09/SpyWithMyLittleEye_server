@@ -120,7 +120,6 @@ public class PlayerController {
     public ResponseEntity<Void> logout(@RequestHeader(value = "Token", defaultValue = "null") String token){
         playerService.checkToken(token);
         playerService.setOffline(token,true);
-        playerService.clearToken(token);
         return ResponseEntity.noContent().build();
     }
 
@@ -129,6 +128,14 @@ public class PlayerController {
         Player u = DTOMapper.INSTANCE.convertPlayerPutDTOtoEntity(playerPutDTO);
         playerService.checkToken(token);
         playerService.updateUser(u, token, userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/users/keepAlive")
+    public ResponseEntity<Void> keepAlive(@RequestHeader(value = "token", defaultValue = "null") String token){
+        //add token check ?
+        //playerService.checkToken(token);
+        playerService.keepAlive(token);
         return ResponseEntity.noContent().build();
     }
 }

@@ -86,7 +86,7 @@ public class LobbyServiceTest {
         Lobby lobby = new Lobby(testPlayer, 2, 12345, 2, 1.5f);
         LobbyRepository.addLobby(lobby);
 
-        Game game = lobbyService.startGame(lobby.getId(), userService);
+        Game game = lobbyService.startGame(lobby.getId(), playerService);
 
         assertEquals(lobby.getId(), game.getId());
         assertEquals(lobby.getAmountRounds(), game.getAmountRounds());
@@ -97,7 +97,7 @@ public class LobbyServiceTest {
     @ParameterizedTest
     @ValueSource(ints = { 1, 20, -4, 13, 29, Integer.MAX_VALUE, Integer.MIN_VALUE })
     public void startGame_failureLobbyDoesntExist(int lobbyId) {
-        assertThrows(ResponseStatusException.class, () -> lobbyService.startGame(100, userService));
+        assertThrows(ResponseStatusException.class, () -> lobbyService.startGame(100, playerService));
     }
 
     @Test
@@ -105,8 +105,8 @@ public class LobbyServiceTest {
         Lobby lobby = new Lobby(testPlayer, 3, 12335, 2, 1.5f);
         LobbyRepository.addLobby(lobby);
 
-        lobbyService.startGame(lobby.getId(), userService);
-        assertThrows(ResponseStatusException.class, () -> lobbyService.startGame(lobby.getId(), userService));
+        lobbyService.startGame(lobby.getId(), playerService);
+        assertThrows(ResponseStatusException.class, () -> lobbyService.startGame(lobby.getId(), playerService));
     }
 
     @Test
@@ -155,14 +155,14 @@ public class LobbyServiceTest {
         LobbyRepository.addLobby(l);
 
         assertNotNull(lobbyService.getLobby(l.getId()));
-        lobbyService.deleteLobby(l.getId(), userService);
+        lobbyService.deleteLobby(l.getId(), playerService);
         assertThrows(ResponseStatusException.class, () -> lobbyService.getLobby(l.getId()));
     }
 
     @ParameterizedTest
     @ValueSource(ints = { Integer.MIN_VALUE, -1234, -126, -23, -5, 0, 1, 34, 231, Integer.MAX_VALUE })
     public void deleteLobby_failureNonexisting(int lobbyId) {
-        assertThrows(ResponseStatusException.class, () -> lobbyService.deleteLobby(lobbyId, userService));
+        assertThrows(ResponseStatusException.class, () -> lobbyService.deleteLobby(lobbyId, playerService));
     }
 
     @Test

@@ -38,7 +38,7 @@ public class PlayerService {
     private final Map<Long, Boolean> activeUserBooleans;
 
     @Autowired
-    public UserService(@Qualifier("playerRepository") PlayerRepository playerRepository, LobbyService lobbyService, WebSocketService ws) {
+    public PlayerService(@Qualifier("playerRepository") PlayerRepository playerRepository, LobbyService lobbyService, WebSocketService ws) {
         this.playerRepository = playerRepository;
         this.lobbyService = lobbyService;
         this.webSocketService = ws;
@@ -106,7 +106,7 @@ public class PlayerService {
         if(activeUserBooleans.get(userId)){
             activeUserBooleans.put(userId, false);
         } else {
-            User u = getUser(userId);
+            Player u = getUser(userId);
             activeUserTimers.get(userId).cancel();
             log.info("Removing {} due to inactivity", u.getUsername());
             setOffline(u.getToken(), true);

@@ -42,9 +42,9 @@ public class LobbyGetDTO {
             this.playerNames.add(u.getUsername());
         }
     }
-    public void setProfilePictures(List<User> profilePictures){
+    public void setProfilePictures(List<Player> profilePictures){
         this.profilePictures = new ArrayList<>(profilePictures.size());
-        for(User u: profilePictures){
+        for(Player u: profilePictures){
             this.profilePictures.add(u.getProfilePicture());
         }
     }

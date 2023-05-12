@@ -79,36 +79,19 @@ public class PlayerServiceIntegrationTest {
     }
 
     @Test
-    public void clearToken_success() {
-        Player testPlayer = new Player();
-        testPlayer.setPassword("testPassword");
-        testPlayer.setUsername("testUsername");
-        Player created = playerService.createUser(testPlayer);
-        playerService.clearToken(created.getToken());
-        Player cleared = playerService.getUser(created.getId());
-
-        assertEquals(null, cleared.getToken());
-    }
-
-    @Test
-    public void clearToken_failure() {
-        assertThrows(ResponseStatusException.class, () -> playerService.clearToken("1"));
-    }
-
-    @Test
     public void setOffline_success() {
         Player testPlayer = new Player();
         testPlayer.setPassword("testPassword");
         testPlayer.setUsername("testUsername");
         Player created = playerService.createUser(testPlayer);
 
-        playerService.setOffline(created.getToken(), true);
-        Player updated = playerService.getUser(created.getId());
-        assertEquals(PlayerStatus.OFFLINE, updated.getStatus());
-
         playerService.setOffline(created.getToken(), false);
-        updated = playerService.getUser(created.getId());
+        Player updated = playerService.getUser(created.getId());
         assertEquals(PlayerStatus.ONLINE, updated.getStatus());
+
+        playerService.setOffline(created.getToken(), true);
+        updated = playerService.getUser(created.getId());
+        assertEquals(PlayerStatus.OFFLINE, updated.getStatus());
     }
 
     @Test

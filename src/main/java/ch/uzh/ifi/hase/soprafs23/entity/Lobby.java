@@ -35,7 +35,7 @@ public class Lobby {
 
     public Game play(PlayerService playerService){
         if (this.game != null) return null;
-        game = new Game(id, players, amountRounds, host, userService, duration);
+        game = new Game(id, players, amountRounds, host, playerService, duration);
         game.nextRound();
         return game;
     }

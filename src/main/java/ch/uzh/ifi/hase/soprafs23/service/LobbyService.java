@@ -28,7 +28,6 @@ public class LobbyService {
     public LobbyService() {
         this.newLobbyId = 1;
         this.random = new Random();
-        this.playerService = playerService;
     }
 
     public void kickPlayer(Player player, WebSocketService ws) {

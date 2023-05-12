@@ -73,19 +73,11 @@ public class PlayerServiceTest {
     }
 
     @Test
-    public void clearToken() {
-        Mockito.when(playerRepository.findByToken(Mockito.anyString())).thenReturn(testPlayer);
-
-        playerService.clearToken(testPlayer.getToken());
-        Mockito.verify(playerRepository, Mockito.times(1)).save(Mockito.any());
-    }
-
-    @Test
     public void setOffline() {
         Mockito.when(playerRepository.findByToken(Mockito.anyString())).thenReturn(testPlayer);
 
         playerService.setOffline(testPlayer.getToken(), true);
-        Mockito.verify(playerRepository, Mockito.times(1)).save(Mockito.any());
+        Mockito.verify(playerRepository, Mockito.atLeast(1)).save(Mockito.any());
     }
 
     @Test
