@@ -119,8 +119,10 @@
   1. play again server side: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/164
   2. configure new databse: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/181
 - Xena
-  1. 
-  2. 
+  1. Finish UI of Lobby: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/96
+  2. Finish UI of SetRounds Page: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/244
+  3. Finish UI of Enter Code Page: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/245
+  4. Finish UI of SetLocation Page: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/246
 - Loubna
   1. music on off: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/238
   2. copy code into clipboard : https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/239
