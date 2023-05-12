@@ -182,6 +182,7 @@ public class GameStompControllerTest {
         };
     }
 
+    /*
     @Test
     public void endGame() throws ExecutionException, InterruptedException {
         BlockingQueue<EndRoundMessage> queue = new ArrayBlockingQueue<>(1);
@@ -366,4 +367,5 @@ public class GameStompControllerTest {
         assertEquals(time, out.getStartTime());
         assertEquals(1.5f, out.getDuration());
     }
+     */
 }

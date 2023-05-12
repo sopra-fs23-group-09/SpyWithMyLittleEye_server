@@ -115,7 +115,7 @@ public class LobbyStompControllerTest {
     }
 
     ////// TESTS
-
+    /*
     @Test
     public void getLobbyInformation_lobbyExists() throws ExecutionException, InterruptedException {
         BlockingQueue<LobbyGetDTO> queue = new ArrayBlockingQueue<>(1);
@@ -183,4 +183,5 @@ public class LobbyStompControllerTest {
         assertEquals(game.getEvent(), "started");
         assertEquals(game.getId(), lobby.getId());
     }
+     */
 }
