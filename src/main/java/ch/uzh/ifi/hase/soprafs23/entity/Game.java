@@ -2,7 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.entity;
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.controller.GameStompController;
 import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
-import ch.uzh.ifi.hase.soprafs23.service.UserService;
+import ch.uzh.ifi.hase.soprafs23.service.PlayerService;
 import ch.uzh.ifi.hase.soprafs23.service.WebSocketService;
 import ch.uzh.ifi.hase.soprafs23.stomp.dto.EndRoundMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +15,8 @@ public class Game {
     public final float duration;
     private final int id;
     private Long hostId;
-    private final Map<User, Integer> playerPoints;
-    private final List<User> players;
+    private final Map<Player, Integer> playerPoints;
+    private final List<Player> players;
     private final int amountRounds;
     private List<Guess> playerGuesses;
     private int currentRoundNr;
@@ -27,13 +27,13 @@ public class Game {
     private int nrPlayersGuessedCorrectly;
     private String roundOverStatus;
     private Date startTime;
-    private final UserService userService;
+    private final PlayerService playerService;
 
-    public Game(int id, List<User> players, int amountRounds, User host, UserService userService, float duration){
+    public Game(int id, List<Player> players, int amountRounds, Player host, PlayerService playerService, float duration){
         this.playerRoles = new HashMap<>();
         this.playerGuesses = new ArrayList<>();
         this.playerPoints = new HashMap<>();
-        this.userService = userService;
+        this.playerService = playerService;
         this.id = id;
         this.duration = duration;
         this.players = players;
@@ -44,7 +44,7 @@ public class Game {
         this.hostId = host.getId();
     }
 
-    public void kickPlayer(User player, WebSocketService ws) {
+    public void kickPlayer(Player player, WebSocketService ws) {
         Role role = playerRoles.get(player.getId());
         playerRoles.remove(player.getId());
         playerPoints.remove(player);
@@ -55,15 +55,15 @@ public class Game {
         }
     }
     public void updatePointsIfGameEnded(){
-        User winner = players.get(0);
-        for(User u : players){
+        Player winner = players.get(0);
+        for(Player u : players){
             if(playerPoints.get(u) > playerPoints.get(winner)) winner = u;
             u.setHighScore(u.getHighScore()+ playerPoints.get(u));
             u.setGamesPlayed(u.getGamesPlayed() + 1);
-            userService.saveFlushUser(u);
+            playerService.saveFlushUser(u);
         }
         winner.setGamesWon(winner.getGamesWon() + 1);
-        userService.saveFlushUser(winner);
+        playerService.saveFlushUser(winner);
     }
     public String getKeyword(){
         return keyword;
@@ -100,11 +100,11 @@ public class Game {
         }
     }
 
-    public Map<User, Integer> getPlayerPoints(){
+    public Map<Player, Integer> getPlayerPoints(){
         return new HashMap<>(playerPoints);
     }
     private void initializePoints(){
-        for(User u : players){
+        for(Player u : players){
             playerPoints.put(u, 0);
         }
     }
@@ -117,7 +117,7 @@ public class Game {
             }
         }
     }
-    public void allocatePoints(User player, Date guessTime){
+    public void allocatePoints(Player player, Date guessTime){
         // formula to compute points: duration in seconds - seconds needed to guess
         int points = (int) ((duration *60) - (guessTime.getTime()- startTime.getTime())/1000);
         int pointsOfCurrentPlayer = playerPoints.get(player) + points;

@@ -1,6 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
-import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.Objects;
 
 /**
- * Internal User Representation
+ * Internal Player Representation
  * This class composes the internal representation of the user and defines how
  * the user is stored in the database.
  * Every variable will be mapped into a database field with the @Column
@@ -18,8 +18,8 @@ import java.util.Objects;
  * the primary key
  */
 @Entity
-@Table(name = "USER")
-public class User implements Serializable {
+@Table(name = "PLAYER")
+public class Player implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -40,7 +40,7 @@ public class User implements Serializable {
     private String token;
 
     @Column(nullable = false)
-    private UserStatus status;
+    private PlayerStatus status;
 
     @Column(nullable = false)
     private Date creationDate;
@@ -97,8 +97,8 @@ public class User implements Serializable {
     public String getToken() {return token;}
     public void setToken(String token) {this.token = token;}
 
-    public UserStatus getStatus() {return status;}
-    public void setStatus(UserStatus status) {this.status = status;}
+    public PlayerStatus getStatus() {return status;}
+    public void setStatus(PlayerStatus status) {this.status = status;}
 
     @Override
     public int hashCode() {
@@ -109,8 +109,8 @@ public class User implements Serializable {
     public boolean equals(Object obj) {
         if(obj == null){
             return false;
-        }else if((obj instanceof User)){
-            return this.id.equals(((User) obj).id);
+        }else if((obj instanceof Player)){
+            return this.id.equals(((Player) obj).id);
         }
         return false;
     }

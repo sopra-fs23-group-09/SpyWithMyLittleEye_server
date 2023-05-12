@@ -1,7 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
 import java.util.Date;
 
-public class UserPutDTO {
+public class PlayerPutDTO {
     private String username;
     private Date birthday;
     private String profilePicture;

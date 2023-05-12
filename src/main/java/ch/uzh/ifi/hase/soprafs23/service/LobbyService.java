@@ -2,7 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.service;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
-import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.LobbyRepository;
 
@@ -30,12 +30,12 @@ public class LobbyService {
         this.random = new Random();
     }
 
-    public void kickPlayer(User player, WebSocketService ws) {
+    public void kickPlayer(Player player, WebSocketService ws) {
         log.info("Kicking player {}", player);
         getLobby(player.getLobbyID()).kickPlayer(player, ws);
     }
 
-    public Lobby createLobby(User host, int amountRounds, float time) {
+    public Lobby createLobby(Player host, int amountRounds, float time) {
         // to-do: make sure that host is not in another lobby, else throw error
         if (host.getLobbyID() != 0) {
             // to-do: ResponseStatusException for websocket
@@ -55,11 +55,11 @@ public class LobbyService {
         return newLobby;
     }
 
-    public Game startGame(int lobbyId, UserService userService) {
+    public Game startGame(int lobbyId, PlayerService playerService) {
         Lobby lobby = LobbyRepository.getLobbyById(lobbyId);
         if (lobby == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lobby doesn't exist.");
-        Game game = lobby.play(userService);
+        Game game = lobby.play(playerService);
         if (game == null)
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "game already started.");
         GameRepository.addGame(game);
@@ -84,7 +84,7 @@ public class LobbyService {
         return LobbyRepository.getLobbyByAccessCode(accessCode) != null;
     }
 
-    public Lobby addUser(User player, int accessCode) {
+    public Lobby addUser(Player player, int accessCode) {
         // check if accessCode exists
         if (!checkAccessCode(accessCode)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The provided access code does not exist.");
@@ -94,7 +94,6 @@ public class LobbyService {
         // check if user is already in a lobby or in a game, if so throw error
 
         if (player.getLobbyID() != 0) {
-
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can only play one game at a time.");
         }
 
@@ -107,8 +106,7 @@ public class LobbyService {
         return lobby;
     }
 
-
-    public void removeUser(User player, int lobbyId){
+    public void removeUser(Player player, int lobbyId){
         Lobby lobby = LobbyRepository.getLobbyById(lobbyId);
         // check if player is in lobby (and remove player) else throw exception
         boolean wasPlayerInLobby = lobby.removePlayer(player);
@@ -117,12 +115,12 @@ public class LobbyService {
         }
     }
 
-    public void deleteLobby(int lobbyId, UserService userService) {
+    public void deleteLobby(int lobbyId, PlayerService playerService) {
         Lobby l = getLobby(lobbyId);
-        List<User> players = l.getPlayers();
+        List<Player> players = l.getPlayers();
         for (int i = 0; i < players.size(); i++) {
             players.get(i).setLobbyID(0);
-            userService.saveFlushUser(players.get(i));
+            playerService.saveFlushUser(players.get(i));
         }
         LobbyRepository.deleteLobby(lobbyId);
     }

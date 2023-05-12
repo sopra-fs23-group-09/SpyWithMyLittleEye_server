@@ -1,13 +1,13 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
-import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
-import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
-import ch.uzh.ifi.hase.soprafs23.service.UserService;
+import ch.uzh.ifi.hase.soprafs23.service.PlayerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ class GameControllerTest {
     private GameService gameService;
 
     @MockBean
-    private UserService userService;
+    private PlayerService playerService;
 
     @MockBean
     private LobbyService lobbyService;
@@ -42,38 +42,38 @@ class GameControllerTest {
     @MockBean
     private GameRepository gameRepository;
 
-    private User player1, player2, player3;
+    private Player player1, player2, player3;
 
-    private List<User> players;
+    private List<Player> players;
 
     private int gameId, currentRound, amountRounds;
 
     @BeforeEach
     void setup() {
         // given
-        player1 = new User();
+        player1 = new Player();
         player1.setId(1L);
         player1.setUsername("petra");
         player1.setPassword("password");
-        player1.setStatus(UserStatus.ONLINE);
+        player1.setStatus(PlayerStatus.ONLINE);
         player1.setToken("token");
         player1.setCreationDate(new Date(0L));
         player1.setBirthday(new Date(0L));
 
-        player2 = new User();
+        player2 = new Player();
         player2.setId(2L);
         player2.setUsername("eva");
         player2.setPassword("1234");
-        player2.setStatus(UserStatus.ONLINE);
+        player2.setStatus(PlayerStatus.ONLINE);
         player2.setToken("token");
         player2.setCreationDate(new Date(0L));
         player2.setBirthday(new Date(0L));
 
-        player3 = new User();
+        player3 = new Player();
         player3.setId(3L);
         player3.setUsername("elena");
         player3.setPassword("admin");
-        player3.setStatus(UserStatus.ONLINE);
+        player3.setStatus(PlayerStatus.ONLINE);
         player3.setToken("token");
         player3.setCreationDate(new Date(0L));
         player3.setBirthday(new Date(0L));
@@ -84,7 +84,7 @@ class GameControllerTest {
         currentRound = 1;
         amountRounds = 3;
 
-        Game game = new Game(gameId,players,amountRounds,player1, userService, 1.5f);
+        Game game = new Game(gameId,players,amountRounds,player1, playerService, 1.5f);
         game.nextRound();
     }
 

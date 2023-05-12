@@ -1,12 +1,12 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
-import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.LobbyGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.LobbyPostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
-import ch.uzh.ifi.hase.soprafs23.service.UserService;
+import ch.uzh.ifi.hase.soprafs23.service.PlayerService;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -20,17 +20,17 @@ import org.springframework.web.server.ResponseStatusException;
 public class LobbyController {
 
     private final LobbyService lobbyService;
-    private final UserService userService;
+    private final PlayerService playerService;
 
-    LobbyController(LobbyService lobbyService, UserService userService) {
+    LobbyController(LobbyService lobbyService, PlayerService playerService) {
         this.lobbyService = lobbyService;
-        this.userService = userService;
+        this.playerService = playerService;
     }
 
     @PostMapping("/lobbies")
     public ResponseEntity<LobbyGetDTO> createLobby(@RequestHeader(value = "token", defaultValue = "null") String token, @RequestBody LobbyPostDTO lobbyPostDTO) {
-        userService.checkToken(token);
-        User host = userService.getUser(userService.getUserID(token));
+        playerService.checkToken(token);
+        Player host = playerService.getUser(playerService.getUserID(token));
 
         int amountRounds = lobbyPostDTO.getAmountRounds();
         float time = lobbyPostDTO.getTime();
@@ -42,8 +42,8 @@ public class LobbyController {
 
     @PutMapping("/lobbies/join/{userId}") //userId probably not best API design
     public ResponseEntity<LobbyGetDTO> joinLobby(@PathVariable(value = "userId") Long userId, @RequestBody String accessCode, @RequestHeader(value = "token", defaultValue = "null") String token) {
-        userService.checkToken(token);
-        User user = userService.getUser(userId);
+        playerService.checkToken(token);
+        Player player = playerService.getUser(userId);
         Gson gson = new Gson();
         JsonObject jsonObject;
         try{jsonObject = gson.fromJson(accessCode, JsonObject.class);}
@@ -51,16 +51,16 @@ public class LobbyController {
         JsonElement elem = jsonObject.get("accessCode");
         if(elem == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Illegal body content");
         int accessCodeInt = Integer.parseInt(elem.getAsString());
-        Lobby lobby = lobbyService.addUser(user, accessCodeInt);
+        Lobby lobby = lobbyService.addUser(player, accessCodeInt);
         return ResponseEntity.ok(DTOMapper.INSTANCE.convertLobbyToLobbyGetDTO(lobby));
     }
 
     @PutMapping("/lobbies/{lobbyId}/exit/{userId}")
     public ResponseEntity<Void> exitLobby(@PathVariable(value = "userId") Long userId,@PathVariable("lobbyId") int lobbyId, @RequestHeader(value = "Token", defaultValue = "null") String token){
-        userService.checkToken(token);
-        User player = userService.getUser(userId);
+        playerService.checkToken(token);
+        Player player = playerService.getUser(userId);
         lobbyService.removeUser(player,lobbyId);
-        userService.exitLobby(player);
+        playerService.exitLobby(player);
         return ResponseEntity.ok().build();
     }
 }
