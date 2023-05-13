@@ -1,6 +1,6 @@
 # I Spy With My Little Eye
 
-![Image](./src/images/LogoHeader.png) 
+![Image](./LogoHeader.png) 
 
 By translating the childhood-favorite to the web, I Spy With My Little Eye is an exciting game where you can explore the
 world with your friends online.
