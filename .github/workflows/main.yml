@@ -45,6 +45,10 @@ jobs:
           deliverables: app.yaml
           version: v2
           credentials: ${{ secrets.GCP_SERVICE_CREDENTIALS }}
+          env:
+            GCP_DB_URL: ${{secrets.GCP_DB_URL}}
+            GCP_DB_USERNAME: ${{secrets.GCP_DB_USERNAME}}
+            GCP_DB_PASSWORD: ${{secrets.GCP_DB_PASSWORD}}
 
       - name: Test
         run: curl "${{ steps.deploy.outputs.url }}"
