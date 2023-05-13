@@ -109,7 +109,7 @@ Both the client and the server have to be running for the application to behave 
 * [Ana Thereza Schiemer](https://github.com/athzsc) - client
 * [Xena Wacker](https://github.com/xayreen) - client
 
-## 🫂 Acknowledgments <a id="acknowledgements"></a>
+## 🫂 Acknowledgments <a id="acknowledgments"></a>
 
 We want to thank our Teaching Assistant [Sheena Lang](https://github.com/SheenaGit) for guiding us through the course.
 We also couldn't have made it without our ✨ceremonies✨ 🍣✨ 🍱 🫶 after each Milestone.
