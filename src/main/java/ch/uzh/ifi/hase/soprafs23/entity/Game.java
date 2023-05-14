@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs23.controller.GameStompController;
 import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
 import ch.uzh.ifi.hase.soprafs23.service.PlayerService;
 import ch.uzh.ifi.hase.soprafs23.service.WebSocketService;
+import ch.uzh.ifi.hase.soprafs23.stomp.dto.DropOutMessage;
 import ch.uzh.ifi.hase.soprafs23.stomp.dto.EndRoundMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,15 +45,32 @@ public class Game {
         this.hostId = host.getId();
     }
 
-    public void kickPlayer(Player player, WebSocketService ws) {
+    public int kickPlayer(Player player, WebSocketService ws) {
         Role role = playerRoles.get(player.getId());
+        boolean host = hostId == player.getId();
+        Long newHostId = (long)-1;
         playerRoles.remove(player.getId());
         playerPoints.remove(player);
         players.remove(player);
-        if(role == Role.SPIER) {
-            nextRound();
-            ws.sendMessageToSubscribers("/topic/games/"+id+"/nextRound", new EndRoundMessage("spierLeft", 0,0));
+        boolean endGame = players.size() == 1;
+        if (players.size() < 1){
+            return 1; //return 1 if game must be deleted
         }
+        if(role == Role.SPIER) {
+            if (currentRoundNr + 1  > amountRounds){
+                endGame = true;
+            }else {
+                nextRound();
+            }
+        }
+        if(host){
+            hostId = players.get(0).getId();
+            newHostId = hostId;
+        }
+        ws.sendMessageToSubscribers(
+                "/topic/games/"+id+"/userDropOut",
+                new DropOutMessage(player.getUsername(), role, host, newHostId.intValue(), endGame));
+        return -1;
     }
     public void updatePointsIfGameEnded(){
         Player winner = players.get(0);

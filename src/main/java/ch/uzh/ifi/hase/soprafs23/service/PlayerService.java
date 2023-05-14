@@ -111,8 +111,10 @@ public class PlayerService {
             log.info("Removing {} due to inactivity", u.getUsername());
             setOffline(u.getToken(), true);
             if(u.getLobbyID() != 0) {
-                lobbyService.kickPlayer(u, webSocketService);
+                lobbyService.kickPlayer(u, webSocketService, this);
             }
+            u.setLobbyID(0);
+            saveFlushUser(u);
         }
     }
 

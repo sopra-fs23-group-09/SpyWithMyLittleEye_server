@@ -1,7 +1,9 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
+import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.service.PlayerService;
 import ch.uzh.ifi.hase.soprafs23.service.WebSocketService;
+import ch.uzh.ifi.hase.soprafs23.stomp.dto.DropOutMessage;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,7 +14,7 @@ public class Lobby {
     private final int id;
     private final int accessCode;
     private final List<Player> players;
-    private final Player host;
+    private Player host;
     private boolean full;
     private final int amountRounds;
     private Game game;
@@ -40,12 +42,25 @@ public class Lobby {
         return game;
     }
 
-    public void kickPlayer(Player player, WebSocketService ws) {
+    public int kickPlayer(Player player, WebSocketService ws) {
+        int deleteGameOrLobby = -1;
         if(this.game != null) {
-            game.kickPlayer(player, ws);
+            deleteGameOrLobby = game.kickPlayer(player, ws);
         } else {
             players.remove(player);
+            if (players.size() < 1){
+                deleteGameOrLobby = 0;
+            }else{
+                boolean isNewHost = false;
+                if(player.getId() == host.getId()){
+                    Player newHost = players.get(0);
+                    host = newHost;
+                }
+                ws.sendMessageToSubscribers("/topic/games/"+id+"/userDropOut",
+                        new DropOutMessage(player.getUsername(), Role.GUESSER,isNewHost, host.getId().intValue(), false));
+            }
         }
+        return deleteGameOrLobby;
     }
 
     public List<Player> getPlayers(){

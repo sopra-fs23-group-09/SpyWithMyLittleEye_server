@@ -24,15 +24,24 @@ public class LobbyService {
     private int newLobbyId;
     private final Random random;
 
+    private final GameService gameService;
+
     @Autowired
-    public LobbyService() {
+    public LobbyService(GameService gameService) {
         this.newLobbyId = 1;
         this.random = new Random();
+        this.gameService = gameService;
     }
 
-    public void kickPlayer(Player player, WebSocketService ws) {
+    public void kickPlayer(Player player, WebSocketService ws, PlayerService pl) {
         log.info("Kicking player {}", player);
-        getLobby(player.getLobbyID()).kickPlayer(player, ws);
+        int deleteLobbyOrGame = getLobby(player.getLobbyID()).kickPlayer(player, ws);
+        if (deleteLobbyOrGame == 1){
+            gameService.handleGameOver(player.getLobbyID(), false);
+            deleteLobby(player.getLobbyID(), pl);
+        }else if (deleteLobbyOrGame == 0){
+            deleteLobby(player.getLobbyID(), pl);
+        }
     }
 
     public Lobby createLobby(Player host, int amountRounds, float time) {
