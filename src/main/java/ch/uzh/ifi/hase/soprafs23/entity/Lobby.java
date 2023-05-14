@@ -8,6 +8,7 @@ import ch.uzh.ifi.hase.soprafs23.stomp.dto.DropOutMessage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class Lobby {
     private static final int MAX_AMOUNT_PLAYERS = 10;
@@ -52,9 +53,8 @@ public class Lobby {
                 deleteGameOrLobby = 0;
             }else{
                 boolean isNewHost = false;
-                if(player.getId() == host.getId()){
-                    Player newHost = players.get(0);
-                    host = newHost;
+                if(Objects.equals(player.getId(), host.getId())){
+                    host = players.get(0);
                     isNewHost = true;
                 }
                 ws.sendMessageToSubscribers("/topic/games/"+id+"/userDropOut",
