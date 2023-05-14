@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
+import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.PlayerService;
 import ch.uzh.ifi.hase.soprafs23.service.WebSocketService;
 import ch.uzh.ifi.hase.soprafs23.stomp.dto.DropOutMessage;
@@ -59,6 +60,7 @@ public class Lobby {
                 }
                 ws.sendMessageToSubscribers("/topic/games/"+id+"/userDropOut",
                         new DropOutMessage(player.getUsername(), Role.GUESSER,isNewHost, host.getId().intValue(), false));
+                ws.sendMessageToSubscribers("/topic/lobbies/" + id, DTOMapper.INSTANCE.convertLobbyToLobbyGetDTO(this));
             }
         }
         return deleteGameOrLobby;
