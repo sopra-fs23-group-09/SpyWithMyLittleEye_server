@@ -41,7 +41,6 @@ jobs:
       - name: Replace environment variables in app.yaml
         uses: 73h/gae-app-yaml-replace-env-variables@v0.3
         env:
-          GCP_DB_URL: ${{ secrets.GCP_DB_URL }}
           GCP_DB_USERNAME: ${{ secrets.GCP_DB_USERNAME }}
           GCP_DB_PASSWORD: ${{ secrets.GCP_DB_PASSWORD }}
         with:

@@ -13,6 +13,5 @@ runtime_config:
   runtime_version: "17"
 
 env_variables:
-  GCP_DB_URL: $GCP_DB_URL
   GCP_DB_USERNAME: $GCP_DB_USERNAME
   GCP_DB_PASSWORD: $GCP_DB_PASSWORD
