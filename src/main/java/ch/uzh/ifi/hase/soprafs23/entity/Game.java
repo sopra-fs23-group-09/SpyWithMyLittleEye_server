@@ -62,8 +62,10 @@ public class Game {
             u.setGamesPlayed(u.getGamesPlayed() + 1);
             playerService.saveFlushUser(u);
         }
-        winner.setGamesWon(winner.getGamesWon() + 1);
-        playerService.saveFlushUser(winner);
+        if(playerPoints.get(winner) > 0) {
+            winner.setGamesWon(winner.getGamesWon() + 1);
+            playerService.saveFlushUser(winner);
+        }
     }
     public String getKeyword(){
         return keyword;
