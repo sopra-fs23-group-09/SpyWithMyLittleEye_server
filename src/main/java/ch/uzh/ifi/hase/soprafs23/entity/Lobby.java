@@ -67,6 +67,9 @@ public class Lobby {
     public List<Player> getPlayers(){
         return Collections.unmodifiableList(players);
     }
+    public boolean gameStarted(){
+        return game != null;
+    }
 
     public boolean addPlayer(Player player){
         if (isFull()) return false;

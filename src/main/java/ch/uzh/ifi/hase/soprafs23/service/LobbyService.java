@@ -107,7 +107,9 @@ public class LobbyService {
         }
 
         Lobby lobby = LobbyRepository.getLobbyByAccessCode(accessCode);
-
+        if(lobby.gameStarted()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "The game already started.");
+        }
         // check if lobby is already full
         if (!lobby.addPlayer(player)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "The lobby is full.");
