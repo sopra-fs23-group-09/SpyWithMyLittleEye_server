@@ -55,6 +55,7 @@ public class Lobby {
                 if(player.getId() == host.getId()){
                     Player newHost = players.get(0);
                     host = newHost;
+                    isNewHost = true;
                 }
                 ws.sendMessageToSubscribers("/topic/games/"+id+"/userDropOut",
                         new DropOutMessage(player.getUsername(), Role.GUESSER,isNewHost, host.getId().intValue(), false));
