@@ -54,9 +54,11 @@ public class Game {
         players.remove(player);
         boolean endGame = players.size() == 1;
         if (players.size() < 1){
+            roundTimer.cancel();
             return 1; //return 1 if game must be deleted
         }
         if(role == Role.SPIER) {
+            roundTimer.cancel();
             if (currentRoundNr + 1  > amountRounds){
                 endGame = true;
             }else {
