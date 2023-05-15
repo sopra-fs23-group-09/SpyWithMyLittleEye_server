@@ -47,7 +47,7 @@ public class Game {
 
     public int kickPlayer(Player player, WebSocketService ws) {
         Role role = playerRoles.get(player.getId());
-        boolean host = hostId == player.getId();
+        boolean host = Objects.equals(player.getId(), hostId);
         Long newHostId = (long)-1;
         playerRoles.remove(player.getId());
         playerPoints.remove(player);
