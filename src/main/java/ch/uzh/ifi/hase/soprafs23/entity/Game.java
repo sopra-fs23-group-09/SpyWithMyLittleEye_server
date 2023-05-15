@@ -29,6 +29,7 @@ public class Game {
     private String roundOverStatus;
     private Date startTime;
     private final PlayerService playerService;
+    private boolean currentlyInRound;
 
     public Game(int id, List<Player> players, int amountRounds, Player host, PlayerService playerService, float duration){
         this.playerRoles = new HashMap<>();
@@ -36,6 +37,7 @@ public class Game {
         this.playerPoints = new HashMap<>();
         this.playerService = playerService;
         this.id = id;
+        this.currentlyInRound = false;
         this.duration = duration;
         this.players = players;
         initializePoints();
@@ -55,16 +57,22 @@ public class Game {
         boolean endGame = players.size() == 1;
         if (players.size() < 1){
             roundTimer.cancel();
+            timerStarted = false;
             return 1; //return 1 if game must be deleted
         }
-        if(role == Role.SPIER) {
-            roundTimer.cancel();
-            if (currentRoundNr + 1  > amountRounds){
-                endGame = true;
-            }else {
-                nextRound();
+        if (currentlyInRound) {
+            if(role == Role.SPIER) {
+                roundTimer.cancel();
+                currentlyInRound = false;
+                timerStarted = false;
+                if (currentRoundNr + 1  > amountRounds){
+                    endGame = true;
+                }else {
+                    nextRound();
+                }
             }
         }
+
         if(host){
             hostId = players.get(0).getId();
             newHostId = hostId;
@@ -107,6 +115,7 @@ public class Game {
                     String message = "time is up";
                     setRoundOverStatus(message);
                     roundTimer.cancel();
+                    currentlyInRound = false;
                     conG.handleEndRound(id, message, amountRounds, currentRoundNr);
                 }
             }, (long)(duration * 60 * 1000));
@@ -116,6 +125,7 @@ public class Game {
     public void endRoundIfAllUsersGuessedCorrectly(GameStompController conG){
         if (this.nrPlayersGuessedCorrectly == (players.size() -1)){
             roundTimer.cancel();
+            currentlyInRound = false;
             String message = "all guessed correctly";
             setRoundOverStatus(message);
             conG.handleEndRound(id, message, amountRounds, currentRoundNr);
@@ -161,6 +171,7 @@ public class Game {
         timerStarted = false;
         nrPlayersGuessedCorrectly = 0;
         currentRoundNr++;
+        currentlyInRound = true;
         distributeRoles();
     }
     public int getId(){
