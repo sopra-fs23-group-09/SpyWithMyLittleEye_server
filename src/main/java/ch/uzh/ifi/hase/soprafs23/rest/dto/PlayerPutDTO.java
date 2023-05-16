@@ -3,6 +3,7 @@ import java.util.Date;
 
 public class PlayerPutDTO {
     private String username;
+    private String password;
     private Date birthday;
     private String profilePicture;
 
@@ -21,5 +22,13 @@ public class PlayerPutDTO {
     }
     public void setProfilePicture(String profilePicture){
         this.profilePicture = profilePicture;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

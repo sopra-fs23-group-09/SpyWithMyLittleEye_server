@@ -124,10 +124,10 @@ public class PlayerController {
     }
 
     @PutMapping("/users/{userId}")
-    public ResponseEntity<Void> changeUser(@PathVariable(value = "userId") Long userId, @RequestBody PlayerPutDTO playerPutDTO, @RequestHeader(value = "token", defaultValue = "null") String token) {
-        Player u = DTOMapper.INSTANCE.convertPlayerPutDTOtoEntity(playerPutDTO);
+    public ResponseEntity<Void> changeUser(@PathVariable(value = "userId") Long userId,@RequestHeader(value = "token", defaultValue = "null") String token, @RequestBody PlayerPutDTO playerPutDTO) {
+        Player player = DTOMapper.INSTANCE.convertPlayerPutDTOtoEntity(playerPutDTO);
         playerService.checkToken(token);
-        playerService.updateUser(u, token, userId);
+        playerService.updateUser(player, token, userId);
         return ResponseEntity.noContent().build();
     }
 
