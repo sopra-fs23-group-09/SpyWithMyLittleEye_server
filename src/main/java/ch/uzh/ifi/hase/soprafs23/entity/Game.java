@@ -55,6 +55,9 @@ public class Game {
         playerPoints.remove(player);
         players.remove(player);
         boolean endGame = players.size() == 1;
+        if(endGame){
+            roundTimer.cancel();
+        }
         if (players.size() < 1){
             roundTimer.cancel();
             timerStarted = false;
@@ -71,6 +74,7 @@ public class Game {
                     nextRound();
                 }
             }
+
         }
 
         if(host){
