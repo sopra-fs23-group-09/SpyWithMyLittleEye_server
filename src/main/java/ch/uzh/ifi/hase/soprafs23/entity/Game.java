@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs23.controller.GameStompController;
 import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
 import ch.uzh.ifi.hase.soprafs23.service.PlayerService;
 import ch.uzh.ifi.hase.soprafs23.service.WebSocketService;
+import ch.uzh.ifi.hase.soprafs23.stomp.dto.DropOutMessage;
 import ch.uzh.ifi.hase.soprafs23.stomp.dto.EndRoundMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ public class Game {
     private String roundOverStatus;
     private Date startTime;
     private final PlayerService playerService;
+    private boolean currentlyInRound;
 
     public Game(int id, List<Player> players, int amountRounds, Player host, PlayerService playerService, float duration){
         this.playerRoles = new HashMap<>();
@@ -35,6 +37,7 @@ public class Game {
         this.playerPoints = new HashMap<>();
         this.playerService = playerService;
         this.id = id;
+        this.currentlyInRound = false;
         this.duration = duration;
         this.players = players;
         initializePoints();
@@ -44,15 +47,40 @@ public class Game {
         this.hostId = host.getId();
     }
 
-    public void kickPlayer(Player player, WebSocketService ws) {
+    public int kickPlayer(Player player, WebSocketService ws) {
         Role role = playerRoles.get(player.getId());
+        boolean host = Objects.equals(player.getId(), hostId);
+        Long newHostId = (long)-1;
         playerRoles.remove(player.getId());
         playerPoints.remove(player);
         players.remove(player);
-        if(role == Role.SPIER) {
-            nextRound();
-            ws.sendMessageToSubscribers("/topic/games/"+id+"/nextRound", new EndRoundMessage("spierLeft", 0,0));
+        boolean endGame = players.size() == 1;
+        if (players.size() < 1){
+            roundTimer.cancel();
+            timerStarted = false;
+            return 1; //return 1 if game must be deleted
         }
+        if (currentlyInRound) {
+            if(role == Role.SPIER) {
+                roundTimer.cancel();
+                currentlyInRound = false;
+                timerStarted = false;
+                if (currentRoundNr + 1  > amountRounds){
+                    endGame = true;
+                }else {
+                    nextRound();
+                }
+            }
+        }
+
+        if(host){
+            hostId = players.get(0).getId();
+            newHostId = hostId;
+        }
+        ws.sendMessageToSubscribers(
+                "/topic/games/"+id+"/userDropOut",
+                new DropOutMessage(player.getUsername(), role, host, newHostId.intValue(), endGame));
+        return -1;
     }
     public void updatePointsIfGameEnded(){
         Player winner = players.get(0);
@@ -62,8 +90,10 @@ public class Game {
             u.setGamesPlayed(u.getGamesPlayed() + 1);
             playerService.saveFlushUser(u);
         }
-        winner.setGamesWon(winner.getGamesWon() + 1);
-        playerService.saveFlushUser(winner);
+        if(playerPoints.get(winner) > 0) {
+            winner.setGamesWon(winner.getGamesWon() + 1);
+            playerService.saveFlushUser(winner);
+        }
     }
     public String getKeyword(){
         return keyword;
@@ -85,6 +115,7 @@ public class Game {
                     String message = "time is up";
                     setRoundOverStatus(message);
                     roundTimer.cancel();
+                    currentlyInRound = false;
                     conG.handleEndRound(id, message, amountRounds, currentRoundNr);
                 }
             }, (long)(duration * 60 * 1000));
@@ -94,6 +125,7 @@ public class Game {
     public void endRoundIfAllUsersGuessedCorrectly(GameStompController conG){
         if (this.nrPlayersGuessedCorrectly == (players.size() -1)){
             roundTimer.cancel();
+            currentlyInRound = false;
             String message = "all guessed correctly";
             setRoundOverStatus(message);
             conG.handleEndRound(id, message, amountRounds, currentRoundNr);
@@ -139,6 +171,7 @@ public class Game {
         timerStarted = false;
         nrPlayersGuessedCorrectly = 0;
         currentRoundNr++;
+        currentlyInRound = true;
         distributeRoles();
     }
     public int getId(){

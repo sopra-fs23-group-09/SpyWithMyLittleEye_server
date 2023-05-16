@@ -55,51 +55,61 @@ public class PlayerService {
         return player;
     }
     public void checkToken(String token){
-        if("null".equals(token) || playerRepository.findByToken(token) == null){
+        log.debug("checking token {}", token);
+        Player p = playerRepository.findByToken(token);
+        if("null".equals(token) || p == null){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No permission to enter.");
         }
+        log.debug("Found Player {}", p);
     }
     public void saveFlushUser(Player u){
         playerRepository.saveAndFlush(u);
     }
 
     //could be renamed to deleteToken as written in class diagram
-    private void clearToken(String token){
+    private Player clearToken(String token){
         Player u = playerRepository.findByToken(token);
         if (u == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with this token exists");
         }
         u.setToken(null);
-        playerRepository.save(u);
+        log.info("clearing token of {}", u);
+        u = playerRepository.save(u);
         playerRepository.flush();
+        log.debug("token of user "+ u.getUsername()+": " + u.getToken());
+        log.debug("user still in repo with that token?:"+ playerRepository.findByToken(token));
+        return u;
     }
     //probably rename to logoutUser because of class diagram, but setOffline has a meaning in combination
     //with status so i would prefer setOffline
-    public void setOffline(String token, boolean status){
+    public Player setOffline(String token, boolean status){
         Player u = playerRepository.findByToken(token);
         if (u == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user");
         u.setStatus(status? PlayerStatus.OFFLINE: PlayerStatus.ONLINE);
-        playerRepository.save(u);
+        u = playerRepository.save(u);
         playerRepository.flush();
 
         if(!status) {
             activeUserTimers.put(u.getId(), new Timer());
             activeUserBooleans.put(u.getId(), false);
-            log.info("Initializing keepalive timer for {}", u.getUsername());
+            log.info("Initializing keepalive timer for {}", u);
             activeUserTimers.get(u.getId()).scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
-                    log.info("Checking keepalive for {}", u.getUsername());
-                    checkKeepalive(u.getId());
+                    Player keepalive = playerRepository.findByToken(token);
+                    log.debug("Checking keepalive for {}", keepalive);
+                    checkKeepalive(keepalive.getId());
                 }
             }, 10_000, 10_000);
         }else{
-            log.info("logging out user {} ", u.getUsername());
+            log.info("logging out user {}", u);
             activeUserTimers.get(u.getId()).cancel();
             activeUserTimers.remove(u.getId());
             activeUserBooleans.remove(u.getId());
-            clearToken(u.getToken());
+            u = clearToken(u.getToken());
         }
+
+        return u;
     }
 
     private void checkKeepalive(long userId) {
@@ -108,11 +118,13 @@ public class PlayerService {
         } else {
             Player u = getUser(userId);
             activeUserTimers.get(userId).cancel();
-            log.info("Removing {} due to inactivity", u.getUsername());
-            setOffline(u.getToken(), true);
+            log.info("Removing {} due to inactivity", u);
+            u = setOffline(u.getToken(), true);
             if(u.getLobbyID() != 0) {
-                lobbyService.kickPlayer(u, webSocketService);
+                lobbyService.kickPlayer(u, webSocketService, this);
             }
+            u.setLobbyID(0);
+            saveFlushUser(u);
         }
     }
 
