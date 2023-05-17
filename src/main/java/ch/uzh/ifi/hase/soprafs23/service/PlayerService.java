@@ -108,7 +108,6 @@ public class PlayerService {
             activeUserBooleans.remove(u.getId());
             u = clearToken(u.getToken());
         }
-
         return u;
     }
 
@@ -142,28 +141,31 @@ public class PlayerService {
         }
         return u.getId();
     }
-    //TODO: update ((the password +))the profile picture for M4 (probably not the password but don't know yet)
+
     //this method combines all the update [attribute] methods in the class diagram
-    public void updateUser(Player u, String token, Long userId){
-        Optional<Player> uToUpdateO = playerRepository.findById(userId);
-        if(uToUpdateO.isEmpty()){
+    public void updateUser(Player player, String token, Long userId){
+        Optional<Player> playerToUpdateO = playerRepository.findById(userId);
+        if(playerToUpdateO.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The user doesn't exist!");
         }
-        Player uToUpdate = uToUpdateO.get();
-        if(!token.equals(uToUpdate.getToken())){
+        Player playerToUpdate = playerToUpdateO.get();
+        if(!token.equals(playerToUpdate.getToken())){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You can only change your own profile!");
         }
-        if(u.getUsername() != null){
-            checkIfUserExists(u);
-            uToUpdate.setUsername(u.getUsername());
+        if(player.getUsername() != null){
+            checkIfUserExists(player);
+            playerToUpdate.setUsername(player.getUsername());
         }
-        if(u.getBirthday() != null){
-            uToUpdate.setBirthday(u.getBirthday());
+        if(player.getPassword() != null){
+            playerToUpdate.setPassword(player.getPassword());
         }
-        if(u.getProfilePicture() != null){
-            uToUpdate.setProfilePicture(u.getProfilePicture());
+        if(player.getBirthday() != null){
+            playerToUpdate.setBirthday(player.getBirthday());
         }
-        playerRepository.save(uToUpdate);
+        if(player.getProfilePicture() != null){
+            playerToUpdate.setProfilePicture(player.getProfilePicture());
+        }
+        playerRepository.save(playerToUpdate);
         playerRepository.flush();
     }
 
