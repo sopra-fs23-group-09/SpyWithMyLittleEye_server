@@ -23,7 +23,6 @@ public class LobbyService {
     private final Logger log = LoggerFactory.getLogger(LobbyService.class);
     private int newLobbyId;
     private final Random random;
-
     private final GameService gameService;
 
     @Autowired
@@ -45,9 +44,8 @@ public class LobbyService {
     }
 
     public Lobby createLobby(Player host, int amountRounds, float time) {
-        // to-do: make sure that host is not in another lobby, else throw error
+        // make sure that host is not in another lobby else throw error
         if (host.getLobbyID() != 0) {
-            // to-do: ResponseStatusException for websocket
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can only play one game at a time.");
         }
         int accessCode = generateAccessCode();
@@ -98,10 +96,8 @@ public class LobbyService {
         if (!checkAccessCode(accessCode)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The provided access code does not exist.");
         }
-        // probably add a check here for rejoin as additional feature for M4
 
         // check if user is already in a lobby or in a game, if so throw error
-
         if (player.getLobbyID() != 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can only play one game at a time.");
         }
@@ -122,7 +118,7 @@ public class LobbyService {
         // check if player is in lobby (and remove player) else throw exception
         boolean wasPlayerInLobby = lobby.removePlayer(player);
         if (!wasPlayerInLobby){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "the player is not in this lobby");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "The player is not in this lobby.");
         }
     }
 

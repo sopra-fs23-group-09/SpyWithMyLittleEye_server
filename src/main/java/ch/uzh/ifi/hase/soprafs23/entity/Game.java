@@ -74,7 +74,6 @@ public class Game {
                     nextRound();
                 }
             }
-
         }
 
         if(host){
@@ -88,11 +87,11 @@ public class Game {
     }
     public void updatePointsIfGameEnded(){
         Player winner = players.get(0);
-        for(Player u : players){
-            if(playerPoints.get(u) > playerPoints.get(winner)) winner = u;
-            u.setHighScore(u.getHighScore()+ playerPoints.get(u));
-            u.setGamesPlayed(u.getGamesPlayed() + 1);
-            playerService.saveFlushUser(u);
+        for(Player player : players){
+            if(playerPoints.get(player) > playerPoints.get(winner)) winner = player;
+            player.setHighScore(player.getHighScore()+ playerPoints.get(player));
+            player.setGamesPlayed(player.getGamesPlayed() + 1);
+            playerService.saveFlushUser(player);
         }
         if(playerPoints.get(winner) > 0) {
             winner.setGamesWon(winner.getGamesWon() + 1);
@@ -216,11 +215,24 @@ public class Game {
         this.hostId = hostId;
     }
 
-    /**
-     *
-     * @return duration in minutes
-     */
     public float getDuration(){
-        return duration;
+        return duration; //in minutes
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public Player getHost(){
+        for(Player player : players){
+            if(player.getId() == hostId){
+                return player;
+            }
+        }
+        return null;
+    }
+
+    public PlayerService getPlayerService() {
+        return playerService;
     }
 }

@@ -1,8 +1,14 @@
-package ch.uzh.ifi.hase.soprafs23.rest.dto;
+package ch.uzh.ifi.hase.soprafs23.stomp.dto;
 
-public class GameStartedGetDTO {
+public class GameStarted {
     private String event = "started";
     private int id;
+
+    public GameStarted(){}
+
+    public GameStarted(int id){
+        this.id = id;
+    }
 
     public int getId() {
         return id;
@@ -11,7 +17,6 @@ public class GameStartedGetDTO {
     public void setId(int id) {
         this.id = id;
     }
-
 
     public String getEvent() {return this.event;}
 }

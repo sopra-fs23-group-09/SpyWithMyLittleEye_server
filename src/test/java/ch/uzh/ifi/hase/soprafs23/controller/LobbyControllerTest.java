@@ -59,7 +59,7 @@ public class LobbyControllerTest {
         LobbyPostDTO lobbyPostDTO = new LobbyPostDTO();
         lobbyPostDTO.setAmountRounds(3);
 
-        given(playerService.getUser(Mockito.any())).willReturn(host);
+        given(playerService.getPlayer(Mockito.any())).willReturn(host);
         given(lobbyService.createLobby(Mockito.any(), Mockito.anyInt(), Mockito.anyFloat())).willReturn(lobby);
 
         // when/then -> do the request + validate the result
@@ -94,7 +94,7 @@ public class LobbyControllerTest {
         LobbyPostDTO lobbyPostDTO = new LobbyPostDTO();
         lobbyPostDTO.setAmountRounds(3);
 
-        given(playerService.getUser(Mockito.any())).willReturn(host);
+        given(playerService.getPlayer(Mockito.any())).willReturn(host);
         given(lobbyService.createLobby(Mockito.any(), Mockito.anyInt(), Mockito.anyFloat())).willThrow(e);
 
         // when/then -> do the request + validate the result
@@ -130,7 +130,7 @@ public class LobbyControllerTest {
         Lobby lobby = new Lobby(host, 1, 12345, 3, 1.5f);
         lobby.addPlayer(player);
 
-        given(playerService.getUser(Mockito.any())).willReturn(player);
+        given(playerService.getPlayer(Mockito.any())).willReturn(player);
         given(lobbyService.addUser(Mockito.any(),Mockito.anyInt())).willReturn(lobby);
 
         MockHttpServletRequestBuilder putRequest = put("/lobbies/join/2")
@@ -161,7 +161,7 @@ public class LobbyControllerTest {
         player.setStatus(PlayerStatus.ONLINE);
         player.setCreationDate(new Date(0L));
 
-        given(playerService.getUser(Mockito.any())).willReturn(player);
+        given(playerService.getPlayer(Mockito.any())).willReturn(player);
         given(lobbyService.addUser(Mockito.any(),Mockito.anyInt())).willThrow(e);
 
         MockHttpServletRequestBuilder putRequest = put("/lobbies/join/2")
@@ -187,7 +187,7 @@ public class LobbyControllerTest {
         player.setStatus(PlayerStatus.ONLINE);
         player.setCreationDate(new Date(0L));
 
-        given(playerService.getUser(Mockito.any())).willReturn(player);
+        given(playerService.getPlayer(Mockito.any())).willReturn(player);
         given(lobbyService.addUser(Mockito.any(),Mockito.anyInt())).willThrow(e);
 
         MockHttpServletRequestBuilder putRequest = put("/lobbies/join/2")
@@ -213,7 +213,7 @@ public class LobbyControllerTest {
         player.setStatus(PlayerStatus.ONLINE);
         player.setCreationDate(new Date(0L));
 
-        given(playerService.getUser(Mockito.any())).willReturn(player);
+        given(playerService.getPlayer(Mockito.any())).willReturn(player);
         given(lobbyService.addUser(Mockito.any(),Mockito.anyInt())).willThrow(e);
 
         MockHttpServletRequestBuilder putRequest = put("/lobbies/join/2")
@@ -260,7 +260,7 @@ public class LobbyControllerTest {
 
         // set up mock objects and their behavior
         doNothing().when(playerService).checkToken(anyString());
-        given(playerService.getUser(player.getId())).willReturn(player);
+        given(playerService.getPlayer(player.getId())).willReturn(player);
         doNothing().when(lobbyService).removeUser(player, lobbyID);
         doNothing().when(playerService).exitLobby(player);
 
@@ -295,7 +295,7 @@ public class LobbyControllerTest {
 
         // set up mock objects and their behavior
         doNothing().when(playerService).checkToken(anyString());
-        given(playerService.getUser(player.getId())).willReturn(player);
+        given(playerService.getPlayer(player.getId())).willReturn(player);
         doThrow(new ResponseStatusException(HttpStatus.FORBIDDEN, "the player is not in this lobby"))
                 .when(lobbyService).removeUser(player, lobbyID);
         doNothing().when(playerService).exitLobby(player);

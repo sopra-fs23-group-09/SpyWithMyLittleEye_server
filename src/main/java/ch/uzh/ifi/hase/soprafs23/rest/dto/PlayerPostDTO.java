@@ -3,7 +3,6 @@ package ch.uzh.ifi.hase.soprafs23.rest.dto;
 public class PlayerPostDTO {
 
     private String password;
-
     private String username;
     private String profilePicture;
 

@@ -6,6 +6,7 @@ import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.PlayerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.util.List;
 
 public class GameService {
     private final Logger log = LoggerFactory.getLogger(GameService.class);
+
 
     public void saveSpiedObjectInfo(int gameId, String keyword){
         Game game = getGame(gameId);
@@ -34,7 +36,7 @@ public class GameService {
         return game.getGuesses();
     }
 
-    public void endRoundIfAllUsersGuessedCorrectly(GameStompController conG, int gameId){
+    public void endRoundIfAllPlayersGuessedCorrectly(GameStompController conG, int gameId){
         Game game = getGame(gameId);
         game.endRoundIfAllUsersGuessedCorrectly(conG);
     }
@@ -46,6 +48,24 @@ public class GameService {
         }
         GameRepository.deleteGame(gameId);
     }
+
+    public void handlePlayAgain(int gameId){
+        Game game = getGame(gameId);
+        game.updatePointsIfGameEnded();
+        List<Player> players = game.getPlayers();
+        int amountRounds = game.getAmountRounds();
+        Player host = game.getHost();
+        PlayerService playerService = game.getPlayerService();
+        float duration = game.getDuration();
+
+        GameRepository.deleteGame(gameId);
+
+        game = new Game(gameId, players, amountRounds, host, playerService, duration);
+        game.nextRound();
+
+        GameRepository.addGame(game);
+    }
+
     public void nextRound(int gameId){
         getGame(gameId).nextRound();
     }
@@ -60,9 +80,6 @@ public class GameService {
         game.runTimer(conG);
     }
 
-    /**
-     * @see Game#getDuration()
-     */
     public float getDuration(int gameId){
         Game game = getGame(gameId);
         return game.getDuration();
@@ -75,6 +92,7 @@ public class GameService {
     }
 
     public int getCurrentRoundNr(int gameId){ return getGame(gameId).getCurrentRoundNr(); }
+
     public int getTotalNrRounds(int gameId){ return getGame(gameId).getAmountRounds(); }
 
     private Game getGame(int gameId) {

@@ -47,6 +47,7 @@ public class Lobby {
     public int kickPlayer(Player player, WebSocketService ws) {
         int deleteGameOrLobby = -1;
         if(this.game != null) {
+            players.remove(player);
             deleteGameOrLobby = game.kickPlayer(player, ws);
         } else {
             players.remove(player);
@@ -105,7 +106,7 @@ public class Lobby {
         return host.getId();
     }
 
-    //debugging
+    // for better debugging capabilities
     @Override
     public String toString(){
         return String.format("Lobby [id=%d, accessCode=%d, duration=%.1f]", id, accessCode, duration);

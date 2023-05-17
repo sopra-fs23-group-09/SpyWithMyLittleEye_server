@@ -15,35 +15,38 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 @RestController
 public class LobbyController {
 
     private final LobbyService lobbyService;
     private final PlayerService playerService;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    LobbyController(LobbyService lobbyService, PlayerService playerService) {
+    LobbyController(LobbyService lobbyService, PlayerService playerService, SimpMessagingTemplate messagingTemplate) {
         this.lobbyService = lobbyService;
         this.playerService = playerService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @PostMapping("/lobbies")
     public ResponseEntity<LobbyGetDTO> createLobby(@RequestHeader(value = "token", defaultValue = "null") String token, @RequestBody LobbyPostDTO lobbyPostDTO) {
         playerService.checkToken(token);
-        Player host = playerService.getUser(playerService.getUserID(token));
+        Player host = playerService.getPlayer(playerService.getPlayerID(token));
 
         int amountRounds = lobbyPostDTO.getAmountRounds();
         float time = lobbyPostDTO.getTime();
 
-        Lobby createdLobby = lobbyService.createLobby(host, amountRounds,time);
+        Lobby createdLobby = lobbyService.createLobby(host, amountRounds, time);
 
         return ResponseEntity.created(null).body(DTOMapper.INSTANCE.convertLobbyToLobbyGetDTO(createdLobby));
     }
 
-    @PutMapping("/lobbies/join/{userId}") //userId probably not best API design
-    public ResponseEntity<LobbyGetDTO> joinLobby(@PathVariable(value = "userId") Long userId, @RequestBody String accessCode, @RequestHeader(value = "token", defaultValue = "null") String token) {
+    @PutMapping("/lobbies/join/{userId}")
+    public ResponseEntity<LobbyGetDTO> joinLobby(@PathVariable(value = "userId") Long playerId, @RequestBody String accessCode, @RequestHeader(value = "token", defaultValue = "null") String token) {
         playerService.checkToken(token);
-        Player player = playerService.getUser(userId);
+        Player player = playerService.getPlayer(playerId);
         Gson gson = new Gson();
         JsonObject jsonObject;
         try{jsonObject = gson.fromJson(accessCode, JsonObject.class);}
@@ -56,11 +59,18 @@ public class LobbyController {
     }
 
     @PutMapping("/lobbies/{lobbyId}/exit/{userId}")
-    public ResponseEntity<Void> exitLobby(@PathVariable(value = "userId") Long userId,@PathVariable("lobbyId") int lobbyId, @RequestHeader(value = "Token", defaultValue = "null") String token){
+    public ResponseEntity<Void> exitLobby(@PathVariable(value = "userId") Long playerId, @PathVariable("lobbyId") int lobbyId, @RequestHeader(value = "Token", defaultValue = "null") String token){
         playerService.checkToken(token);
-        Player player = playerService.getUser(userId);
+        Player player = playerService.getPlayer(playerId);
         lobbyService.removeUser(player,lobbyId);
         playerService.exitLobby(player);
+
+        // send a message over websocket to notify the other players that someone left
+        String destination = "/topic/lobbies/" + lobbyId;
+        Lobby lobby = lobbyService.getLobby(lobbyId);
+        LobbyGetDTO lobbyGetDTO = DTOMapper.INSTANCE.convertLobbyToLobbyGetDTO(lobby);
+        messagingTemplate.convertAndSend(destination, lobbyGetDTO);
+
         return ResponseEntity.ok().build();
     }
 }
