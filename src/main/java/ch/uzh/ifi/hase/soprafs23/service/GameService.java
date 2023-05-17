@@ -39,9 +39,11 @@ public class GameService {
         game.endRoundIfAllUsersGuessedCorrectly(conG);
     }
 
-    public void handleGameOver(int gameId){
+    public void handleGameOver(int gameId, boolean goodEnd){
         Game game = getGame(gameId);
-        game.updatePointsIfGameEnded();
+        if (goodEnd){
+            game.updatePointsIfGameEnded();
+        }
         GameRepository.deleteGame(gameId);
     }
     public void nextRound(int gameId){

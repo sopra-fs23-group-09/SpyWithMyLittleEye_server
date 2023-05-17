@@ -114,4 +114,9 @@ public class Player implements Serializable {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s[@%s]", username, Integer.toHexString(super.hashCode()));
+    }
 }

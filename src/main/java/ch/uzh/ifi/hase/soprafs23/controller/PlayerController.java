@@ -133,8 +133,7 @@ public class PlayerController {
 
     @PutMapping("/users/keepAlive")
     public ResponseEntity<Void> keepAlive(@RequestHeader(value = "token", defaultValue = "null") String token){
-        //add token check ?
-        //playerService.checkToken(token);
+        playerService.checkToken(token);
         playerService.keepAlive(token);
         return ResponseEntity.noContent().build();
     }
