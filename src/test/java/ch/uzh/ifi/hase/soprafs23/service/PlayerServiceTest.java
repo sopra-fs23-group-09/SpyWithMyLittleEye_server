@@ -1,6 +1,5 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
-import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
 import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.repository.PlayerRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -86,7 +85,7 @@ public class PlayerServiceTest {
     public void getUsers_success() {
         Mockito.when(playerRepository.findAll()).thenReturn(List.of(testPlayer));
 
-        Player createdPlayer = playerService.getUsers().get(0);
+        Player createdPlayer = playerService.getPlayers().get(0);
         assertEquals(testPlayer.getId(), createdPlayer.getId());
         assertEquals(testPlayer.getPassword(), createdPlayer.getPassword());
         assertEquals(testPlayer.getUsername(), createdPlayer.getUsername());
@@ -96,34 +95,34 @@ public class PlayerServiceTest {
     public void getUserId_failure() {
         Mockito.when(playerRepository.findByToken(Mockito.anyString())).thenReturn(null);
 
-        assertThrows(ResponseStatusException.class, () -> playerService.getUserID(testPlayer.getToken()));
+        assertThrows(ResponseStatusException.class, () -> playerService.getPlayerID(testPlayer.getToken()));
     }
 
     @Test
     public void getUserID_success() {
         Mockito.when(playerRepository.findByToken(Mockito.anyString())).thenReturn(testPlayer);
 
-        assertEquals(testPlayer.getId(), playerService.getUserID(testPlayer.getToken()));
+        assertEquals(testPlayer.getId(), playerService.getPlayerID(testPlayer.getToken()));
     }
 
     @Test
     public void updateUser_invalidToken() {
         Mockito.when(playerRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(testPlayer));
 
-        assertThrows(ResponseStatusException.class, () -> playerService.updateUser(testPlayer, "-1", testPlayer.getId()));
+        assertThrows(ResponseStatusException.class, () -> playerService.updatePlayer(testPlayer, "-1", testPlayer.getId()));
     }
     @Test
     public void updateUser_missingUser() {
         Mockito.when(playerRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(ResponseStatusException.class, () -> playerService.updateUser(testPlayer, testPlayer.getToken(), testPlayer.getId()));
+        assertThrows(ResponseStatusException.class, () -> playerService.updatePlayer(testPlayer, testPlayer.getToken(), testPlayer.getId()));
     }
 
     @Test
     public void updateUser_success() {
         Mockito.when(playerRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(testPlayer));
 
-        playerService.updateUser(testPlayer, testPlayer.getToken(), testPlayer.getId());
+        playerService.updatePlayer(testPlayer, testPlayer.getToken(), testPlayer.getId());
         Mockito.verify(playerRepository, Mockito.times(1)).save(Mockito.any());
     }
     /*
@@ -131,7 +130,7 @@ public class PlayerServiceTest {
     public void createUser_validInputs_success() {
         // when -> any object is being save in the playerRepository -> return the dummy
         // testPlayer
-        Player createdPlayer = playerService.createUser(testPlayer);
+        Player createdPlayer = playerService.createPlayer(testPlayer);
 
         // then
         Mockito.verify(playerRepository, Mockito.times(1)).save(Mockito.any());
@@ -141,7 +140,7 @@ public class PlayerServiceTest {
         assertEquals(testPlayer.getUsername(), createdPlayer.getUsername());
         assertNotNull(createdPlayer.getCreationDate());
         assertNotNull(createdPlayer.getToken());
-        assertEquals(PlayerStatus.ONLINE, createdPlayer.getStatus());
+        //assertEquals(PlayerStatus.ONLINE, createdPlayer.getStatus());
     }
      */
 
@@ -149,14 +148,14 @@ public class PlayerServiceTest {
     @Test
     public void createUser_duplicateUsername_throwsException() {
         // given -> a first user has already been created
-        playerService.createUser(testPlayer);
+        playerService.createPlayer(testPlayer);
 
         // when -> setup additional mocks for PlayerRepository
         Mockito.when(playerRepository.findByUsername(Mockito.any())).thenReturn(testPlayer);
 
         // then -> attempt to create second user with same user -> check that an error
         // is thrown
-        assertThrows(ResponseStatusException.class, () -> playerService.createUser(testPlayer));
+        assertThrows(ResponseStatusException.class, () -> playerService.createPlayer(testPlayer));
     }
      */
 
@@ -164,7 +163,7 @@ public class PlayerServiceTest {
     public void getTop15User() {
         Mockito.when(playerRepository.findTop15ByOrderByHighScoreDesc()).thenReturn(Collections.unmodifiableList(List.of(testPlayer)));
 
-        Player returned = playerService.getTop15User().get(0);
+        Player returned = playerService.getTop15PlayersHighScore().get(0);
         assertEquals(testPlayer.getId(), returned.getId());
         assertEquals(testPlayer.getPassword(), returned.getPassword());
         assertEquals(testPlayer.getUsername(), returned.getUsername());
@@ -174,7 +173,7 @@ public class PlayerServiceTest {
     public void getUser_exists() {
         Mockito.when(playerRepository.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(testPlayer));
 
-        Player returned = playerService.getUser(testPlayer.getId());
+        Player returned = playerService.getPlayer(testPlayer.getId());
         assertEquals(testPlayer.getId(), returned.getId());
         assertEquals(testPlayer.getPassword(), returned.getPassword());
         assertEquals(testPlayer.getUsername(), returned.getUsername());
@@ -184,6 +183,6 @@ public class PlayerServiceTest {
     public void getUser_notFound() {
         Mockito.when(playerRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(ResponseStatusException.class, () -> playerService.getUser(testPlayer.getId()));
+        assertThrows(ResponseStatusException.class, () -> playerService.getPlayer(testPlayer.getId()));
     }
 }

@@ -17,9 +17,8 @@ import java.util.*;
 /**
  * Player Service
  * This class is the "worker" and responsible for all functionality related to
- * the user
- * (e.g., it creates, modifies, deletes, finds). The result will be passed back
- * to the caller.
+ * the user (e.g., it creates, modifies, deletes, finds).
+ * The result will be passed back to the caller.
  */
 @Service
 @Transactional
@@ -33,17 +32,17 @@ public class PlayerService {
 
     private final WebSocketService webSocketService;
 
-    private final Map<Long, Timer> activeUserTimers;
+    private final Map<Long, Timer> activePlayerTimers;
 
-    private final Map<Long, Boolean> activeUserBooleans;
+    private final Map<Long, Boolean> activePlayerBooleans;
 
     @Autowired
     public PlayerService(@Qualifier("playerRepository") PlayerRepository playerRepository, LobbyService lobbyService, WebSocketService ws) {
         this.playerRepository = playerRepository;
         this.lobbyService = lobbyService;
         this.webSocketService = ws;
-        activeUserTimers = new HashMap<>();
-        activeUserBooleans = new HashMap<>();
+        activePlayerTimers = new HashMap<>();
+        activePlayerBooleans = new HashMap<>();
     }
 
     //called setToken in the class diagram
@@ -83,17 +82,17 @@ public class PlayerService {
     //probably rename to logoutUser because of class diagram, but setOffline has a meaning in combination
     //with status so i would prefer setOffline
     public Player setOffline(String token, boolean status){
-        Player u = playerRepository.findByToken(token);
-        if (u == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user");
-        u.setStatus(status? PlayerStatus.OFFLINE: PlayerStatus.ONLINE);
-        u = playerRepository.save(u);
+        Player player = playerRepository.findByToken(token);
+        if (player == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user");
+        player.setStatus(status? PlayerStatus.OFFLINE: PlayerStatus.ONLINE);
+        player = playerRepository.save(player);
         playerRepository.flush();
 
         if(!status) {
-            activeUserTimers.put(u.getId(), new Timer());
-            activeUserBooleans.put(u.getId(), false);
-            log.info("Initializing keepalive timer for {}", u);
-            activeUserTimers.get(u.getId()).scheduleAtFixedRate(new TimerTask() {
+            activePlayerTimers.put(player.getId(), new Timer());
+            activePlayerBooleans.put(player.getId(), false);
+            log.info("Initializing keepalive timer for {}", player);
+            activePlayerTimers.get(player.getId()).scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
                     Player keepalive = playerRepository.findByToken(token);
@@ -102,48 +101,48 @@ public class PlayerService {
                 }
             }, 10_000, 10_000);
         }else{
-            log.info("logging out user {}", u);
-            activeUserTimers.get(u.getId()).cancel();
-            activeUserTimers.remove(u.getId());
-            activeUserBooleans.remove(u.getId());
-            u = clearToken(u.getToken());
+            log.info("logging out user {}", player);
+            activePlayerTimers.get(player.getId()).cancel();
+            activePlayerTimers.remove(player.getId());
+            activePlayerBooleans.remove(player.getId());
+            player = clearToken(player.getToken());
         }
-        return u;
+        return player;
     }
 
-    private void checkKeepalive(long userId) {
-        if(activeUserBooleans.get(userId)){
-            activeUserBooleans.put(userId, false);
+    private void checkKeepalive(long playerId) {
+        if(activePlayerBooleans.get(playerId)){
+            activePlayerBooleans.put(playerId, false);
         } else {
-            Player u = getUser(userId);
-            activeUserTimers.get(userId).cancel();
-            log.info("Removing {} due to inactivity", u);
-            u = setOffline(u.getToken(), true);
-            if(u.getLobbyID() != 0) {
-                lobbyService.kickPlayer(u, webSocketService, this);
+            Player player = getPlayer(playerId);
+            activePlayerTimers.get(playerId).cancel();
+            log.info("Removing {} due to inactivity", player);
+            player = setOffline(player.getToken(), true);
+            if(player.getLobbyID() != 0) {
+                lobbyService.kickPlayer(player, webSocketService, this);
             }
-            u.setLobbyID(0);
-            saveFlushUser(u);
+            player.setLobbyID(0);
+            saveFlushUser(player);
         }
     }
 
     public void keepAlive(String token) {
-        log.debug("Keeping user with token {} alive", token);
-        activeUserBooleans.put(getUserID(token), true);
+        log.debug("Keeping player with token {} alive", token);
+        activePlayerBooleans.put(getPlayerID(token), true);
     }
-    public List<Player> getUsers() {
+    public List<Player> getPlayers() {
         return this.playerRepository.findAll();
     }
-    public Long getUserID(String token){
-        Player u = playerRepository.findByToken(token);
-        if(u == null){
+    public Long getPlayerID(String token){
+        Player player = playerRepository.findByToken(token);
+        if(player == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The user doesn't exist");
         }
-        return u.getId();
+        return player.getId();
     }
 
     //this method combines all the update [attribute] methods in the class diagram
-    public void updateUser(Player player, String token, Long userId){
+    public void updatePlayer(Player player, String token, Long userId){
         Optional<Player> playerToUpdateO = playerRepository.findById(userId);
         if(playerToUpdateO.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The user doesn't exist!");
@@ -171,15 +170,29 @@ public class PlayerService {
 
     public void exitLobby(Player player){
         if (player.getLobbyID() == 0){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "you are not in a lobby yet");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "You are not in a lobby yet.");
         }
         player.setLobbyID(0);
         playerRepository.save(player);
         playerRepository.flush();
     }
 
-    public Player createUser(Player newPlayer) {
-        newPlayer.setToken(UUID.randomUUID().toString());
+    public String generateUniqueToken(){
+        // generate random token
+        String token = UUID.randomUUID().toString();
+
+        // generate random tokens until the token generated is unique for the player
+        while (playerRepository.findByToken(token) != null){
+            token = UUID.randomUUID().toString();
+        }
+        return token;
+    }
+
+    public Player createPlayer(Player newPlayer) {
+        String token = generateUniqueToken();
+
+        // set the properties for the new player and check if another player already has the same username
+        newPlayer.setToken(token);
         newPlayer.setStatus(PlayerStatus.ONLINE);
         newPlayer.setCreationDate(new Date());
         checkIfUserExists(newPlayer);
@@ -196,43 +209,37 @@ public class PlayerService {
         return newPlayer;
     }
     private void checkLengthOfName(Player newPlayer){
-        if(newPlayer.getUsername().length() > 8){
+        if(newPlayer.getUsername().length() > 7){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "The username can have up to 8 characters. Choose another one!");
         }
     }
 
 
-    /**
-     * This is a helper method that will check the uniqueness criteria of the
-     * username defined in the Player entity. The method will do nothing if the input is unique
-     * and throw an error otherwise.
-     * @param playerToBeCreated
-     * @throws org.springframework.web.server.ResponseStatusException
-     * @see Player
-     */
     private void checkIfUserExists(Player playerToBeCreated) {
         Player playerByUsername = playerRepository.findByUsername(playerToBeCreated.getUsername());
+        // check if the username is already taken
         if (playerByUsername != null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "The username provided is not unique. Choose another one!");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The username provided is not unique. Please choose another one.");
         }
     }
-    public List<Player> getTop15User(){
+
+    public List<Player> getTop15PlayersHighScore(){
         List<Player> topPlayers = playerRepository.findTop15ByOrderByHighScoreDesc();
         return Collections.unmodifiableList(topPlayers);
     }
 
-    public List<Player> getTop15UsersGamesWon() {
+    public List<Player> getTop15PlayersGamesWon() {
         List<Player> topPlayers = playerRepository.findTop15ByOrderByGamesWonDesc();
         return Collections.unmodifiableList(topPlayers);
     }
 
-    public Player getUser(Long id){
+    public Player getPlayer(Long id){
 
-        Optional<Player> user = playerRepository.findById(id);
-        if (user.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This user is doing no existing!");
+        Optional<Player> player = playerRepository.findById(id);
+        if (player.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This user does not exist.");
         }
-        return user.get();
+        return player.get();
     }
 
 }

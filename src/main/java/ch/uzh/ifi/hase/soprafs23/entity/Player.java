@@ -60,16 +60,16 @@ public class Player implements Serializable {
     @Column
     private int lobbyID;
 
-    public void setProfilePicture(String profilePicture){this.profilePicture = profilePicture;} //M4
-    public String getProfilePicture(){return profilePicture;} //M4
+    public void setProfilePicture(String profilePicture){this.profilePicture = profilePicture;}
+    public String getProfilePicture(){return profilePicture;}
 
     public void setHighScore(int highScore){this.highScore = highScore;}
     public int getHighScore(){return highScore;}
 
-    public void setGamesWon(int gamesWon) {this.gamesWon = gamesWon;} //M4 ?
+    public void setGamesWon(int gamesWon) {this.gamesWon = gamesWon;}
     public int getGamesWon(){return gamesWon;}
 
-    public void setGamesPlayed(int gamesPlayed){this.gamesPlayed = gamesPlayed;} //M4?
+    public void setGamesPlayed(int gamesPlayed){this.gamesPlayed = gamesPlayed;}
     public int getGamesPlayed(){return gamesPlayed;}
 
     public void setLobbyID(int lobbyID){this.lobbyID = lobbyID;}

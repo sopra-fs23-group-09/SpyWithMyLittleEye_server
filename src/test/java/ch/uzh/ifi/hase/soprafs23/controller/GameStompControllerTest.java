@@ -182,7 +182,6 @@ public class GameStompControllerTest {
         };
     }
 
-    /*
     @Test
     public void endGame() throws ExecutionException, InterruptedException {
         BlockingQueue<EndRoundMessage> queue = new ArrayBlockingQueue<>(1);
@@ -259,7 +258,7 @@ public class GameStompControllerTest {
 
         GuessIn in = new GuessIn("cat", "" + testPlayer.getId());
 
-        Mockito.when(playerService.getUser(Mockito.anyLong())).thenReturn(testPlayer);
+        Mockito.when(playerService.getPlayer(Mockito.anyLong())).thenReturn(testPlayer);
         Mockito.when(gameService.checkGuessAndAllocatePoints(Mockito.anyInt(), Mockito.any(), Mockito.anyString(),
                 Mockito.any()))
                 .thenReturn(List.of(new Guess(testPlayer.getUsername(), in.getGuess())));
@@ -367,5 +366,5 @@ public class GameStompControllerTest {
         assertEquals(time, out.getStartTime());
         assertEquals(1.5f, out.getDuration());
     }
-     */
+
 }

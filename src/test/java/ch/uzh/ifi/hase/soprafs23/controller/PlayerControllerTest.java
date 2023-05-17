@@ -64,7 +64,7 @@ public class PlayerControllerTest {
 
         // this mocks the PlayerService -> we define above what the playerService should
         // return when getUsers() is called
-        given(playerService.getUsers()).willReturn(allPlayers);
+        given(playerService.getPlayers()).willReturn(allPlayers);
 
         // when
         MockHttpServletRequestBuilder getRequest = get("/users").contentType(MediaType.APPLICATION_JSON);
@@ -97,7 +97,7 @@ public class PlayerControllerTest {
         playerPostDTO.setPassword("password");
         playerPostDTO.setUsername("testUsername");
 
-        given(playerService.createUser(Mockito.any())).willReturn(player);
+        given(playerService.createPlayer(Mockito.any())).willReturn(player);
 
         // when/then -> do the request + validate the result
         MockHttpServletRequestBuilder postRequest = post("/users")
@@ -121,7 +121,7 @@ public class PlayerControllerTest {
     public void createUser_duplicateUsername_conflict() throws Exception{
         String errorMessage = "Reason";
         ResponseStatusException e = new ResponseStatusException(HttpStatus.CONFLICT, errorMessage);
-        given(playerService.createUser(Mockito.any())).willThrow(e);
+        given(playerService.createPlayer(Mockito.any())).willThrow(e);
 
         PlayerPostDTO playerPostDTO = new PlayerPostDTO();
         playerPostDTO.setPassword("password");
@@ -154,7 +154,7 @@ public class PlayerControllerTest {
     public void editUser_notFound() throws Exception{
         String errorMessage = "Reason";
         ResponseStatusException e = new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage);
-        doThrow(e).when(playerService).updateUser(Mockito.any(), Mockito.anyString(), Mockito.anyLong());
+        doThrow(e).when(playerService).updatePlayer(Mockito.any(), Mockito.anyString(), Mockito.anyLong());
 
         PlayerPutDTO playerPutDTO = new PlayerPutDTO();
         playerPutDTO.setBirthday(new Date(0L));
@@ -181,7 +181,7 @@ public class PlayerControllerTest {
         player.setCreationDate(new Date(0L));
 
         List<Player> allPlayers = Collections.singletonList(player);
-        given(playerService.getUsers()).willReturn(allPlayers);
+        given(playerService.getPlayers()).willReturn(allPlayers);
 
         MockHttpServletRequestBuilder getRequest = get("/users/"+ player.getId());
 
@@ -199,7 +199,7 @@ public class PlayerControllerTest {
     }
     @Test
     public void getUser_withId_notFound() throws Exception{
-        given(playerService.getUsers()).willReturn(Collections.emptyList());
+        given(playerService.getPlayers()).willReturn(Collections.emptyList());
 
         MockHttpServletRequestBuilder getRequest = get("/users/1");
 

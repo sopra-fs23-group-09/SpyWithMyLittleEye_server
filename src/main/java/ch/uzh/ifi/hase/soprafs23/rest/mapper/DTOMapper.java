@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.*;
+import ch.uzh.ifi.hase.soprafs23.stomp.dto.GameStarted;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -37,9 +38,6 @@ public interface DTOMapper {
     @Mapping(source = "players", target = "profilePictures")
     @Mapping(source = "amountRounds", target = "amountRounds")
     LobbyGetDTO convertLobbyToLobbyGetDTO(Lobby lobby);
-
-    @Mapping(source = "id", target = "id")
-    GameStartedGetDTO convertGameToGameStartedGetDTO(Game game);
 
     @Mapping(source = "keyword", target = "keyword")
     @Mapping(source = "roundOverStatus", target = "roundOverStatus")

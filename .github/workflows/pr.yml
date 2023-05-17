@@ -12,17 +12,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository code
+      - name: Checkout repository code from  pr.yml
         uses: actions/checkout@v2
 
-      - name: Install Java 17
+      - name: Install Java 17 pr.yml
         uses: actions/setup-java@v3
         with:
            distribution: 'temurin'
            java-version: '17'
 
-      - name: Build with Gradle
+      - name: Build with Gradle pr.yml
         run: ./gradlew build
 
-      - name: Test with Gradle
+      - name: Test with Gradle pr.yml
         run: ./gradlew test

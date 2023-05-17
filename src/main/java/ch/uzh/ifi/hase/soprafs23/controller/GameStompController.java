@@ -49,7 +49,6 @@ public class GameStompController {
         //save information of spied object
         gameService.saveSpiedObjectInfo(gameId, keyword);
 
-
         // Save time as start time of the round
         Date startTime = gameService.initializeStartTime(gameId);
 
@@ -81,13 +80,13 @@ public class GameStompController {
 
         //extract information from JSON
         String guess = guessIn.getGuess();
-        Player player = playerService.getUser(guessIn.getId());
+        Player player = playerService.getPlayer(guessIn.getId());
 
         List<Guess> playerGuesses = gameService.checkGuessAndAllocatePoints(gameId, player, guess, guessTime);
 
         webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/guesses", playerGuesses);
 
-        gameService.endRoundIfAllUsersGuessedCorrectly(this, gameId);
+        gameService.endRoundIfAllPlayersGuessedCorrectly(this, gameId);
     }
 
     @MessageMapping("/games/{gameId}/hints")
@@ -102,5 +101,11 @@ public class GameStompController {
         gameService.handleGameOver(gameId, true);
         lobbyService.deleteLobby(gameId, playerService);
         webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/gameOver", new EndRoundMessage("endGame", 0, 0));
+    }
+
+    @MessageMapping("/games/{gameId}/playAgain")
+    public void playAgain(@DestinationVariable("gameId") int gameId){
+        gameService.handlePlayAgain(gameId);
+        webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/playAgain", new EndRoundMessage("playAgain", 0, 0));
     }
 }

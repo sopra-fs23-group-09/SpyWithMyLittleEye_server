@@ -3,10 +3,10 @@ package ch.uzh.ifi.hase.soprafs23.controller;
 import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.Player;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.GameStartedGetDTO;
+import ch.uzh.ifi.hase.soprafs23.service.PlayerService;
+import ch.uzh.ifi.hase.soprafs23.stomp.dto.GameStarted;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.LobbyGetDTO;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
-import ch.uzh.ifi.hase.soprafs23.service.PlayerService;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,6 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
-import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
@@ -33,6 +32,7 @@ import java.util.Random;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
+import java.lang.reflect.Type;
 import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
@@ -104,7 +104,7 @@ public class LobbyStompControllerTest {
             public Object fromMessage(Message<?> message, Class<?> targetClass) {
                 String text = new String((byte[]) message.getPayload(), StandardCharsets.UTF_8);
                 Gson gson = new Gson();
-                return gson.fromJson(text, GameStartedGetDTO.class);
+                return gson.fromJson(text, GameStarted.class);
             }
 
             @Override
@@ -115,7 +115,7 @@ public class LobbyStompControllerTest {
     }
 
     ////// TESTS
-    /*
+
     @Test
     public void getLobbyInformation_lobbyExists() throws ExecutionException, InterruptedException {
         BlockingQueue<LobbyGetDTO> queue = new ArrayBlockingQueue<>(1);
@@ -154,7 +154,7 @@ public class LobbyStompControllerTest {
 
     @Test
     public void startGame_lobbyExists() throws ExecutionException, InterruptedException {
-        BlockingQueue<GameStartedGetDTO> queue = new ArrayBlockingQueue<>(1);
+        BlockingQueue<GameStarted> queue = new ArrayBlockingQueue<>(1);
 
         PlayerService playerService = Mockito.mock(PlayerService.class);
         Mockito.when(lobbyService.startGame(Mockito.anyInt(), Mockito.any())).thenReturn(lobby.play(playerService));
@@ -165,12 +165,12 @@ public class LobbyStompControllerTest {
         session.subscribe("/topic/lobbies/" + lobby.getId(), new StompSessionHandlerAdapter() {
             @Override
             public Type getPayloadType(StompHeaders headers) {
-                return GameStartedGetDTO.class;
+                return GameStarted.class;
             }
 
             @Override
             public void handleFrame(StompHeaders headers, Object payload) {
-                queue.add((GameStartedGetDTO) payload);
+                queue.add((GameStarted) payload);
             }
         });
         session.send(String.format("/app/games/%d", lobby.getId()), "");
@@ -179,9 +179,9 @@ public class LobbyStompControllerTest {
                 .atMost(2, TimeUnit.SECONDS)
                 .untilAsserted(() -> assertNotEquals(null, queue.peek()));
 
-        GameStartedGetDTO game = queue.poll();
+        GameStarted game = queue.poll();
         assertEquals(game.getEvent(), "started");
         assertEquals(game.getId(), lobby.getId());
     }
-     */
+
 }

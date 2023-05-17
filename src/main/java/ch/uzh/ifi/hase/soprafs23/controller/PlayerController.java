@@ -32,7 +32,7 @@ public class PlayerController {
     public List<PlayerGetDTO> getAllUsers(@RequestHeader(value = "Token", defaultValue = "null") String token) {
         playerService.checkToken(token); //is request allowed to ask for data
 
-        List<Player> players = playerService.getUsers(); //fetch all players in the internal representation
+        List<Player> players = playerService.getPlayers(); //fetch all players in the internal representation
         List<PlayerGetDTO> playerGetDTOS = new ArrayList<>();
 
         for (Player player : players) {
@@ -42,9 +42,9 @@ public class PlayerController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<PlayerGetDTO> createUser(@RequestBody PlayerPostDTO playerPostDTO) {
+    public ResponseEntity<PlayerGetDTO> createPlayer(@RequestBody PlayerPostDTO playerPostDTO) {
         Player playerInput = DTOMapper.INSTANCE.convertPlayerPostDTOtoEntity(playerPostDTO); // convert API user to internal representation
-        Player createdPlayer = playerService.createUser(playerInput); // create user
+        Player createdPlayer = playerService.createPlayer(playerInput); // create user
 
         HttpHeaders header = new HttpHeaders(); //make header to send newly created token
         header.set("Token", playerInput.getToken());
@@ -53,16 +53,16 @@ public class PlayerController {
         return ResponseEntity.created(null).headers(header).body(DTOMapper.INSTANCE.convertEntityToPlayerGetDTO(createdPlayer));
     }
     @GetMapping("/users/{userId}")
-    public ResponseEntity<PlayerGetDTO> getUser(@PathVariable(value = "userId") Long userId, @RequestHeader(value = "token", defaultValue = "null") String token) {
+    public ResponseEntity<PlayerGetDTO> getPlayer(@PathVariable(value = "userId") Long playerId, @RequestHeader(value = "token", defaultValue = "null") String token) {
         playerService.checkToken(token);
-        Long id = playerService.getUserID(token);
+        Long id = playerService.getPlayerID(token);
         HttpHeaders header = new HttpHeaders();
         header.set("ID", ""+id);
         header.set("Access-Control-Expose-Headers", "ID"); //allow client to access id (of the process that is asking for data, edit button)
-        List<Player> players = playerService.getUsers();
+        List<Player> players = playerService.getPlayers();
 
         for (Player player : players) {
-            if(player.getId().equals(userId)){
+            if(player.getId().equals(playerId)){
                 return ResponseEntity.ok().headers(header).body(DTOMapper.INSTANCE.convertEntityToPlayerGetDTO(player));
             }
         }
@@ -70,10 +70,11 @@ public class PlayerController {
     }
     @GetMapping("/users/login")
     public ResponseEntity<Void> loginCheck(@RequestParam("username") String username, @RequestParam("pass") String password) {
-        List<Player> players = playerService.getUsers();
+        List<Player> players = playerService.getPlayers();
         for (Player player : players) {
             if(player.getUsername().equals(username) && player.getPassword().equals(password)) {
-                player = playerService.updateToken(player.getId(),UUID.randomUUID().toString());
+                String token = playerService.generateUniqueToken();
+                player = playerService.updateToken(player.getId(), token);
                 playerService.setOffline(player.getToken(), false);
                 HttpHeaders header = new HttpHeaders();
                 header.set("Token", player.getToken());
@@ -84,13 +85,14 @@ public class PlayerController {
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The credentials don't allow you to log in!");
     }
+
     @GetMapping("users/ranking")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<PlayerGetDTO> top15User(@RequestHeader(value = "Token", defaultValue = "null") String token){
+    public List<PlayerGetDTO> top15UserHighScore(@RequestHeader(value = "Token", defaultValue = "null") String token){
         playerService.checkToken(token);
 
-        List<Player> players =  playerService.getTop15User();
+        List<Player> players =  playerService.getTop15PlayersHighScore();
         List<PlayerGetDTO> playerGetDTOS = new ArrayList<>();
 
         for(Player u: players){
@@ -103,10 +105,10 @@ public class PlayerController {
     @GetMapping("users/rankingGamesWon")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<PlayerGetDTO> top15UserGamesWon(@RequestHeader(value = "Token", defaultValue = "null") String token){
+    public List<PlayerGetDTO> top15PlayersGamesWon(@RequestHeader(value = "Token", defaultValue = "null") String token){
         playerService.checkToken(token);
 
-        List<Player> players =  playerService.getTop15UsersGamesWon();
+        List<Player> players =  playerService.getTop15PlayersGamesWon();
         List<PlayerGetDTO> playerGetDTOS = new ArrayList<>();
 
         for(Player u: players){
@@ -127,7 +129,7 @@ public class PlayerController {
     public ResponseEntity<Void> changeUser(@PathVariable(value = "userId") Long userId,@RequestHeader(value = "token", defaultValue = "null") String token, @RequestBody PlayerPutDTO playerPutDTO) {
         Player player = DTOMapper.INSTANCE.convertPlayerPutDTOtoEntity(playerPutDTO);
         playerService.checkToken(token);
-        playerService.updateUser(player, token, userId);
+        playerService.updatePlayer(player, token, userId);
         return ResponseEntity.noContent().build();
     }
 
