@@ -35,6 +35,12 @@ jobs:
     needs: test
 
     steps:
+      - name: Install Java 17 main.yml
+        uses: actions/setup-java@v3
+        with:
+            distribution: "temurin"
+            java-version: "17"
+
       - name: Checkout  main.yml
         uses: actions/checkout@v2
 
