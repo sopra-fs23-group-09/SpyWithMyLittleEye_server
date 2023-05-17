@@ -38,7 +38,6 @@ public class PlayerServiceIntegrationTest {
         playerRepository.deleteAll();
     }
 
-    /*
     @Test
     public void updateToken_success() {
         createUser_validInputs_success();
@@ -48,7 +47,7 @@ public class PlayerServiceIntegrationTest {
         Player testPlayer = new Player();
         testPlayer.setPassword("testPassword");
         testPlayer.setUsername("testUsername");
-        Player created = playerService.createUser(testPlayer);
+        Player created = playerService.createPlayer(testPlayer);
         Player updated = playerService.updateToken(created.getId(), "2");
 
         assertEquals(created.getId(), updated.getId());
@@ -69,7 +68,7 @@ public class PlayerServiceIntegrationTest {
         Player testPlayer = new Player();
         testPlayer.setPassword("testPassword");
         testPlayer.setUsername("testUsername");
-        Player created = playerService.createUser(testPlayer);
+        Player created = playerService.createPlayer(testPlayer);
 
         assertDoesNotThrow(() -> playerService.checkToken(created.getToken()));
     }
@@ -84,14 +83,14 @@ public class PlayerServiceIntegrationTest {
         Player testPlayer = new Player();
         testPlayer.setPassword("testPassword");
         testPlayer.setUsername("testUsername");
-        Player created = playerService.createUser(testPlayer);
+        Player created = playerService.createPlayer(testPlayer);
 
         playerService.setOffline(created.getToken(), false);
-        Player updated = playerService.getUser(created.getId());
+        Player updated = playerService.getPlayer(created.getId());
         assertEquals(PlayerStatus.ONLINE, updated.getStatus());
 
         playerService.setOffline(created.getToken(), true);
-        updated = playerService.getUser(created.getId());
+        updated = playerService.getPlayer(created.getId());
         assertEquals(PlayerStatus.OFFLINE, updated.getStatus());
     }
 
@@ -105,13 +104,13 @@ public class PlayerServiceIntegrationTest {
         Player testPlayer = new Player();
         testPlayer.setPassword("testPassword");
         testPlayer.setUsername("testUsername");
-        Player created = playerService.createUser(testPlayer);
-        assertEquals(created.getId(), playerService.getUserID(created.getToken()));
+        Player created = playerService.createPlayer(testPlayer);
+        assertEquals(created.getId(), playerService.getPlayerID(created.getToken()));
     }
 
     @Test
     public void getUserID_failure() {
-        assertThrows(ResponseStatusException.class, () -> playerService.getUserID("1"));
+        assertThrows(ResponseStatusException.class, () -> playerService.getPlayerID("1"));
     }
 
     @Test
@@ -123,9 +122,9 @@ public class PlayerServiceIntegrationTest {
         toUpdate.setUsername("updatedName");
         toUpdate.setBirthday(new Date(0L));
 
-        Player created = playerService.createUser(testPlayer);
-        playerService.updateUser(toUpdate, created.getToken(), created.getId());
-        Player updated = playerService.getUser(created.getId());
+        Player created = playerService.createPlayer(testPlayer);
+        playerService.updatePlayer(toUpdate, created.getToken(), created.getId());
+        Player updated = playerService.getPlayer(created.getId());
 
         assertEquals(toUpdate.getUsername(), updated.getUsername());
         assertEquals(toUpdate.getBirthday(), updated.getBirthday());
@@ -136,18 +135,18 @@ public class PlayerServiceIntegrationTest {
         Player testPlayer = new Player();
         testPlayer.setPassword("testPassword");
         testPlayer.setUsername("testUsername");
-        Player created = playerService.createUser(testPlayer);
+        Player created = playerService.createPlayer(testPlayer);
 
-        assertThrows(ResponseStatusException.class, ()-> playerService.updateUser(created, "1", created.getId()));
+        assertThrows(ResponseStatusException.class, ()-> playerService.updatePlayer(created, "1", created.getId()));
     }
     @Test
     public void updateUser_failureId() {
         Player testPlayer = new Player();
         testPlayer.setPassword("testPassword");
         testPlayer.setUsername("testUsername");
-        Player created = playerService.createUser(testPlayer);
+        Player created = playerService.createPlayer(testPlayer);
 
-        assertThrows(ResponseStatusException.class, ()-> playerService.updateUser(created, created.getToken(), -1L));
+        assertThrows(ResponseStatusException.class, ()-> playerService.updatePlayer(created, created.getToken(), -1L));
     }
 
     @Test
@@ -160,7 +159,7 @@ public class PlayerServiceIntegrationTest {
         testPlayer.setUsername("testUsername");
 
         // when
-        Player createdPlayer = playerService.createUser(testPlayer);
+        Player createdPlayer = playerService.createPlayer(testPlayer);
 
         // then
         assertEquals(testPlayer.getId(), createdPlayer.getId());
@@ -178,7 +177,7 @@ public class PlayerServiceIntegrationTest {
         Player testPlayer = new Player();
         testPlayer.setPassword("testName");
         testPlayer.setUsername("testUsername");
-        Player createdPlayer = playerService.createUser(testPlayer);
+        Player createdPlayer = playerService.createPlayer(testPlayer);
 
         // attempt to create second user with same username
         Player testPlayer2 = new Player();
@@ -188,7 +187,7 @@ public class PlayerServiceIntegrationTest {
         testPlayer2.setUsername("testUsername");
 
         // check that an error is thrown
-        assertThrows(ResponseStatusException.class, () -> playerService.createUser(testPlayer2));
+        assertThrows(ResponseStatusException.class, () -> playerService.createPlayer(testPlayer2));
     }
 
     @Test
@@ -198,9 +197,9 @@ public class PlayerServiceIntegrationTest {
         Player testPlayer = new Player();
         testPlayer.setPassword("testPassword");
         testPlayer.setUsername("testUsername");
-        Player createdPlayer = playerService.createUser(testPlayer);
+        Player createdPlayer = playerService.createPlayer(testPlayer);
 
-        Player top = playerService.getTop15User().get(0);
+        Player top = playerService.getTop15PlayersHighScore().get(0);
 
         assertEquals(createdPlayer.getId(), top.getId());
         assertEquals(createdPlayer.getPassword(), top.getPassword());
@@ -215,9 +214,9 @@ public class PlayerServiceIntegrationTest {
         Player testPlayer = new Player();
         testPlayer.setPassword("testName");
         testPlayer.setUsername("testUsername");
-        Player createdPlayer = playerService.createUser(testPlayer);
+        Player createdPlayer = playerService.createPlayer(testPlayer);
 
-        Player returned = playerService.getUser(createdPlayer.getId());
+        Player returned = playerService.getPlayer(createdPlayer.getId());
         assertEquals(createdPlayer.getId(), returned.getId());
         assertEquals(createdPlayer.getPassword(), returned.getPassword());
         assertEquals(createdPlayer.getUsername(), returned.getUsername());
@@ -228,7 +227,6 @@ public class PlayerServiceIntegrationTest {
 
     @Test
     public void getUser_failure() {
-        assertThrows(ResponseStatusException.class, ()-> playerService.getUser(1L));
+        assertThrows(ResponseStatusException.class, ()-> playerService.getPlayer(1L));
     }
-     */
 }

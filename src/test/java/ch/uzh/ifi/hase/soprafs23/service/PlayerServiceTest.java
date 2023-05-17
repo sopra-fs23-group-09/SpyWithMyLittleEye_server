@@ -130,7 +130,7 @@ public class PlayerServiceTest {
     public void createUser_validInputs_success() {
         // when -> any object is being save in the playerRepository -> return the dummy
         // testPlayer
-        Player createdPlayer = playerService.createUser(testPlayer);
+        Player createdPlayer = playerService.createPlayer(testPlayer);
 
         // then
         Mockito.verify(playerRepository, Mockito.times(1)).save(Mockito.any());
@@ -140,7 +140,7 @@ public class PlayerServiceTest {
         assertEquals(testPlayer.getUsername(), createdPlayer.getUsername());
         assertNotNull(createdPlayer.getCreationDate());
         assertNotNull(createdPlayer.getToken());
-        assertEquals(PlayerStatus.ONLINE, createdPlayer.getStatus());
+        //assertEquals(PlayerStatus.ONLINE, createdPlayer.getStatus());
     }
      */
 
@@ -148,14 +148,14 @@ public class PlayerServiceTest {
     @Test
     public void createUser_duplicateUsername_throwsException() {
         // given -> a first user has already been created
-        playerService.createUser(testPlayer);
+        playerService.createPlayer(testPlayer);
 
         // when -> setup additional mocks for PlayerRepository
         Mockito.when(playerRepository.findByUsername(Mockito.any())).thenReturn(testPlayer);
 
         // then -> attempt to create second user with same user -> check that an error
         // is thrown
-        assertThrows(ResponseStatusException.class, () -> playerService.createUser(testPlayer));
+        assertThrows(ResponseStatusException.class, () -> playerService.createPlayer(testPlayer));
     }
      */
 
