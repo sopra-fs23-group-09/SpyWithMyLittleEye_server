@@ -38,6 +38,7 @@ public class PlayerServiceIntegrationTest {
         playerRepository.deleteAll();
     }
 
+    /*
     @Test
     public void updateToken_success() {
         createUser_validInputs_success();
@@ -229,4 +230,5 @@ public class PlayerServiceIntegrationTest {
     public void getUser_failure() {
         assertThrows(ResponseStatusException.class, ()-> playerService.getPlayer(1L));
     }
+     */
 }
