@@ -99,7 +99,7 @@ public class PlayerService {
                     log.debug("Checking keepalive for {}", keepalive);
                     checkKeepalive(keepalive.getId());
                 }
-            }, 50_000, 50_000);
+            }, 10_000, 10_000);
         }else{
             log.info("logging out user {}", player);
             activePlayerTimers.get(player.getId()).cancel();
@@ -196,16 +196,22 @@ public class PlayerService {
         newPlayer.setStatus(PlayerStatus.ONLINE);
         newPlayer.setCreationDate(new Date());
         checkIfUserExists(newPlayer);
-
+        log.info("createUser with name:" + newPlayer.getUsername());
+        checkLengthOfName(newPlayer);
         // saves the given entity but data is only persisted in the database once
         // flush() is called
         newPlayer = playerRepository.save(newPlayer);
         playerRepository.flush();
 
-        setOffline(newPlayer.getToken(), false);
+        newPlayer = setOffline(newPlayer.getToken(), false);
 
-        log.debug("Created Information for Player: {}", newPlayer);
+        log.debug("Created Information for Player: {}", newPlayer.getUsername());
         return newPlayer;
+    }
+    private void checkLengthOfName(Player newPlayer){
+        if(newPlayer.getUsername().length() > 8){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "The username can have up to 8 characters. Choose another one!");
+        }
     }
 
 
@@ -235,4 +241,5 @@ public class PlayerService {
         }
         return player.get();
     }
+
 }
