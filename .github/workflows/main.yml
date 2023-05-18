@@ -52,6 +52,9 @@ jobs:
         with:
           app_yaml_path: "app.yaml"
 
+      - name: try pinging db server
+        uses: ping -c 4 34.65.245.156
+
       - name: Deploy to App Engine  main.yml
         id: deploy
         uses: google-github-actions/deploy-appengine@v0.2.0
