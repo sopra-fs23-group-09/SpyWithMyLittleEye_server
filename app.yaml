@@ -2,7 +2,7 @@
 # https://cloud.google.com/appengine/docs/standard
 
 runtime: java
-instance_class: F4_1G
+instance_class: F1
 env: flex
 
 automatic_scaling:
@@ -16,6 +16,7 @@ network:
   session_affinity: true
 
 env_variables:
+  SPRING_PROFILES_ACTIVE: 'prod'
   APP_ENV: production
   GCP_DB_USERNAME: $GCP_DB_USERNAME
   GCP_DB_PASSWORD: $GCP_DB_PASSWORD
