@@ -134,7 +134,7 @@
 
 ### Week 8: 20.05. - 26.05.
 - Nina
-  1. fix exit lobby: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/285
+  1. fix exit lobby: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/202
   2. send guesses using the enter button: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/207
 - Claudia
   1. fix play again: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/200
