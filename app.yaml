@@ -20,3 +20,6 @@ env_variables:
   APP_ENV: production
   GCP_DB_USERNAME: $GCP_DB_USERNAME
   GCP_DB_PASSWORD: $GCP_DB_PASSWORD
+
+readiness_check:
+  app_start_timeout_sec: 1800
