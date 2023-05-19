@@ -132,3 +132,22 @@
   1. Bug fix keepAlive / userDropOut: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/237
   2. Nice error messages instead of alert: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/211
 
+### Week 8: 20.05. - 26.05.
+- Nina
+  1. fix exit lobby: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/285
+  2. send guesses using the enter button: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/207
+- Claudia
+  1. fix play again: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/200
+  2. fix deployment: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/issues/201
+- Xena
+  1. UI improvement: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/284
+  2. play again button and related functionality: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/210
+- Loubna
+  1. UI improvement: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/284
+  2. exit lobby button and related functionality: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/283
+- Thereza
+  1. UI improvement: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/284
+  2. websocket bugfixes: https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_client/issues/268
+
+
+
