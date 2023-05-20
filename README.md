@@ -26,22 +26,29 @@ to explore the world with our friends online in a fun and exciting way.
 
 During the development of the back-end, we used the following technologies:
 
-* [Name](Link to documentation) - Description of what it is
-* [REACT](https://reactjs.org/) - Front-end JavaScript Library used mainly for Hooks
-* [MUI](https://mui.com/material-ui/react-alert/) - React UI framework used mainly for Alert components
-* [Axios API](https://axios-http.com/docs/api_intro) - Used for REST-based communication with the server
-* [Stomp](https://stomp-js.github.io/stomp-websocket/) - Used for websocket communication with the server
+* [Java](https://www.java.com/de/download/manual.jsp) - Programming language used in the server
+* [Spring Boot](https://spring.io/projects/spring-boot) - Spring Boot Framework used in the server
+* [Axios API](https://axios-http.com/docs/api_intro) - Used for REST-based communication
+* [Stomp](https://stomp-js.github.io/stomp-websocket/) - Used for websocket communication with the client
+* [JPA/Hibernate]() - Used for the persistance of players
+* [Google cloud](https://cloud.google.com/?hl=en) - Handles the deployment
 
 ## 🧩 High-level Components (TODO) <a id="high-level-components"></a>
 Find the back-ends main 3-5 components below. <br>What is their role?
 How are they correlated? Reference the main class, file, or function in the README text
 with a link.
 
-### Component 1 
+### 🧑‍🤝‍🧑 Lobby 
 
-### Component 2
+The Lobby is  
 
-### Component 3
+### 🎮 Game
+
+The Game is responsible for 
+
+### 🫀 Keep Alive
+
+All methods connected to the keep alive feature handle idle users or ones that close the tab during the game. While not a component per-se, it still is a essential feature to understand. Users get "kicked" from the game and their co-players are informed of this. This means redistribution of the roles (SPIER/GUESSER) or the host rights in a game if necessary and handling the case if a player remains alone in game. Keep Alive checks liveness of the player beginning after the login/signup.
 
 
 ## 🚀 Launch & Development <a id="launch--development"></a>
@@ -98,7 +105,10 @@ Both the client and the server have to be running for the application to behave 
 
 ## 🚙 Roadmap TODO <a id="roadmap"></a>
 
-* *A new feature someone else should add*: Description
+* *Hard game mode*: When one person guesses correctly, the round is over
+* *More metrics*: Allow the leaderboard to be filterable by other metrics (f.ex. fasted guessed)
+* *Edit profile picture*
+* *Make keyword checking more flexible*: Allow synonyms of words by using an API for synonyms
 
 ## 👩‍💻 Authors <a id="authors"></a>
 
