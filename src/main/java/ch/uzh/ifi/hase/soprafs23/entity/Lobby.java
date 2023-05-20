@@ -84,12 +84,18 @@ public class Lobby {
         return true;
     }
 
-    public boolean removePlayer(Player player){
+    public int removePlayer(Player player){
         if (players.contains(player)){
             players.remove(player);
-            return true;
+            if (players.size() == 0){
+                return 0;
+            }
+            if (getHostId().equals(player.getId())){
+                host = players.get(0);
+            }
+            return 1;
         }
-        return false;
+        return 2;
     }
 
     public int getAccessCode(){

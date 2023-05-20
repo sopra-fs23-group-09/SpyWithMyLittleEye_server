@@ -62,15 +62,15 @@ public class LobbyController {
     public ResponseEntity<Void> exitLobby(@PathVariable(value = "userId") Long playerId, @PathVariable("lobbyId") int lobbyId, @RequestHeader(value = "Token", defaultValue = "null") String token){
         playerService.checkToken(token);
         Player player = playerService.getPlayer(playerId);
-        lobbyService.removeUser(player,lobbyId);
+        int exitResult = lobbyService.removeUser(player,lobbyId);
         playerService.exitLobby(player);
-
-        // send a message over websocket to notify the other players that someone left
-        String destination = "/topic/lobbies/" + lobbyId;
-        Lobby lobby = lobbyService.getLobby(lobbyId);
-        LobbyGetDTO lobbyGetDTO = DTOMapper.INSTANCE.convertLobbyToLobbyGetDTO(lobby);
-        messagingTemplate.convertAndSend(destination, lobbyGetDTO);
-
+        if (exitResult == 1){
+            // send a message over websocket to notify the other players that someone left
+            String destination = "/topic/lobbies/" + lobbyId;
+            Lobby lobby = lobbyService.getLobby(lobbyId);
+            LobbyGetDTO lobbyGetDTO = DTOMapper.INSTANCE.convertLobbyToLobbyGetDTO(lobby);
+            messagingTemplate.convertAndSend(destination, lobbyGetDTO);
+        }
         return ResponseEntity.ok().build();
     }
 }

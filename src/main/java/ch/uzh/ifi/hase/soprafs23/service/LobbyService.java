@@ -113,13 +113,17 @@ public class LobbyService {
         return lobby;
     }
 
-    public void removeUser(Player player, int lobbyId){
+    public int removeUser(Player player, int lobbyId){
         Lobby lobby = LobbyRepository.getLobbyById(lobbyId);
         // check if player is in lobby (and remove player) else throw exception
-        boolean wasPlayerInLobby = lobby.removePlayer(player);
-        if (!wasPlayerInLobby){
+        int removeResult = lobby.removePlayer(player);
+        if (removeResult == 2){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "The player is not in this lobby.");
+        }else if (removeResult == 0){
+            LobbyRepository.deleteLobby(lobbyId);
+            return 0;
         }
+        return 1;
     }
 
     public void deleteLobby(int lobbyId, PlayerService playerService) {
