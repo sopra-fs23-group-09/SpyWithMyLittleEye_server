@@ -265,7 +265,7 @@ public class LobbyControllerTest {
         // set up mock objects and their behavior
         doNothing().when(playerService).checkToken(anyString());
         given(playerService.getPlayer(player.getId())).willReturn(player);
-        doNothing().when(lobbyService).removeUser(player, lobbyID);
+        given(lobbyService.removeUser(player, lobbyID)).willReturn(1);
         doNothing().when(playerService).exitLobby(player);
 
         MockHttpServletRequestBuilder putRequest = put("/lobbies/" + lobbyID + "/exit/" + player.getId());
