@@ -112,6 +112,7 @@ public class GameStompController {
     @MessageMapping("/games/{gameId}/playAgain")
     public void playAgain(@DestinationVariable("gameId") int gameId){
         gameService.handleGameOver(gameId, true);
+        lobbyService.getLobby(gameId).resetGameToNull();
         webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/playAgain", new EndRoundMessage("playAgain", 0, 0));
         // wait for a second to make sure the players are in the lobby
         try {
