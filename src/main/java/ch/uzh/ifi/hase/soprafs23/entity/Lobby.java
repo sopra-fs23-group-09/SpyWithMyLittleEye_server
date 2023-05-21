@@ -37,11 +37,15 @@ public class Lobby {
         return id;
     }
 
-    public Game play(PlayerService playerService){
-        if (this.game != null) return null;
+    public Game initiateGame(PlayerService playerService){
+        if (this.game != null) return null; // to allow restarting a game
         game = new Game(id, players, amountRounds, host, playerService, duration);
         game.nextRound();
         return game;
+    }
+
+    public void resetGameToNull(){
+        this.game = null;
     }
 
     public int kickPlayer(Player player, WebSocketService ws) {
