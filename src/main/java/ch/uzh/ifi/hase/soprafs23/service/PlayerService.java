@@ -210,7 +210,7 @@ public class PlayerService {
     }
     private void checkLengthOfName(Player newPlayer){
         if(newPlayer.getUsername().length() > 7){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "The username can have up to 8 characters. Choose another one!");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "The username can have up to 7 characters. Choose another one!");
         }
     }
 
