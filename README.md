@@ -33,26 +33,30 @@ During the development of the back-end, we used the following technologies:
 * [JPA/Hibernate]() - Used for the persistance of players
 * [Google cloud](https://cloud.google.com/?hl=en) - Handles the deployment
 
-## 🧩 High-level Components (TODO) <a id="high-level-components"></a>
+## 🧩 High-level Components <a id="high-level-components"></a>
 Find the back-ends main 3-5 components below. <br>What is their role?
 How are they correlated? Reference the main class, file, or function in the README text
 with a link.
 
-### 🎮 GameStompController
+### 👤 PlayerService
 
-The GameStompController is in charge of handling all interactions between clients and the server that have to be synchronized during the game. This includes sending information about the round (location and color of the object), the guesses and hints and the start/end of a round.
+The [PlayerService](https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/blob/main/src/main/java/ch/uzh/ifi/hase/soprafs23/service/PlayerService.java) is responsible for managing all player related parameters. It allows creation and log in of players, is the center of the [Keep Alive](#keepalive) feature and allows the players to edit their user information. The PlayerService also has access to the [PlayerRepository](https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/blob/main/src/main/java/ch/uzh/ifi/hase/soprafs23/repository/PlayerRepository.java), which communicates with the database. Without the PlayerService it wouldn't be possible to have logged in players that can play the game and look at their stats and profiles afterwards.
 
 ### 🧑‍🤝‍🧑 Lobby 
 
-The Lobby class is responsible for storing all information about players and game settings that are needed to start a game. This means the lobby stores the participating players (up to 10), the host of the game, the amount of rounds to be played (2 - 20) and how long a round should take (1 - 4 minutes). The Lobby therefore is an important component, as it creates the game with the necessary information it collected before. It can be addressed via the Lobbyservice.
+The [Lobby](https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/blob/main/src/main/java/ch/uzh/ifi/hase/soprafs23/entity/Lobby.java) class is responsible for storing all information about players and game settings that are needed to start a game. This means the lobby stores the participating players (up to 10), the host of the game, the amount of rounds to be played (2 - 20) and how long a round should take (1 - 4 minutes). The Lobby therefore is an important component, as it creates the game with the necessary information it collected before. It can be addressed via the Lobbyservice.
 
 ### 🎲 Game
 
-The Game class is responsible for storing all game related parameters. This includes the information about the game that was handed over from the Lobby but also the points of each player. The game distributes the roles (SPIER/GUESSER), controls the timing of rounds and checks the guesses for correctness (+ awards points if necessary). The Game therefore is an important component, because it controls a single game during the whole process. It can be reached using the Gameservice.
+The [Game](https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/blob/main/src/main/java/ch/uzh/ifi/hase/soprafs23/entity/Game.java) class is responsible for storing all game related parameters. This includes the information about the game that was handed over from the Lobby but also the points of each player. The game distributes the roles (SPIER/GUESSER), controls the timing of rounds and checks the guesses for correctness (+ awards points if necessary). The Game therefore is an important component, because it controls a single game during the whole process. It can be reached using the Gameservice.
 
-### 🫀 Keep Alive
+### 🎮 GameStompController
 
-All methods connected to the keep alive feature handle idle users or ones that close the tab during the game. While not a component per-se, it still is a essential feature to understand. Users get "kicked" from the game and their co-players are informed of this. This means redistribution of the roles (SPIER/GUESSER) or the host rights in a game if necessary and handling the case if a player remains alone in game. Keep Alive checks liveness of the player beginning after the login/signup.
+The [GameStompController](https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/blob/main/src/main/java/ch/uzh/ifi/hase/soprafs23/controller/GameStompController.java) is in charge of handling all interactions between clients and the server that have to be synchronized during the game. This includes sending information about the round (location and color of the object), the guesses and hints and the start/end of a round. It interacts via the [GameService](https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/blob/main/src/main/java/ch/uzh/ifi/hase/soprafs23/service/GameService.java) with the Game that needs to be addressed.
+
+### 🫀 Keep Alive <a id="keepalive"></a>
+
+All methods connected to the [keep alive feature](https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/blob/d1d28d86c4bf328cf9a34d58c75b87c132180aef/src/main/java/ch/uzh/ifi/hase/soprafs23/service/PlayerService.java#L129) handle idle users or ones that close the tab during the game. While not a component per-se, it still is a essential feature to understand. Users get "kicked" from the game and their co-players are informed of this. This means redistribution of the roles (SPIER/GUESSER) or the host rights in a game if necessary and handling the case if a player remains alone in game. Keep Alive checks liveness of the player beginning after the login/signup.
 
 
 ## 🚀 Launch & Development <a id="launch--development"></a>
