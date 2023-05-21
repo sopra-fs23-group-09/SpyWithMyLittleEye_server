@@ -105,7 +105,7 @@ public class GameStompController {
 
     @MessageMapping("/games/{gameId}/playAgain")
     public void playAgain(@DestinationVariable("gameId") int gameId){
-        gameService.handlePlayAgain(gameId);
+        gameService.handleGameOver(gameId, true);
         webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/playAgain", new EndRoundMessage("playAgain", 0, 0));
     }
 }
