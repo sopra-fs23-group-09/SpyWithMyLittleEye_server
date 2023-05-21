@@ -48,6 +48,7 @@ public class GameService {
             game.updatePointsIfGameEnded();
         }
         GameRepository.deleteGame(gameId);
+        game = null;
     }
 
     public void nextRound(int gameId){

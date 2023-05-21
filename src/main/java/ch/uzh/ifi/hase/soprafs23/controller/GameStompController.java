@@ -115,7 +115,7 @@ public class GameStompController {
         webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/playAgain", new EndRoundMessage("playAgain", 0, 0));
         // wait for a second to make sure the players are in the lobby
         try {
-            Thread.sleep(1000);
+            Thread.sleep(500);
             // send a message over websocket to notify the other players who is in the lobby
             String destination = "/topic/lobbies/" + gameId + "/joined";
             Lobby lobby = lobbyService.getLobby(gameId);
