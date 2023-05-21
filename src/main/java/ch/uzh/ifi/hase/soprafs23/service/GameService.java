@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs23.service;
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.controller.GameStompController;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
+import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
@@ -47,23 +48,6 @@ public class GameService {
             game.updatePointsIfGameEnded();
         }
         GameRepository.deleteGame(gameId);
-    }
-
-    public void handlePlayAgain(int gameId){
-        Game game = getGame(gameId);
-        game.updatePointsIfGameEnded();
-        List<Player> players = game.getPlayers();
-        int amountRounds = game.getAmountRounds();
-        Player host = game.getHost();
-        PlayerService playerService = game.getPlayerService();
-        float duration = game.getDuration();
-
-        GameRepository.deleteGame(gameId);
-
-        game = new Game(gameId, players, amountRounds, host, playerService, duration);
-        game.nextRound();
-
-        GameRepository.addGame(game);
     }
 
     public void nextRound(int gameId){

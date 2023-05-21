@@ -1,6 +1,9 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
+import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.Player;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.LobbyGetDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.stomp.dto.Location;
 import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
@@ -12,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.text.DateFormat;
@@ -30,12 +34,14 @@ public class GameStompController {
     private final LobbyService lobbyService;
 
     private final WebSocketService webSocketService;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    GameStompController(PlayerService playerService, GameService gameService, LobbyService lobbyService, WebSocketService ws){
+    GameStompController(PlayerService playerService, GameService gameService, LobbyService lobbyService, WebSocketService ws, SimpMessagingTemplate messagingTemplate) {
         this.playerService = playerService;
         this.gameService = gameService;
         this.lobbyService = lobbyService;
         this.webSocketService = ws;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @MessageMapping("/games/{gameId}/spiedObject")
@@ -105,7 +111,18 @@ public class GameStompController {
 
     @MessageMapping("/games/{gameId}/playAgain")
     public void playAgain(@DestinationVariable("gameId") int gameId){
-        gameService.handlePlayAgain(gameId);
+        gameService.handleGameOver(gameId, true);
         webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/playAgain", new EndRoundMessage("playAgain", 0, 0));
+        // wait for a second to make sure the players are in the lobby
+        try {
+            Thread.sleep(1000);
+            // send a message over websocket to notify the other players who is in the lobby
+            String destination = "/topic/lobbies/" + gameId + "/joined";
+            Lobby lobby = lobbyService.getLobby(gameId);
+            LobbyGetDTO lobbyGetDTO = DTOMapper.INSTANCE.convertLobbyToLobbyGetDTO(lobby);
+            messagingTemplate.convertAndSend(destination, lobbyGetDTO);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
