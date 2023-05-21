@@ -38,13 +38,17 @@ Find the back-ends main 3-5 components below. <br>What is their role?
 How are they correlated? Reference the main class, file, or function in the README text
 with a link.
 
+### 🎮 GameStompController
+
+The GameStompController is in charge of handling all interactions between clients and the server that have to be synchronized during the game. This includes sending information about the round (location and color of the object), the guesses and hints and the start/end of a round.
+
 ### 🧑‍🤝‍🧑 Lobby 
 
-The Lobby is  
+The Lobby class is responsible for storing all information about players and game settings that are needed to start a game. This means the lobby stores the participating players (up to 10), the host of the game, the amount of rounds to be played (2 - 20) and how long a round should take (1 - 4 minutes). The Lobby therefore is an important component, as it creates the game with the necessary information it collected before. It can be addressed via the Lobbyservice.
 
-### 🎮 Game
+### 🎲 Game
 
-The Game is responsible for 
+The Game class is responsible for storing all game related parameters. This includes the information about the game that was handed over from the Lobby but also the points of each player. The game distributes the roles (SPIER/GUESSER), controls the timing of rounds and checks the guesses for correctness (+ awards points if necessary). The Game therefore is an important component, because it controls a single game during the whole process. It can be reached using the Gameservice.
 
 ### 🫀 Keep Alive
 
