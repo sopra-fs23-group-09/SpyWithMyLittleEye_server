@@ -65,11 +65,16 @@ These are the steps a new developer joining the team would
 have to take to get started with the application.
 
 ### Prerequisites
-TODO
+As the server is written in Java, make sure to have a new version installed. 
+Also get the server code
+
+```bash
+git clone https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server.git
+```
+and open the project with an IDE of your choice.
 
 
 ### Commands to build and run the project locally
-
 
 #### Building with Gradle
 You can use the local Gradle Wrapper to build the application.
@@ -94,19 +99,16 @@ More Information about [Gradle Wrapper](https://docs.gradle.org/current/userguid
 You can verify that the server is running by visiting `localhost:8080` in your browser.
 
 
-#### Tests
+#### Test
 
-Run the tests with: `npm run test`
-
-> For macOS user running into a 'fsevents' error: https://github.com/jest-community/vscode-jest/issues/423
-
-#### Build
-
-To build the app, run `npm run build` <br>
+```bash
+./gradlew test
+```
 
 ### External dependencies
 
 Both the client and the server have to be running for the application to behave as expected.
+
 #### Database (TODO) 
 
 ### Releases TODO idk about this
@@ -114,7 +116,6 @@ Both the client and the server have to be running for the application to behave 
 ## 🚙 Roadmap TODO <a id="roadmap"></a>
 
 * *Hard game mode*: When one person guesses correctly, the round is over
-* *More metrics*: Allow the leaderboard to be filterable by other metrics (f.ex. fasted guessed)
 * *Edit profile picture*
 * *Make keyword checking more flexible*: Allow synonyms of words by using an API for synonyms
 
