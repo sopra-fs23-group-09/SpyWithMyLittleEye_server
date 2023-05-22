@@ -30,7 +30,7 @@ During the development of the back-end, we used the following technologies:
 * [Spring Boot](https://spring.io/projects/spring-boot) - Spring Boot Framework used in the server
 * [Axios API](https://axios-http.com/docs/api_intro) - Used for REST-based communication
 * [Stomp](https://stomp-js.github.io/stomp-websocket/) - Used for websocket communication with the client 
-* [PostgreSQL] (https://www.postgresql.org/) - Database management system used for storage and retrieval of player data
+* [PostgreSQL](https://www.postgresql.org/) - Database management system used for storage and retrieval of player data
 * [JPA](https://javaee.github.io/javaee-spec/javadocs/javax/persistence/package-summary.html) - API for object-relational mapping to databases in Java applications
 * [Hibernate](https://hibernate.org/) - Object-relational mapping framework (implementation of JPA) between PostgreSQL and Java
 * [Google cloud](https://cloud.google.com/?hl=en) - Handles the deployment
@@ -113,7 +113,8 @@ You can verify that the server is running by visiting `localhost:8080` in your b
 
 Both the client and the server have to be running for the application to behave as expected.
 
-#### Database (TODO) 
+#### Database 
+The management of the PostgreSQL connection is handled within the [application.properties](https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/blob/main/src/main/resources/application.properties) file. While we keep the username and password for our specific database confidential, the connection can be easily switched to alternative databases.
 
 ### Releases TODO idk about this
 
