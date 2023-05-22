@@ -29,14 +29,18 @@ During the development of the back-end, we used the following technologies:
 * [Java](https://www.java.com/de/download/manual.jsp) - Programming language used in the server
 * [Spring Boot](https://spring.io/projects/spring-boot) - Spring Boot Framework used in the server
 * [Axios API](https://axios-http.com/docs/api_intro) - Used for REST-based communication
-* [Stomp](https://stomp-js.github.io/stomp-websocket/) - Used for websocket communication with the client
-* [JPA/Hibernate]() - Used for the persistance of players
+* [Stomp](https://stomp-js.github.io/stomp-websocket/) - Used for websocket communication with the client 
+* [PostgreSQL] (https://www.postgresql.org/) - Database management system used for storage and retrieval of player data
+* [JPA](https://javaee.github.io/javaee-spec/javadocs/javax/persistence/package-summary.html) - API for object-relational mapping to databases in Java applications
+* [Hibernate](https://hibernate.org/) - Object-relational mapping framework (implementation of JPA) between PostgreSQL and Java
 * [Google cloud](https://cloud.google.com/?hl=en) - Handles the deployment
 
 ## 🧩 High-level Components <a id="high-level-components"></a>
-Find the back-ends main 3-5 components below. <br>What is their role?
-How are they correlated? Reference the main class, file, or function in the README text
-with a link.
+In general, the REST requests are encapsulated within the controller classes, while the handling of STOMP communication is managed by the STOMPController classes both within the controller package.
+Furthermore, there are three entity types: Game, Lobby, and Player, in the entity package. The player entities are persistently stored in the database, while the game and lobby entities are temporarily stored in the LobbyRepository and GameRepository classes, respectively. 
+The service classes, responsible for handling all functionalities related to the entity classes, are invoked by the controller classes to ensure seamless operations.
+
+In order to provide a clearer understanding, the following classes are described in detail:
 
 ### 👤 PlayerService
 
