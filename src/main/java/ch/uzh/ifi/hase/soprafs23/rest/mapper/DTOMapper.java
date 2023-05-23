@@ -4,7 +4,6 @@ import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.*;
-import ch.uzh.ifi.hase.soprafs23.stomp.dto.GameStarted;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 

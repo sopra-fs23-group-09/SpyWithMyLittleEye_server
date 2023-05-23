@@ -153,6 +153,7 @@ public class PlayerService {
         }
         if(player.getUsername() != null){
             checkIfUserExists(player);
+            checkLengthOfName(player);
             playerToUpdate.setUsername(player.getUsername());
         }
         if(player.getPassword() != null){
