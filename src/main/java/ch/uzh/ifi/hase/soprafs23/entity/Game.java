@@ -5,8 +5,6 @@ import ch.uzh.ifi.hase.soprafs23.entity.wrappers.Guess;
 import ch.uzh.ifi.hase.soprafs23.service.PlayerService;
 import ch.uzh.ifi.hase.soprafs23.service.WebSocketService;
 import ch.uzh.ifi.hase.soprafs23.stomp.dto.DropOutMessage;
-import ch.uzh.ifi.hase.soprafs23.stomp.dto.EndRoundMessage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
