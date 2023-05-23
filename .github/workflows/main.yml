@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository code  main.yml
+      - name: Checkout repository code main.yml
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
@@ -23,8 +23,8 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "17"
-      - name: Test and analyze  main.yml
-        run: ./gradlew test
+      - name: Test and analyze main.yml
+        run: ./gradlew test jacocoTestReport sonarqube
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
