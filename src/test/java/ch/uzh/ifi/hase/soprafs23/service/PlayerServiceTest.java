@@ -36,7 +36,7 @@ public class PlayerServiceTest {
         testPlayer.setId(1L);
         testPlayer.setToken("1");
         testPlayer.setPassword("testPassword");
-        testPlayer.setUsername("testUsername");
+        testPlayer.setUsername("tester");
         testPlayer.setHighScore(10);
 
 

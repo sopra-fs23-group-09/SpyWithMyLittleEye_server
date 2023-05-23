@@ -77,7 +77,7 @@ public class GameService {
 
     public int getTotalNrRounds(int gameId){ return getGame(gameId).getAmountRounds(); }
 
-    private Game getGame(int gameId) {
+    public Game getGame(int gameId) {
         Game game = GameRepository.getGameById(gameId);
         if (game == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This game doesn't exist.");

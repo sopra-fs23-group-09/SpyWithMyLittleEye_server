@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
+import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.RoundGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
@@ -44,6 +45,8 @@ public class GameController {
         //user authentication over token in header
         playerService.checkToken(token);
 
-        return ResponseEntity.ok().body(DTOMapper.INSTANCE.convertGameToRoundGetDTO(GameRepository.getGameById(gameId)));
+        Game game = gameService.getGame(gameId);
+
+        return ResponseEntity.ok().body(DTOMapper.INSTANCE.convertGameToRoundGetDTO(game));
     }
 }

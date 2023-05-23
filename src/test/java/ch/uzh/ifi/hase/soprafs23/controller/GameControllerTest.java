@@ -47,6 +47,8 @@ class GameControllerTest {
     private List<Player> players;
 
     private int gameId, currentRound, amountRounds;
+    private Game game;
+    private String keyword;
 
     @BeforeEach
     void setup() {
@@ -84,8 +86,12 @@ class GameControllerTest {
         currentRound = 1;
         amountRounds = 3;
 
-        Game game = new Game(gameId,players,amountRounds,player1, playerService, 1.5f);
+        game = new Game(gameId,players,amountRounds,player1, playerService, 1.5f);
         game.nextRound();
+
+        keyword = "test";
+
+        game.setKeyword(keyword);
     }
 
     @Test
@@ -133,5 +139,22 @@ class GameControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.currentRound").value(currentRound))
                 .andExpect(jsonPath("$.totalRounds").value(amountRounds));
+    }
+
+    @Test
+    void getRoundInformation() throws Exception {
+
+
+        //mocking gameService
+        given(gameService.getGame(gameId)).willReturn(game);
+
+        //when
+        MockHttpServletRequestBuilder getRequest = get("/games/"+gameId+"/round/results");
+
+        mockMvc.perform(getRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.currentRoundNr").value(currentRound))
+                .andExpect(jsonPath("$.keyword").value(keyword))
+                .andExpect(jsonPath("$.hostId").value(player1.getId()));
     }
 }
