@@ -17,7 +17,6 @@ public class Lobby {
     private final int accessCode;
     private final List<Player> players;
     private Player host;
-    private boolean full;
     private final int amountRounds;
     private Game game;
     private final float duration;
@@ -29,7 +28,6 @@ public class Lobby {
         this.accessCode = accessCode;
         this.players = new ArrayList<>(MAX_AMOUNT_PLAYERS);
         this.players.add(host);
-        this.full = false;
         this.amountRounds = amountRounds;
         this.duration = duration;
     }
@@ -81,9 +79,6 @@ public class Lobby {
     public boolean addPlayer(Player player){
         if (isFull()) return false;
         players.add(player);
-        if(players.size() == MAX_AMOUNT_PLAYERS){
-            this.full = true;
-        }
         player.setLobbyID(id);
         return true;
     }
@@ -109,7 +104,7 @@ public class Lobby {
     public int getAmountRounds() { return this.amountRounds; }
 
     public boolean isFull(){
-        return this.full;
+        return players.size() >= MAX_AMOUNT_PLAYERS;
     }
 
     public Long getHostId() {
