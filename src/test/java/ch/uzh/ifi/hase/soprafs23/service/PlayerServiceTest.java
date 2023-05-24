@@ -4,15 +4,10 @@ import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.repository.PlayerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,6 +33,8 @@ public class PlayerServiceTest {
         testPlayer.setPassword("testPassword");
         testPlayer.setUsername("tester");
         testPlayer.setHighScore(10);
+        testPlayer.setBirthday(new Date());
+        testPlayer.setProfilePicture("testPicture");
 
 
         // when -> any object is being save in the playerRepository -> return the dummy
@@ -70,6 +67,18 @@ public class PlayerServiceTest {
 
         assertDoesNotThrow(() -> playerService.checkToken(testPlayer.getToken()));
     }
+
+    @Test
+    public void exitLobby() {
+        testPlayer.setLobbyID(1);
+
+        // exiting the lobby for the first time
+        assertDoesNotThrow(() -> playerService.exitLobby(testPlayer));
+
+        // try to exit the lobby for the second time
+        assertThrows(ResponseStatusException.class, () -> playerService.exitLobby(testPlayer));
+    }
+
 
     /*
     @Test
@@ -125,12 +134,38 @@ public class PlayerServiceTest {
         playerService.updatePlayer(testPlayer, testPlayer.getToken(), testPlayer.getId());
         Mockito.verify(playerRepository, Mockito.times(1)).save(Mockito.any());
     }
+
+    @Test
+    public void updatePlayer_failure_usernameAlreadyExists() {
+        Mockito.when(playerRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(testPlayer));
+        Mockito.when(playerRepository.findByUsername(Mockito.anyString())).thenReturn(testPlayer);
+
+        Player testPlayer2 = new Player();
+        testPlayer2.setUsername(testPlayer.getUsername());
+
+        assertThrows(ResponseStatusException.class, () -> playerService.updatePlayer(testPlayer2, testPlayer.getToken(), testPlayer.getId()));
+    }
+
+    @Test
+    public void updatePlayer_failure_usernameTooLong() {
+        Mockito.when(playerRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(testPlayer));
+        Mockito.when(playerRepository.findByUsername(Mockito.anyString())).thenReturn(null);
+
+        Player testPlayer2 = new Player();
+        testPlayer2.setUsername("Waaaaytooooloooongusername");
+
+        assertThrows(ResponseStatusException.class, () -> playerService.updatePlayer(testPlayer2, testPlayer.getToken(), testPlayer.getId()));
+    }
+
     /*
     @Test
     public void createUser_validInputs_success() {
         // when -> any object is being save in the playerRepository -> return the dummy
         // testPlayer
+        //Mockito.doNothing().when(playerService).setOffline(anyString(), anyBoolean());
+        Mockito.doNothing().when(playerService).setOffline(Mockito.anyString(), Mockito.anyBoolean());
         Player createdPlayer = playerService.createPlayer(testPlayer);
+
 
         // then
         Mockito.verify(playerRepository, Mockito.times(1)).save(Mockito.any());
@@ -160,10 +195,20 @@ public class PlayerServiceTest {
      */
 
     @Test
-    public void getTop15User() {
-        Mockito.when(playerRepository.findTop15ByOrderByHighScoreDesc()).thenReturn(Collections.unmodifiableList(List.of(testPlayer)));
+    public void getTop15PlayersHighScore_success() {
+        Mockito.when(playerRepository.findTop15ByOrderByHighScoreDesc()).thenReturn(List.of(testPlayer));
 
         Player returned = playerService.getTop15PlayersHighScore().get(0);
+        assertEquals(testPlayer.getId(), returned.getId());
+        assertEquals(testPlayer.getPassword(), returned.getPassword());
+        assertEquals(testPlayer.getUsername(), returned.getUsername());
+    }
+
+    @Test
+    public void getTop15PlayersGamesWon_success() {
+        Mockito.when(playerRepository.findTop15ByOrderByGamesWonDesc()).thenReturn(List.of(testPlayer));
+
+        Player returned = playerService.getTop15PlayersGamesWon().get(0);
         assertEquals(testPlayer.getId(), returned.getId());
         assertEquals(testPlayer.getPassword(), returned.getPassword());
         assertEquals(testPlayer.getUsername(), returned.getUsername());
@@ -184,5 +229,13 @@ public class PlayerServiceTest {
         Mockito.when(playerRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
         assertThrows(ResponseStatusException.class, () -> playerService.getPlayer(testPlayer.getId()));
+    }
+
+    @Test
+    public void testGenerateUniqueToken() {
+        Mockito.when(playerRepository.findByToken(Mockito.anyString())).thenReturn(null);
+
+        String uniqueToken = playerService.generateUniqueToken();
+        assertEquals(36, uniqueToken.length());
     }
 }
