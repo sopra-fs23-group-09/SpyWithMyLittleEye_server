@@ -65,22 +65,20 @@ public class PlayerService {
         playerRepository.saveAndFlush(u);
     }
 
-    //could be renamed to deleteToken as written in class diagram
     private Player clearToken(String token){
-        Player u = playerRepository.findByToken(token);
-        if (u == null) {
+        Player player = playerRepository.findByToken(token);
+        if (player == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with this token exists");
         }
-        u.setToken(null);
-        log.info("clearing token of {}", u);
-        u = playerRepository.save(u);
+        player.setToken(null);
+        log.info("clearing token of {}", player);
+        player = playerRepository.save(player);
         playerRepository.flush();
-        log.debug("token of user "+ u.getUsername()+": " + u.getToken());
+        log.debug("token of user "+ player.getUsername()+": " + player.getToken());
         log.debug("user still in repo with that token?:"+ playerRepository.findByToken(token));
-        return u;
+        return player;
     }
-    //probably rename to logoutUser because of class diagram, but setOffline has a meaning in combination
-    //with status so i would prefer setOffline
+
     public Player setOffline(String token, boolean status){
         Player player = playerRepository.findByToken(token);
         if (player == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user");
@@ -193,12 +191,14 @@ public class PlayerService {
         String token = generateUniqueToken();
 
         // set the properties for the new player and check if another player already has the same username
+        checkIfUserExists(newPlayer);
+        checkLengthOfName(newPlayer);
+        log.info("createUser with name:" + newPlayer.getUsername());
+
         newPlayer.setToken(token);
         newPlayer.setStatus(PlayerStatus.ONLINE);
         newPlayer.setCreationDate(new Date());
-        checkIfUserExists(newPlayer);
-        log.info("createUser with name:" + newPlayer.getUsername());
-        checkLengthOfName(newPlayer);
+
         // saves the given entity but data is only persisted in the database once
         // flush() is called
         newPlayer = playerRepository.save(newPlayer);
@@ -209,12 +209,12 @@ public class PlayerService {
         log.debug("Created Information for Player: {}", newPlayer.getUsername());
         return newPlayer;
     }
+
     private void checkLengthOfName(Player newPlayer){
         if(newPlayer.getUsername().length() > 7){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "The username can have up to 7 characters. Choose another one!");
         }
     }
-
 
     private void checkIfUserExists(Player playerToBeCreated) {
         Player playerByUsername = playerRepository.findByUsername(playerToBeCreated.getUsername());
@@ -235,12 +235,10 @@ public class PlayerService {
     }
 
     public Player getPlayer(Long id){
-
         Optional<Player> player = playerRepository.findById(id);
         if (player.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This user does not exist.");
         }
         return player.get();
     }
-
 }
