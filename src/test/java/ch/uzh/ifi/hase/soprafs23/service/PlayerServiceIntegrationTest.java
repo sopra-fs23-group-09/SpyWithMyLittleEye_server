@@ -1,7 +1,5 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
-import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
-import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.repository.PlayerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,8 +10,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityNotFoundException;
-
-import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -58,12 +54,13 @@ public class PlayerServiceIntegrationTest {
         assertEquals(created.getCreationDate(), updated.getCreationDate());
         assertEquals(PlayerStatus.ONLINE, updated.getStatus());
     }
-
+	*/
     @Test
     public void updateToken_failure() {
-        assertThrows(EntityNotFoundException.class, () -> playerService.updateToken(1L, "2"));
+        assertThrows(EntityNotFoundException.class, () -> playerService.updateToken(-1L, "2"));
     }
 
+	/*
     @Test
     public void checkToken_success() {
         Player testPlayer = new Player();
@@ -73,12 +70,13 @@ public class PlayerServiceIntegrationTest {
 
         assertDoesNotThrow(() -> playerService.checkToken(created.getToken()));
     }
-
+	*/
     @Test
     public void checkToken_failure() {
-        assertThrows(ResponseStatusException.class, () -> playerService.checkToken("1"));
+        assertThrows(ResponseStatusException.class, () -> playerService.checkToken("-1"));
     }
 
+	/*
     @Test
     public void setOffline_success() {
         Player testPlayer = new Player();
@@ -94,12 +92,13 @@ public class PlayerServiceIntegrationTest {
         updated = playerService.getPlayer(created.getId());
         assertEquals(PlayerStatus.OFFLINE, updated.getStatus());
     }
-
+	*/
     @Test
     public void setOffline_failure() {
-        assertThrows(ResponseStatusException.class, () -> playerService.setOffline("1", true));
+        assertThrows(ResponseStatusException.class, () -> playerService.setOffline("-1", true));
     }
 
+	/*
     @Test
     public void getUserID_success() {
         Player testPlayer = new Player();
@@ -108,12 +107,14 @@ public class PlayerServiceIntegrationTest {
         Player created = playerService.createPlayer(testPlayer);
         assertEquals(created.getId(), playerService.getPlayerID(created.getToken()));
     }
+	*/
 
     @Test
     public void getUserID_failure() {
-        assertThrows(ResponseStatusException.class, () -> playerService.getPlayerID("1"));
+        assertThrows(ResponseStatusException.class, () -> playerService.getPlayerID("-1"));
     }
 
+	/*
     @Test
     public void updateUser_success() {
         Player testPlayer = new Player();
@@ -225,10 +226,10 @@ public class PlayerServiceIntegrationTest {
         assertEquals(createdPlayer.getCreationDate(), returned.getCreationDate());
         assertEquals(createdPlayer.getStatus(), returned.getStatus());
     }
+	*/
 
     @Test
     public void getUser_failure() {
-        assertThrows(ResponseStatusException.class, ()-> playerService.getPlayer(1L));
+        assertThrows(ResponseStatusException.class, ()-> playerService.getPlayer(-1L));
     }
-     */
 }
