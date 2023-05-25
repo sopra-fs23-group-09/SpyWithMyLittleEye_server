@@ -36,9 +36,9 @@ During the development of the back-end, we used the following technologies:
 * [Google cloud](https://cloud.google.com/?hl=en) - Handles the deployment
 
 ## 🧩 High-level Components <a id="high-level-components"></a>
-In general, the REST requests are encapsulated within the controller classes, while the handling of STOMP communication is managed by the STOMPController classes both within the controller package.
-Furthermore, there are three entity types: Game, Lobby, and Player, in the entity package. The player entities are persistently stored in the database, while the game and lobby entities are temporarily stored in the LobbyRepository and GameRepository classes, respectively. 
-The service classes, responsible for handling all functionalities related to the entity classes, are invoked by the controller classes to ensure seamless operations.
+In general, the REST requests are encapsulated within the Controller classes, while the handling of STOMP communication via websocket is managed by the STOMPController classes.
+Furthermore, there are three entity types: Game, Lobby, and Player, in the entity package. The Player entities are persistently stored in the database, while the Game and Lobby entities are temporarily stored in the LobbyRepository and GameRepository classes, respectively. 
+The Service classes, responsible for handling all functionalities related to the entity classes, are invoked by the Controller classes.
 
 In order to provide a clearer understanding, the following classes are described in detail:
 
@@ -116,7 +116,8 @@ Both the client and the server have to be running for the application to behave 
 #### Database 
 The management of the PostgreSQL connection is handled within the [application.properties](https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/blob/main/src/main/resources/application.properties) file. While we keep the username and password for our specific database confidential, the connection can be easily switched to alternative databases.
 
-### Releases TODO idk about this
+### Releases
+We recommend to follow this [tutorial](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository) and to properly document and comment your release.
 
 ## 🚙 Roadmap TODO <a id="roadmap"></a>
 
@@ -140,6 +141,6 @@ We also couldn't have made it without our ✨ceremonies✨ 🍣✨ 🍱 🫶 aft
 
 ## ©️ License <a id="license"></a>
 
-This project is licensed under the GNU GPLv3 License. 
+This project is licensed under the GNU GPLv3 License (see [LICENSE](https://github.com/sopra-fs23-group-09/SpyWithMyLittleEye_server/blob/main/LICENSE) file). 
 
  
