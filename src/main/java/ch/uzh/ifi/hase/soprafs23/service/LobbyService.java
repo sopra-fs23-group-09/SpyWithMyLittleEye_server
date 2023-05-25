@@ -118,7 +118,7 @@ public class LobbyService {
         // check if player is in lobby (and remove player) else throw exception
         int removeResult = lobby.removePlayer(player);
         if (removeResult == 2){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "The player is not in this lobby.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The player is not in this lobby.");
         }else if (removeResult == 0){
             LobbyRepository.deleteLobby(lobbyId);
             return 0;
