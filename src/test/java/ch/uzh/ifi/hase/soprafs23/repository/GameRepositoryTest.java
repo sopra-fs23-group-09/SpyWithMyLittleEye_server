@@ -20,6 +20,8 @@ class GameRepositoryTest {
 
     @BeforeEach
     void setup() {
+		GameRepository.reset();
+
         //create players
         Player player1 = new Player();
         player1.setId(1L);
