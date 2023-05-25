@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -112,15 +113,21 @@ public class GameStompController {
     @MessageMapping("/games/{gameId}/playAgain")
     public void playAgain(@DestinationVariable("gameId") int gameId){
         gameService.handleGameOver(gameId, true);
-        lobbyService.getLobby(gameId).resetGameToNull();
+        Lobby lobby = lobbyService.getLobby(gameId);
+        List<Player> players = new ArrayList<>();
+        List<Player> playersOld = lobby.getPlayers();
+        for(Player p : playersOld){
+            players.add(playerService.getPlayer(p.getId()));
+        }
+        lobby.resetGameToNull(players);
         webSocketService.sendMessageToSubscribers("/topic/games/"+gameId+"/playAgain", new EndRoundMessage("playAgain", 0, 0));
         // wait for a second to make sure the players are in the lobby
         try {
             Thread.sleep(500);
             // send a message over websocket to notify the other players who is in the lobby
             String destination = "/topic/lobbies/" + gameId + "/joined";
-            Lobby lobby = lobbyService.getLobby(gameId);
-            LobbyGetDTO lobbyGetDTO = DTOMapper.INSTANCE.convertLobbyToLobbyGetDTO(lobby);
+            Lobby l = lobbyService.getLobby(gameId);
+            LobbyGetDTO lobbyGetDTO = DTOMapper.INSTANCE.convertLobbyToLobbyGetDTO(l);
             messagingTemplate.convertAndSend(destination, lobbyGetDTO);
         } catch (InterruptedException e) {
             e.printStackTrace();

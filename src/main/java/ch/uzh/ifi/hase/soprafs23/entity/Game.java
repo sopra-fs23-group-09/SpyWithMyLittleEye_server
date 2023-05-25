@@ -178,8 +178,8 @@ public class Game {
     public int getId(){
         return this.id;
     }
-    public void storeGuess(String name, String guess){
-        Guess g = new Guess(name, guess);
+    public void storeGuess(String name, String guess, int correct){
+        Guess g = new Guess(name, guess, correct);
         playerGuesses.add(g);
     }
     public List<Guess> getGuesses(){

@@ -52,8 +52,13 @@ public class LobbyController {
         try{jsonObject = gson.fromJson(accessCode, JsonObject.class);}
         catch(JsonSyntaxException e){throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Illegal body format");}
         JsonElement elem = jsonObject.get("accessCode");
-        if(elem == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Illegal body content");
-        int accessCodeInt = Integer.parseInt(elem.getAsString());
+        if(elem == null) {throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Illegal body content");}
+        int accessCodeInt = -1;
+        try{
+            accessCodeInt = Integer.parseInt(elem.getAsString());
+            if (accessCodeInt > 99999 || accessCodeInt < 10000) throw new Exception();
+        }
+        catch(Exception e){throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please provide a number between 10000 and 99999.");}
         Lobby lobby = lobbyService.addUser(player, accessCodeInt);
         return ResponseEntity.ok(DTOMapper.INSTANCE.convertLobbyToLobbyGetDTO(lobby));
     }

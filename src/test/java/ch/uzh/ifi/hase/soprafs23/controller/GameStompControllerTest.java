@@ -261,7 +261,7 @@ public class GameStompControllerTest {
         Mockito.when(playerService.getPlayer(Mockito.anyLong())).thenReturn(testPlayer);
         Mockito.when(gameService.checkGuessAndAllocatePoints(Mockito.anyInt(), Mockito.any(), Mockito.anyString(),
                 Mockito.any()))
-                .thenReturn(List.of(new Guess(testPlayer.getUsername(), in.getGuess())));
+                .thenReturn(List.of(new Guess(testPlayer.getUsername(), in.getGuess(), 0)));
 
         webSocketStompClient.setMessageConverter(getGuessConverter());
 

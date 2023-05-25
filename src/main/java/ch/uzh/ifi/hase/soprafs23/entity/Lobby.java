@@ -15,7 +15,7 @@ public class Lobby {
     private static final int MAX_AMOUNT_PLAYERS = 10;
     private final int id;
     private final int accessCode;
-    private final List<Player> players;
+    private List<Player> players;
     private Player host;
     private final int amountRounds;
     private Game game;
@@ -42,8 +42,9 @@ public class Lobby {
         return game;
     }
 
-    public void resetGameToNull(){
+    public void resetGameToNull(List<Player> players){
         this.game = null;
+        this.players = new ArrayList<>(players);
     }
 
     public int kickPlayer(Player player, WebSocketService ws) {

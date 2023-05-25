@@ -24,14 +24,16 @@ public class GameService {
     }
 
     public List<Guess> checkGuessAndAllocatePoints(int gameId, Player player, String guess, Date guessTime){
+        int correct = 0;
         Game game = getGame(gameId);
         log.info("checking guess {} with keyword {}", guess, game.getKeyword());
         if (game.checkGuess(guess)){
+            correct = 1;
             log.info("{} and {} are matching", guess, game.getKeyword());
             guess = "CORRECT";
             game.allocatePoints(player, guessTime);
         }
-        game.storeGuess(player.getUsername(), guess);
+        game.storeGuess(player.getUsername(), guess, correct);
         return game.getGuesses();
     }
 
