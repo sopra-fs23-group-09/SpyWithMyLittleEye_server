@@ -322,13 +322,13 @@ public class LobbyControllerTest {
         // set up mock objects and their behavior
         doNothing().when(playerService).checkToken(anyString());
         given(playerService.getPlayer(player.getId())).willReturn(player);
-        doThrow(new ResponseStatusException(HttpStatus.FORBIDDEN, "the player is not in this lobby"))
+        doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "the player is not in this lobby"))
                 .when(lobbyService).removeUser(player, lobbyID);
         doNothing().when(playerService).exitLobby(player);
 
         MockHttpServletRequestBuilder putRequest = put("/lobbies/" + lobbyID + "/exit/" + player.getId());
 
         mockMvc.perform(putRequest)
-                .andExpect(status().isForbidden());
+                .andExpect(status().isNotFound());
     }
 }
